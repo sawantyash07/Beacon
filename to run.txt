@@ -1,0 +1,33 @@
+2. Run them individually
+If you prefer to run them in separate terminal windows, you can do so by navigating into their respective directories:
+
+Start the Next.js Frontend:
+
+bash
+
+
+cd D:\Beacon\apps\web
+npm run dev
+Start the NestJS Backend:
+
+bash
+
+
+cd D:\Beacon\apps\api
+npm run start:dev
+
+
+Open two separate terminal windows, ensure you are in the root directory (d:\Beacon) for both, and run these commands:
+
+Terminal 1 (Backend API):
+
+powershell
+
+
+npm run dev --workspace=api
+Terminal 2 (Frontend App):
+
+powershell
+
+
+npm run dev:waypoint

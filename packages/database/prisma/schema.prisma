@@ -1,0 +1,264 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// User role enum
+enum Role {
+  TRAVELER
+  PLANNER
+  ADMIN
+}
+
+enum PackageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum DifficultyLevel {
+  EASY
+  MODERATE
+  HARD
+  EXPERT
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  password  String? // Nullable for OAuth users
+  role      Role     @default(TRAVELER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile   Profile?
+  
+  // A planner can have multiple packages
+  packages  Package[]
+  
+  // Relations for new models
+  reviews   Review[]
+  wishlists Wishlist[]
+  blogs     Blog[]
+  blogComments BlogComment[]
+  messagesSent     Message[] @relation("MessagesSent")
+  messagesReceived Message[] @relation("MessagesReceived")
+}
+
+model Profile {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bio       String?
+  avatarUrl String?
+  phone     String?
+  
+  // Planner specific business details
+  companyName String?
+  gstNumber   String?
+  panNumber   String?
+  isVerified  Boolean  @default(false)
+}
+
+model Package {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  plannerId   String   @db.ObjectId
+  planner     User     @relation(fields: [plannerId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String
+  destination String
+  duration    Int      // in days
+  basePrice   Float
+  discountedPrice Float?
+  
+  category    String
+  difficulty  DifficultyLevel @default(MODERATE)
+  groupSize   Int?
+  
+  status      PackageStatus @default(DRAFT)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  images      PackageImage[]
+  itinerary   ItineraryDay[]
+  inclusions  String[]
+  exclusions  String[]
+  bookings    Booking[]
+  
+  // New Relations
+  destinationId String?   @db.ObjectId
+  destinationModel Destination? @relation(fields: [destinationId], references: [id])
+  reviews     Review[]
+  wishlistedBy Wishlist[]
+}
+
+model PackageImage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  packageId String   @db.ObjectId
+  package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  url       String
+  isCover   Boolean  @default(false)
+}
+
+model ItineraryDay {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  packageId   String   @db.ObjectId
+  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  dayNumber   Int
+  title       String
+  description String
+  activities  String[]
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Booking {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  travelerId     String        @db.ObjectId
+  packageId      String        @db.ObjectId
+  
+  travelDate     DateTime
+  passengerCount Int
+  totalAmount    Float
+  status         BookingStatus @default(PENDING)
+  
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  package        Package       @relation(fields: [packageId], references: [id])
+  payment        Payment?
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model Payment {
+  id               String        @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId        String        @unique @db.ObjectId
+  booking          Booking       @relation(fields: [bookingId], references: [id])
+  
+  amount           Float
+  currency         String        @default("INR")
+  status           PaymentStatus @default(PENDING)
+  razorpayOrderId  String?
+  razorpayPaymentId String?
+  
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Destination {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  location    String
+  bestSeason  String
+  weather     String
+  gallery     String[]
+  
+  packages    Package[]
+  reviews     Review[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Review {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  rating        Int
+  comment       String
+  
+  userId        String   @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  packageId     String?  @db.ObjectId
+  package       Package? @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  
+  destinationId String?  @db.ObjectId
+  destination   Destination? @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Wishlist {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  packageId   String   @db.ObjectId
+  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([userId, packageId])
+}
+
+model Blog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  content     String
+  coverImage  String?
+  categories  String[]
+  tags        String[]
+  likes       Int      @default(0)
+  
+  authorId    String   @db.ObjectId
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  comments    BlogComment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BlogComment {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  
+  blogId      String   @db.ObjectId
+  blog        Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Message {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  isRead      Boolean  @default(false)
+  
+  senderId    String   @db.ObjectId
+  sender      User     @relation("MessagesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  receiverId  String   @db.ObjectId
+  receiver    User     @relation("MessagesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+}
+
+model Newsletter {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  email       String   @unique
+  isActive    Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+}
+
