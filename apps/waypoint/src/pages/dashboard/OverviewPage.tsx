@@ -119,7 +119,7 @@ export default function OverviewPage() {
                 <img src={pkg.image} alt={pkg.title} className="w-16 h-16 rounded-[10px] object-cover" loading="lazy" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-navy text-sm truncate">{pkg.title}</p>
-                  <p className="text-xs text-muted">{pkg.destination} · {pkg.duration}</p>
+                  <p className="text-xs text-muted">{pkg.destination} · {pkg.duration || `${pkg.days} days / ${pkg.nights} nights`}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-mono text-sm font-semibold text-teal">{formatCurrency(pkg.price)}</p>

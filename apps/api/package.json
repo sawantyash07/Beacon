@@ -23,6 +23,7 @@
   "dependencies": {
     "@beacon/database": "*",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "*",
@@ -31,6 +32,7 @@
     "@prisma/client": "^6.19.3",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^16.6.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

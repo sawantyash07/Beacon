@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User role enum
 enum Role {
   TRAVELER
   PLANNER
@@ -27,42 +26,168 @@ enum DifficultyLevel {
   EXPERT
 }
 
+enum PartnerType {
+  COMPANY
+  FREELANCER
+}
+
+enum VerificationDocStatus {
+  PENDING
+  UNDER_REVIEW
+  VERIFIED
+  REJECTED
+}
+
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  name      String?
-  password  String? // Nullable for OAuth users
-  role      Role     @default(TRAVELER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  profile   Profile?
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  email       String   @unique
+  name        String?
+  mobileNumber String?
+  age         Int?
+  gender      String?
+  password    String? // Nullable for OAuth users
+  role        Role     @default(TRAVELER)
+  partnerType PartnerType @default(COMPANY)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile     Profile?
   
   // A planner can have multiple packages
-  packages  Package[]
+  packages    Package[]
   
   // Relations for new models
-  reviews   Review[]
-  wishlists Wishlist[]
-  blogs     Blog[]
+  reviews     Review[]
+  wishlists   Wishlist[]
+  blogs       Blog[]
   blogComments BlogComment[]
   messagesSent     Message[] @relation("MessagesSent")
   messagesReceived Message[] @relation("MessagesReceived")
+
+  @@index([mobileNumber])
 }
 
 model Profile {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @unique @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio       String?
-  avatarUrl String?
-  phone     String?
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String      @unique @db.ObjectId
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partnerType     PartnerType @default(COMPANY)
   
-  // Planner specific business details
-  companyName String?
-  gstNumber   String?
-  panNumber   String?
-  isVerified  Boolean  @default(false)
+  // 1. Basic Information
+  displayName     String?
+  bio             String?
+  avatarUrl       String?
+  coverBannerUrl  String?
+  phone           String?
+  whatsappNumber  String?
+  email           String?
+  city            String?
+  country         String?
+  
+  // 2. Travel Expertise
+  specializations String[]
+  languages       String[]
+  travelStyles    String[]
+  groupSizes      String[]
+  yearsExperience Int?        @default(1)
+  
+  // 3. Operating Locations
+  countriesServed String[]
+  operatingRegions String[]
+  popularDestinations String[]
+  
+  // 4. Company / Freelancer Details
+  companyName     String?
+  registrationNumber String? // CIN/LLPIN/EIN
+  gstNumber       String?
+  panNumber       String?
+  companyWebsite  String?
+  officeAddress   String?
+  numberOfEmployees String?
+  establishedYear Int?
+  
+  occupation      String?     // Freelancer specific
+  portfolioWebsite String?    // Freelancer specific
+  govtIdType      String?     // Freelancer specific
+  govtIdNumber    String?     // Freelancer specific
+  
+  // 5. Packages & Services (Toggles)
+  serviceFlights           Boolean @default(true)
+  serviceHotels            Boolean @default(true)
+  serviceMeals             Boolean @default(true)
+  serviceLocalTransport    Boolean @default(true)
+  serviceVisaAssistance    Boolean @default(false)
+  serviceTravelInsurance   Boolean @default(false)
+  serviceTourGuide         Boolean @default(true)
+  serviceCustomizedItinerary Boolean @default(true)
+  
+  // 6. Availability
+  workingDays     String[]    // ["Mon", "Tue", "Wed", "Thu", "Fri"]
+  workingHoursStart String?   @default("09:00")
+  workingHoursEnd   String?   @default("18:00")
+  responseTimeSla String?     @default("< 15 mins")
+  isTakingBookings Boolean    @default(true)
+  
+  // 7. Banking & Payments
+  bankAccountName String?
+  bankAccountNumber String?
+  bankName        String?
+  ifscOrSwiftCode String?
+  upiOrPaypalId   String?
+  preferredCurrency String?   @default("INR")
+  acceptedPaymentMethods String[]
+  paymentTerms    String?
+  
+  // 8. Social Links
+  socialWebsite   String?
+  socialInstagram String?
+  socialFacebook  String?
+  socialYouTube   String?
+  socialLinkedIn  String?
+  socialTwitter   String?
+  socialWhatsApp  String?
+  
+  // 9. Preferences
+  acceptDirectBookings Boolean @default(true)
+  notifyEmail          Boolean @default(true)
+  notifySms            Boolean @default(true)
+  notifyWhatsApp       Boolean @default(true)
+  autoResponderMessage String?
+  
+  // 10. Verification Vault Status
+  isVerified           Boolean @default(false)
+  verificationProgress String  @default("PENDING") // PENDING, UNDER_REVIEW, VERIFIED, REJECTED
+  rejectionReason      String?
+  
+  // System Calculated Performance Metrics (Read-Only)
+  partnerLevel         String  @default("Silver Organizer")
+  averageRating        Float   @default(4.9)
+  responseRate         Int     @default(98)
+  tripsCompleted       Int     @default(42)
+  happyTravelers       Int     @default(850)
+  repeatCustomersRate  Float   @default(38.5)
+  cancellationRate     Float   @default(0.5)
+  totalReviewsCount    Int     @default(36)
+  yearsOnBeacon        Int     @default(1)
+  
+  // Verification Documents (Private)
+  verificationDocuments VerificationDocument[]
 }
+
+model VerificationDocument {
+  id             String               @id @default(auto()) @map("_id") @db.ObjectId
+  profileId      String               @db.ObjectId
+  profile        Profile              @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  documentType   String               // Govt ID, PAN, GST, Business Registration, Tourism License, Selfie
+  documentName   String
+  fileUrl        String
+  fileSizeBytes  Int?
+  mimeType       String?
+  status         VerificationDocStatus @default(PENDING)
+  rejectionNotes String?
+  uploadedAt     DateTime             @default(now())
+  verifiedAt     DateTime?
+}
+
 
 model Package {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -72,7 +197,8 @@ model Package {
   title       String
   description String
   destination String
-  duration    Int      // in days
+  days        Int
+  nights      Int
   basePrice   Float
   discountedPrice Float?
   
@@ -108,13 +234,18 @@ model PackageImage {
 }
 
 model ItineraryDay {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  packageId   String   @db.ObjectId
-  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
-  dayNumber   Int
-  title       String
-  description String
-  activities  String[]
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  packageId    String   @db.ObjectId
+  package      Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  dayNumber    Int
+  title        String
+  description  String
+  activities   String[]
+  meals        String[]
+  hotelName    String?
+  hotelAddress String?
+  latitude     Float?
+  longitude    Float?
 }
 
 enum BookingStatus {

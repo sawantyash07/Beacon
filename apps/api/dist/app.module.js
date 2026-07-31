@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const prisma_module_1 = require("./prisma/prisma.module");
@@ -22,12 +23,28 @@ const blogs_module_1 = require("./blogs/blogs.module");
 const messages_module_1 = require("./messages/messages.module");
 const newsletter_module_1 = require("./newsletter/newsletter.module");
 const stats_module_1 = require("./stats/stats.module");
+const organizer_profile_module_1 = require("./organizer-profile/organizer-profile.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, users_module_1.UsersModule, auth_module_1.AuthModule, packages_module_1.PackagesModule, bookings_module_1.BookingsModule, destinations_module_1.DestinationsModule, reviews_module_1.ReviewsModule, wishlist_module_1.WishlistModule, blogs_module_1.BlogsModule, messages_module_1.MessagesModule, newsletter_module_1.NewsletterModule, stats_module_1.StatsModule],
+        imports: [
+            config_1.ConfigModule.forRoot({ isGlobal: true }),
+            prisma_module_1.PrismaModule,
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
+            packages_module_1.PackagesModule,
+            bookings_module_1.BookingsModule,
+            destinations_module_1.DestinationsModule,
+            reviews_module_1.ReviewsModule,
+            wishlist_module_1.WishlistModule,
+            blogs_module_1.BlogsModule,
+            messages_module_1.MessagesModule,
+            newsletter_module_1.NewsletterModule,
+            stats_module_1.StatsModule,
+            organizer_profile_module_1.OrganizerProfileModule,
+        ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

@@ -3,15 +3,15 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { motion } from 'framer-motion'
-import { Mail, Lock, Compass, AlertCircle, Loader2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Mail, Lock, Compass, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useAuth } from '@/context/AuthContext'
 import { toast } from 'sonner'
 
 const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
+  identifier: z.string().min(1, 'Email or Mobile Number is required'),
   password: z.string().min(1, 'Password is required'),
   remember: z.boolean().optional(),
 })
@@ -24,6 +24,8 @@ export default function LoginPage() {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false)
   const { login, user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -31,18 +33,21 @@ export default function LoginPage() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
+    if (user && !showSuccessOverlay) {
       navigate(from, { replace: true })
     }
-  }, [user, navigate, from])
+  }, [user, navigate, from, showSuccessOverlay])
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
     setError('')
     try {
-      await login({ email: data.email, password: data.password })
+      await login({ email: data.identifier, password: data.password })
+      setShowSuccessOverlay(true)
       toast.success('Welcome back!')
-      navigate(from, { replace: true })
+      setTimeout(() => {
+        navigate(from, { replace: true })
+      }, 2000)
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Login failed. Please try again.'
       setError(msg)
@@ -99,19 +104,24 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input
-              label="Email"
-              type="email"
-              placeholder="you@example.com"
-              icon={<Mail className="w-4 h-4" />}
-              error={errors.email?.message}
-              {...register('email')}
+              label="Email or Mobile Number"
+              type="text"
+              placeholder="alex@example.com or +1234567890"
+              icon={<Mail className="w-4 h-4 text-cyan" />}
+              error={errors.identifier?.message}
+              {...register('identifier')}
             />
             <Input
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
-              icon={<Lock className="w-4 h-4" />}
+              icon={<Lock className="w-4 h-4 text-cyan" />}
               error={errors.password?.message}
+              endElement={
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-white/60 hover:text-white focus:outline-none">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              }
               {...register('password')}
             />
 
@@ -155,6 +165,84 @@ export default function LoginPage() {
           </p>
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {showSuccessOverlay && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="fixed inset-0 z-[9999] bg-ocean-gradient flex flex-col items-center justify-center p-4 select-none pointer-events-auto cursor-wait"
+          >
+            {/* Ambient background waves */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-[150vw] h-[150vw] sm:w-[80vw] sm:h-[80vw] rounded-[42%] bg-cyan/5 border border-cyan/10"
+                  style={{ left: '-25%', top: '35%' }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 12 + i * 4, repeat: Infinity, ease: 'linear' }}
+                />
+              ))}
+            </div>
+
+            {/* Branded loading graphic & messages */}
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.15, duration: 0.5, ease: 'easeOut' }}
+                className="mb-8 relative"
+              >
+                <motion.div
+                  className="relative p-6 rounded-full bg-surface-dark/40 border border-cyan/20 glow-cyan-sm"
+                  animate={{
+                    boxShadow: [
+                      '0 0 15px rgba(6, 182, 212, 0.2)',
+                      '0 0 30px rgba(6, 182, 212, 0.5)',
+                      '0 0 15px rgba(6, 182, 212, 0.2)'
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                  >
+                    <Compass className="w-16 h-16 text-cyan" />
+                  </motion.div>
+                </motion.div>
+                
+                <motion.div
+                  className="absolute -inset-1 rounded-full border border-cyan/30"
+                  animate={{ scale: [1, 1.25, 1], opacity: [0.8, 0, 0.8] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </motion.div>
+
+              <motion.h2
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+                className="text-2xl font-bold text-white tracking-wide mb-2"
+              >
+                Signing you in
+              </motion.h2>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.45, duration: 0.4 }}
+                className="text-cyan/70 text-sm font-medium tracking-wider"
+              >
+                Preparing your experience...
+              </motion.p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

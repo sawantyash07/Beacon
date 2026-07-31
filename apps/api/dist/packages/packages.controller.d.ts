@@ -9,7 +9,8 @@ export declare class PackagesController {
         updatedAt: Date;
         title: string;
         description: string;
-        duration: number;
+        days: number;
+        nights: number;
         basePrice: number;
         discountedPrice: number | null;
         category: string;
@@ -28,7 +29,8 @@ export declare class PackagesController {
         updatedAt: Date;
         title: string;
         description: string;
-        duration: number;
+        days: number;
+        nights: number;
         basePrice: number;
         discountedPrice: number | null;
         category: string;
@@ -47,7 +49,8 @@ export declare class PackagesController {
         updatedAt: Date;
         title: string;
         description: string;
-        duration: number;
+        days: number;
+        nights: number;
         basePrice: number;
         discountedPrice: number | null;
         category: string;
@@ -66,7 +69,8 @@ export declare class PackagesController {
         updatedAt: Date;
         title: string;
         description: string;
-        duration: number;
+        days: number;
+        nights: number;
         basePrice: number;
         discountedPrice: number | null;
         category: string;
@@ -85,7 +89,8 @@ export declare class PackagesController {
         updatedAt: Date;
         title: string;
         description: string;
-        duration: number;
+        days: number;
+        nights: number;
         basePrice: number;
         discountedPrice: number | null;
         category: string;

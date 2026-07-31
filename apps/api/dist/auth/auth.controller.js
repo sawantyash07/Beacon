@@ -33,21 +33,25 @@ let AuthController = class AuthController {
         });
         return { message: 'Logged in successfully', user };
     }
-    async register(registerDto, res) {
-        const { access_token, user } = await this.authService.register({
+    async register(registerDto) {
+        if (!registerDto.name || !registerDto.email || !registerDto.mobileNumber || !registerDto.password) {
+            throw new common_1.BadRequestException('Full Name, Email address, Mobile number, and Password are required.');
+        }
+        const ageNum = registerDto.age !== undefined && registerDto.age !== '' ? Number(registerDto.age) : undefined;
+        if (ageNum !== undefined && (isNaN(ageNum) || ageNum < 18)) {
+            throw new common_1.BadRequestException('Age must be a valid number and at least 18 years old.');
+        }
+        const result = await this.authService.register({
             email: registerDto.email,
             password: registerDto.password,
             name: registerDto.name,
+            mobileNumber: registerDto.mobileNumber,
+            age: ageNum,
+            gender: registerDto.gender || null,
+            partnerType: registerDto.partnerType || 'COMPANY',
             role: registerDto.role || 'TRAVELER',
         });
-        res.cookie('access_token', access_token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            path: '/',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
-        return { message: 'Registered successfully', user };
+        return { message: 'Account created successfully. Please log in to continue.', user: result.user };
     }
     logout(res) {
         res.clearCookie('access_token');
@@ -71,9 +75,8 @@ __decorate([
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([

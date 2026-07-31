@@ -6,19 +6,26 @@ export declare class AuthService {
     private jwtService;
     constructor(usersService: UsersService, jwtService: JwtService);
     register(data: Prisma.UserCreateInput): Promise<{
-        access_token: string;
+        message: string;
         user: {
             id: string;
             email: string;
             name: string | null;
+            mobileNumber: string | null;
+            age: number | null;
+            gender: string | null;
             role: import("@beacon/database").$Enums.Role;
         };
     }>;
-    validateUser(email: string, pass: string): Promise<{
+    validateUser(identifier: string, pass: string): Promise<{
         name: string | null;
         id: string;
         email: string;
+        mobileNumber: string | null;
+        age: number | null;
+        gender: string | null;
         role: import("@beacon/database").$Enums.Role;
+        partnerType: import("@beacon/database").$Enums.PartnerType;
         createdAt: Date;
         updatedAt: Date;
     } | null>;
@@ -28,6 +35,7 @@ export declare class AuthService {
             id: any;
             email: any;
             name: any;
+            mobileNumber: any;
             role: any;
         };
     }>;

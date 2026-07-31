@@ -17,13 +17,14 @@ const auth_service_1 = require("../auth.service");
 let LocalStrategy = class LocalStrategy extends (0, passport_1.PassportStrategy)(passport_local_1.Strategy) {
     authService;
     constructor(authService) {
-        super({ usernameField: 'email' });
+        super({ usernameField: 'email', passReqToCallback: true });
         this.authService = authService;
     }
-    async validate(email, password) {
-        const user = await this.authService.validateUser(email, password);
+    async validate(req, username, password) {
+        const identifier = req.body?.email || req.body?.emailOrMobile || req.body?.identifier || req.body?.username || req.body?.mobileNumber || username;
+        const user = await this.authService.validateUser(identifier, password);
         if (!user) {
-            throw new common_1.UnauthorizedException('Invalid credentials');
+            throw new common_1.UnauthorizedException('Invalid email, mobile number, or password');
         }
         return user;
     }

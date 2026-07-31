@@ -4,6 +4,8 @@ export declare class UsersService {
     private prisma;
     constructor(prisma: PrismaService);
     findByEmail(email: string): Promise<User | null>;
+    findByIdentifier(identifier: string): Promise<User | null>;
+    findByEmailOrMobile(email: string, mobileNumber?: string): Promise<User | null>;
     findById(id: string): Promise<User | null>;
     createUser(data: Prisma.UserCreateInput): Promise<User>;
 }

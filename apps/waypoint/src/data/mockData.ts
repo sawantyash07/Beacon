@@ -81,25 +81,489 @@ export const inquiries = [
   { id: 'INQ-005', name: 'Eva Martinez', email: 'eva@email.com', destination: 'Bali', status: 'replied', message: 'Wellness retreat package inquiry', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80', timestamp: '2026-07-23T16:30:00' },
 ]
 
-export const packages = [
-  { id: 'PKG-001', title: 'Maldives Paradise Escape', destination: 'Maldives', duration: '7 days', price: 2499, discount: 10, status: 'published', image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&q=80', bookings: 24, travelers: 48, rating: 4.9 },
-  { id: 'PKG-002', title: 'Alpine Adventure', destination: 'Swiss Alps', duration: '5 days', price: 1899, discount: 0, status: 'published', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80', bookings: 18, travelers: 36, rating: 4.7 },
-  { id: 'PKG-003', title: 'Tokyo Cultural Journey', destination: 'Tokyo', duration: '10 days', price: 2199, discount: 15, status: 'draft', image: 'https://images.unsplash.com/photo-1540959733336-eab4deabeeaf?w=400&q=80', bookings: 0, travelers: 0, rating: 0 },
-  { id: 'PKG-004', title: 'Sahara Desert Expedition', destination: 'Morocco', duration: '6 days', price: 1799, discount: 5, status: 'published', image: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=400&q=80', bookings: 12, travelers: 24, rating: 4.8 },
+export let packages = [
+  {
+    id: 'PKG-001',
+    title: 'Maldives Paradise Escape',
+    destination: 'Maldives',
+    duration: '7 days',
+    price: 2499,
+    discount: 10,
+    status: 'published',
+    image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&q=80',
+      'https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=600&q=80',
+      'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&q=80',
+      'https://images.unsplash.com/photo-1512100356356-de1b84283e18?w=600&q=80',
+    ],
+    bookings: 24,
+    travelers: 48,
+    capacity: 50,
+    rating: 4.9,
+    days: 7,
+    nights: 6,
+    description: 'Luxurious 7-day tropical getaway in the Maldives with overwater villas and pristine turquoise lagoons.',
+    inclusions: ['Flights', 'Hotel', 'Breakfast', 'Transfer'],
+    exclusions: ['Personal expenses', 'Visa fees'],
+    itineraryDays: [{ day: 1, title: 'Arrival & Beach Sunset', activities: 'Check in at resort and enjoy evening cocktail at the sunset beach.', meals: ['Dinner'], hotelName: 'Soneva Jani Resort & Villas', hotelAddress: 'Medhufaru Island, Noonu Atoll, Maldives', lat: 5.6881, lng: 73.3082 }]
+  },
+  {
+    id: 'PKG-002',
+    title: 'Alpine Adventure',
+    destination: 'Swiss Alps',
+    duration: '5 days',
+    price: 1899,
+    discount: 0,
+    status: 'published',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',
+      'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=600&q=80',
+      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80',
+      'https://images.unsplash.com/photo-1491555103944-7c647fd857e6?w=600&q=80',
+    ],
+    bookings: 18,
+    travelers: 36,
+    capacity: 40,
+    rating: 4.7,
+    days: 5,
+    nights: 4,
+    description: 'Explore scenic mountain trails and luxury chalet stays in Switzerland.',
+    inclusions: ['Hotel', 'Breakfast', 'Ski Pass'],
+    exclusions: ['Flights', 'Equipment rental'],
+    itineraryDays: [{ day: 1, title: 'Check-in & Mountain View', activities: 'Arrive at Andermatt and relax at chalet.', meals: ['Dinner'], hotelName: 'The Chedi Andermatt', hotelAddress: 'Gotthardstrasse 4, 6490 Andermatt, Switzerland', lat: 46.6348, lng: 8.5947 }]
+  },
+  {
+    id: 'PKG-003',
+    title: 'Tokyo Cultural Journey',
+    destination: 'Tokyo',
+    duration: '10 days',
+    price: 2199,
+    discount: 15,
+    status: 'draft',
+    image: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=600&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=600&q=80',
+      'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=600&q=80',
+      'https://images.unsplash.com/photo-1540959733336-eab4deabeeaf?w=600&q=80',
+      'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?w=600&q=80',
+    ],
+    bookings: 0,
+    travelers: 0,
+    capacity: 30,
+    rating: 0,
+    days: 10,
+    nights: 9,
+    description: 'Immerse in ancient heritage and modern wonders across Tokyo and Kyoto.',
+    inclusions: ['Hotel', 'JR Pass', 'Guided Tours'],
+    exclusions: ['Flights', 'Personal meals'],
+    itineraryDays: [{ day: 1, title: 'Arrive in Tokyo', activities: 'Airport transfer to Shinjuku and welcome dinner.', meals: ['Dinner'], hotelName: 'Park Hyatt Tokyo', hotelAddress: '3-7-1-2 Nishi-Shinjuku, Shinjuku City, Tokyo, Japan', lat: 35.6853, lng: 139.6910 }]
+  },
+  {
+    id: 'PKG-004',
+    title: 'Sahara Desert Expedition',
+    destination: 'Morocco',
+    duration: '6 days',
+    price: 1799,
+    discount: 5,
+    status: 'published',
+    image: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=600&q=80',
+      'https://images.unsplash.com/photo-1489493887464-892be6d1daae?w=600&q=80',
+      'https://images.unsplash.com/photo-1517824806704-9040b037703b?w=600&q=80',
+      'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&q=80',
+    ],
+    bookings: 12,
+    travelers: 24,
+    capacity: 25,
+    rating: 4.8,
+    days: 6,
+    nights: 5,
+    description: 'Camel trekking and luxury desert glamping under the Saharan night sky.',
+    inclusions: ['Hotel', 'Camel Trekking', 'All Meals'],
+    exclusions: ['International flights'],
+    itineraryDays: [{ day: 1, title: 'Marrakech Arrival', activities: 'Explore Jemaa el-Fnaa square.', meals: ['Dinner'], hotelName: 'Royal Mansour Marrakech', hotelAddress: 'Rue Abou Abbas El Sebti, Marrakech, Morocco', lat: 31.6225, lng: -7.9961 }]
+  },
 ]
 
-export const bookings = [
-  { id: 'BKG-7821', traveler: 'John Doe', email: 'john@email.com', package: 'Maldives Paradise Escape', amount: 2499, status: 'confirmed', date: '2026-07-20', paymentStatus: 'paid' },
-  { id: 'BKG-7822', traveler: 'Jane Smith', email: 'jane@email.com', package: 'Alpine Adventure', amount: 1899, status: 'pending', date: '2026-07-22', paymentStatus: 'partial' },
-  { id: 'BKG-7823', traveler: 'Mike Wilson', email: 'mike@email.com', package: 'Sahara Desert Expedition', amount: 1799, status: 'confirmed', date: '2026-07-23', paymentStatus: 'paid' },
-  { id: 'BKG-7824', traveler: 'Lisa Brown', email: 'lisa@email.com', package: 'Maldives Paradise Escape', amount: 2249, status: 'cancelled', date: '2026-07-24', paymentStatus: 'refunded' },
-  { id: 'BKG-7825', traveler: 'Tom Garcia', email: 'tom@email.com', package: 'Alpine Adventure', amount: 1899, status: 'confirmed', date: '2026-07-25', paymentStatus: 'paid' },
+export function deleteMockPackage(id: string) {
+  packages = packages.filter((p) => p.id !== id)
+}
+
+export function updateMockPackage(id: string, updatedData: any) {
+  const index = packages.findIndex((p) => p.id === id)
+  if (index !== -1) {
+    packages[index] = { ...packages[index], ...updatedData }
+  }
+}
+
+export function addMockPackage(newPkg: any) {
+  const newId = `PKG-00${packages.length + 1}`
+  const created = {
+    id: newId,
+    bookings: 0,
+    travelers: 0,
+    capacity: 20,
+    rating: 5.0,
+    ...newPkg
+  }
+  packages.unshift(created)
+  return created
+}
+
+export function duplicateMockPackage(id: string) {
+  const original = packages.find((p) => p.id === id)
+  if (!original) return null
+
+  const newId = `PKG-00${packages.length + 1}`
+  const duplicated = {
+    ...JSON.parse(JSON.stringify(original)),
+    id: newId,
+    title: `${original.title} (Copy)`,
+  }
+  packages.unshift(duplicated)
+  return duplicated
+}
+
+export let bookings = [
+  {
+    id: 'BKG-7821',
+    packageId: 'PKG-001',
+    package: 'Maldives Paradise Escape',
+    packageImage: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&q=80',
+    destination: 'Maldives',
+    traveler: 'John Doe',
+    email: 'john@email.com',
+    phone: '+1 (555) 234-5678',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80',
+    travelersCount: 2,
+    travelDate: '2026-08-15',
+    bookingDate: '2026-07-20',
+    amount: 2499,
+    amountPaid: 2499,
+    remainingBalance: 0,
+    status: 'confirmed',
+    paymentStatus: 'paid',
+    assignedAgent: 'Sarah Chen'
+  },
+  {
+    id: 'BKG-7822',
+    packageId: 'PKG-002',
+    package: 'Alpine Adventure',
+    packageImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80',
+    destination: 'Swiss Alps',
+    traveler: 'Jane Smith',
+    email: 'jane@email.com',
+    phone: '+1 (555) 345-6789',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&q=80',
+    travelersCount: 4,
+    travelDate: '2026-12-10',
+    bookingDate: '2026-07-22',
+    amount: 1899,
+    amountPaid: 1000,
+    remainingBalance: 899,
+    status: 'pending',
+    paymentStatus: 'partial',
+    assignedAgent: 'Marcus Rivera'
+  },
+  {
+    id: 'BKG-7823',
+    packageId: 'PKG-004',
+    package: 'Sahara Desert Expedition',
+    packageImage: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=400&q=80',
+    destination: 'Morocco',
+    traveler: 'Mike Wilson',
+    email: 'mike@email.com',
+    phone: '+1 (555) 456-7890',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&q=80',
+    travelersCount: 2,
+    travelDate: '2026-09-05',
+    bookingDate: '2026-07-23',
+    amount: 1799,
+    amountPaid: 1799,
+    remainingBalance: 0,
+    status: 'confirmed',
+    paymentStatus: 'paid',
+    assignedAgent: 'Sarah Chen'
+  },
+  {
+    id: 'BKG-7824',
+    packageId: 'PKG-001',
+    package: 'Maldives Paradise Escape',
+    packageImage: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&q=80',
+    destination: 'Maldives',
+    traveler: 'Lisa Brown',
+    email: 'lisa@email.com',
+    phone: '+1 (555) 567-8901',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&q=80',
+    travelersCount: 2,
+    travelDate: '2026-08-20',
+    bookingDate: '2026-07-24',
+    amount: 2249,
+    amountPaid: 0,
+    remainingBalance: 0,
+    status: 'cancelled',
+    paymentStatus: 'refunded',
+    assignedAgent: 'Emily Watson'
+  },
+  {
+    id: 'BKG-7825',
+    packageId: 'PKG-002',
+    package: 'Alpine Adventure',
+    packageImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80',
+    destination: 'Swiss Alps',
+    traveler: 'Tom Garcia',
+    email: 'tom@email.com',
+    phone: '+1 (555) 678-9012',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&q=80',
+    travelersCount: 2,
+    travelDate: '2026-11-15',
+    bookingDate: '2026-07-25',
+    amount: 1899,
+    amountPaid: 1899,
+    remainingBalance: 0,
+    status: 'confirmed',
+    paymentStatus: 'paid',
+    assignedAgent: 'Marcus Rivera'
+  },
+  {
+    id: 'BKG-7826',
+    packageId: 'PKG-003',
+    package: 'Tokyo Cultural Journey',
+    packageImage: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=400&q=80',
+    destination: 'Tokyo',
+    traveler: 'Sarah Connor',
+    email: 'sarah.c@email.com',
+    phone: '+1 (555) 789-0123',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80',
+    travelersCount: 3,
+    travelDate: '2026-10-01',
+    bookingDate: '2026-07-26',
+    amount: 2199,
+    amountPaid: 2199,
+    remainingBalance: 0,
+    status: 'confirmed',
+    paymentStatus: 'paid',
+    assignedAgent: 'Emily Watson'
+  },
+  {
+    id: 'BKG-7827',
+    packageId: 'PKG-001',
+    package: 'Maldives Paradise Escape',
+    packageImage: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=400&q=80',
+    destination: 'Maldives',
+    traveler: 'Robert Chen',
+    email: 'robert@email.com',
+    phone: '+1 (555) 890-1234',
+    avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=80&q=80',
+    travelersCount: 2,
+    travelDate: '2026-09-12',
+    bookingDate: '2026-07-27',
+    amount: 2499,
+    amountPaid: 1250,
+    remainingBalance: 1249,
+    status: 'pending',
+    paymentStatus: 'partial',
+    assignedAgent: 'Sarah Chen'
+  },
+  {
+    id: 'BKG-7828',
+    packageId: 'PKG-003',
+    package: 'Tokyo Cultural Journey',
+    packageImage: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=400&q=80',
+    destination: 'Tokyo',
+    traveler: 'Emily Davis',
+    email: 'emily.d@email.com',
+    phone: '+1 (555) 901-2345',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&q=80',
+    travelersCount: 2,
+    travelDate: '2026-10-15',
+    bookingDate: '2026-07-27',
+    amount: 2199,
+    amountPaid: 0,
+    remainingBalance: 2199,
+    status: 'pending',
+    paymentStatus: 'pending',
+    assignedAgent: 'Emily Watson'
+  },
+  {
+    id: 'BKG-7829',
+    packageId: 'PKG-004',
+    package: 'Sahara Desert Expedition',
+    packageImage: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=400&q=80',
+    destination: 'Morocco',
+    traveler: 'Alex Turner',
+    email: 'alex@email.com',
+    phone: '+1 (555) 012-3456',
+    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&q=80',
+    travelersCount: 4,
+    travelDate: '2026-10-20',
+    bookingDate: '2026-07-28',
+    amount: 1799,
+    amountPaid: 1799,
+    remainingBalance: 0,
+    status: 'confirmed',
+    paymentStatus: 'paid',
+    assignedAgent: 'Marcus Rivera'
+  }
 ]
 
-export const tripGroups = [
-  { id: 'GRP-001', name: 'Maldives Honeymoon Group', members: 8, departure: '2026-08-15', unread: 3, image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=200&q=80' },
-  { id: 'GRP-002', name: 'Corporate Tokyo Retreat', members: 15, departure: '2026-09-01', unread: 0, image: 'https://images.unsplash.com/photo-1540959733336-eab4deabeeaf?w=200&q=80' },
-  { id: 'GRP-003', name: 'Patagonia Adventure Squad', members: 6, departure: '2026-10-10', unread: 12, image: 'https://images.unsplash.com/photo-1516738901171-8eb4ec13bd3a?w=200&q=80' },
+export function updateMockBookingStatus(id: string, newStatus: string, newPaymentStatus?: string) {
+  const b = bookings.find((item) => item.id === id)
+  if (b) {
+    b.status = newStatus
+    if (newPaymentStatus) b.paymentStatus = newPaymentStatus
+    if (newStatus === 'confirmed') {
+      addBookingToTripGroup(b)
+    }
+  }
+}
+
+export function addBookingToTripGroup(booking: any) {
+  let group = tripGroups.find(
+    (g) =>
+      g.packageId === booking.packageId ||
+      g.packageName?.toLowerCase() === booking.package?.toLowerCase() ||
+      g.name.toLowerCase().includes(booking.package?.toLowerCase() || '')
+  )
+
+  if (group) {
+    if (!group.bookingsList) group.bookingsList = []
+    const exists = group.bookingsList.some((b: any) => b.id === booking.id)
+    if (!exists) {
+      group.bookingsList.push(booking)
+      group.members += 1
+      if ((group as any).travelersCount !== undefined) {
+        ;(group as any).travelersCount += booking.travelersCount || 1
+      }
+    }
+  } else {
+    const newGroupId = `GRP-00${tripGroups.length + 1}`
+    const newGroup = {
+      id: newGroupId,
+      name: `${booking.package} Group`,
+      packageName: booking.package,
+      packageId: booking.packageId || 'PKG-001',
+      departure: booking.travelDate || '2026-09-01',
+      members: 1,
+      travelersCount: booking.travelersCount || 1,
+      unread: 0,
+      image: booking.packageImage || 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=200&q=80',
+      bookingsList: [booking],
+    }
+    tripGroups.unshift(newGroup)
+  }
+}
+
+export function confirmMockBooking(id: string) {
+  const b = bookings.find((item) => item.id === id)
+  if (b) {
+    b.status = 'confirmed'
+    if (b.paymentStatus === 'pending') b.paymentStatus = 'paid'
+    addBookingToTripGroup(b)
+    return b
+  }
+  return null
+}
+
+export let tripGroups = [
+  {
+    id: 'GRP-001',
+    name: 'Maldives Paradise Escape Group',
+    packageName: 'Maldives Paradise Escape',
+    packageId: 'PKG-001',
+    departure: '2026-08-15',
+    members: 2,
+    travelersCount: 2,
+    unread: 3,
+    image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=200&q=80',
+    bookingsList: [
+      {
+        id: 'BKG-7821',
+        traveler: 'John Doe',
+        email: 'john@email.com',
+        phone: '+1 (555) 234-5678',
+        package: 'Maldives Paradise Escape',
+        packageId: 'PKG-001',
+        travelDate: '2026-08-15',
+        travelersCount: 2,
+        paymentStatus: 'paid',
+        status: 'confirmed',
+        amountPaid: 2499,
+        remainingBalance: 0,
+      },
+    ],
+  },
+  {
+    id: 'GRP-002',
+    name: 'Alpine Adventure Group',
+    packageName: 'Alpine Adventure',
+    packageId: 'PKG-002',
+    departure: '2026-11-15',
+    members: 2,
+    travelersCount: 2,
+    unread: 0,
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&q=80',
+    bookingsList: [
+      {
+        id: 'BKG-7825',
+        traveler: 'Tom Garcia',
+        email: 'tom@email.com',
+        phone: '+1 (555) 678-9012',
+        package: 'Alpine Adventure',
+        packageId: 'PKG-002',
+        travelDate: '2026-11-15',
+        travelersCount: 2,
+        paymentStatus: 'paid',
+        status: 'confirmed',
+        amountPaid: 1899,
+        remainingBalance: 0,
+      },
+    ],
+  },
+  {
+    id: 'GRP-003',
+    name: 'Sahara Desert Expedition Group',
+    packageName: 'Sahara Desert Expedition',
+    packageId: 'PKG-004',
+    departure: '2026-09-05',
+    members: 6,
+    travelersCount: 6,
+    unread: 12,
+    image: 'https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=200&q=80',
+    bookingsList: [
+      {
+        id: 'BKG-7823',
+        traveler: 'Mike Wilson',
+        email: 'mike@email.com',
+        phone: '+1 (555) 456-7890',
+        package: 'Sahara Desert Expedition',
+        packageId: 'PKG-004',
+        travelDate: '2026-09-05',
+        travelersCount: 2,
+        paymentStatus: 'paid',
+        status: 'confirmed',
+        amountPaid: 1799,
+        remainingBalance: 0,
+      },
+      {
+        id: 'BKG-7829',
+        traveler: 'Alex Turner',
+        email: 'alex@email.com',
+        phone: '+1 (555) 012-3456',
+        package: 'Sahara Desert Expedition',
+        packageId: 'PKG-004',
+        travelDate: '2026-10-20',
+        travelersCount: 4,
+        paymentStatus: 'paid',
+        status: 'confirmed',
+        amountPaid: 1799,
+        remainingBalance: 0,
+      },
+    ],
+  },
 ]
 
 export const conversations = [
@@ -165,14 +629,15 @@ export const genderDistribution = [
 
 export const navItems = [
   { label: 'Overview', path: '/dashboard', icon: 'LayoutDashboard' },
-  { label: 'Inquiries', path: '/dashboard/inquiries', icon: 'MessageSquare' },
+  { label: 'Analytics', path: '/dashboard/analytics', icon: 'BarChart3' },
+  { label: 'Organizer Profile', path: '/dashboard/organizer-profile', icon: 'UserCheck' },
   { label: 'Packages', path: '/dashboard/packages', icon: 'Package' },
   { label: 'Bookings', path: '/dashboard/bookings', icon: 'Calendar' },
   { label: 'Trip Groups', path: '/dashboard/trip-groups', icon: 'Users' },
+  { label: 'Inquiries', path: '/dashboard/inquiries', icon: 'MessageSquare' },
   { label: 'Social Media', path: '/dashboard/social', icon: 'Share2' },
   { label: 'Messages', path: '/dashboard/messages', icon: 'Mail' },
   { label: 'Payments', path: '/dashboard/payments', icon: 'CreditCard' },
-  { label: 'Analytics', path: '/dashboard/analytics', icon: 'BarChart3' },
 ]
 
 export const blogs = [

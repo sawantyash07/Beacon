@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
@@ -13,9 +14,25 @@ import { BlogsModule } from './blogs/blogs.module';
 import { MessagesModule } from './messages/messages.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { StatsModule } from './stats/stats.module';
+import { OrganizerProfileModule } from './organizer-profile/organizer-profile.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, PackagesModule, BookingsModule, DestinationsModule, ReviewsModule, WishlistModule, BlogsModule, MessagesModule, NewsletterModule, StatsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    PackagesModule,
+    BookingsModule,
+    DestinationsModule,
+    ReviewsModule,
+    WishlistModule,
+    BlogsModule,
+    MessagesModule,
+    NewsletterModule,
+    StatsModule,
+    OrganizerProfileModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

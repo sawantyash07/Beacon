@@ -64,7 +64,7 @@ export function PopularPackages() {
               <div className="p-5">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1 text-muted text-xs font-medium">
-                    <Clock className="w-3.5 h-3.5" /> {pkg.duration}
+                    <Clock className="w-3.5 h-3.5" /> {pkg.duration || `${pkg.days} days / ${pkg.nights} nights`}
                   </div>
                   {pkg.rating > 0 && (
                     <div className="flex items-center gap-1 text-amber-400 text-xs font-bold">

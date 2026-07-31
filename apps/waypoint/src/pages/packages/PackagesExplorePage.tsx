@@ -89,7 +89,7 @@ export default function PackagesExplorePage() {
                   <div className="p-5 flex flex-col flex-1">
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-1 text-muted text-xs font-medium">
-                        <Clock className="w-3.5 h-3.5" /> {pkg.duration}
+                        <Clock className="w-3.5 h-3.5" /> {pkg.duration || `${pkg.days} days / ${pkg.nights} nights`}
                       </div>
                       <div className="flex items-center gap-1 text-amber-400 text-xs font-bold">
                         <Star className="w-3.5 h-3.5 fill-amber-400" /> {pkg.rating || 4.8}

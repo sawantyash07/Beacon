@@ -171,7 +171,7 @@ export default function BookingPage() {
                 </div>
                 <div>
                   <h4 className="font-bold text-navy line-clamp-2 text-sm">{pkg.title}</h4>
-                  <p className="text-xs text-muted mt-1">{pkg.duration} • {pkg.destination}</p>
+                  <p className="text-xs text-muted mt-1">{pkg.duration || `${pkg.days} days / ${pkg.nights} nights`} • {pkg.destination}</p>
                 </div>
               </div>
 

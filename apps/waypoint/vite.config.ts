@@ -10,4 +10,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rolldownOptions: {
+      external: ['canvg', 'dompurify'],
+    },
+    rollupOptions: {
+      external: ['canvg', 'dompurify'],
+    },
+  },
 })

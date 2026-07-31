@@ -105,7 +105,7 @@ export default function PackageDetailPage() {
                   <MapPin className="w-4 h-4 mr-2" /> {pkg.destination}
                 </span>
                 <span className="bg-navy/10 text-navy text-sm font-bold px-4 py-2 rounded-full flex items-center">
-                  <Clock className="w-4 h-4 mr-2" /> {pkg.duration}
+                  <Clock className="w-4 h-4 mr-2" /> {pkg.duration || `${pkg.days} days / ${pkg.nights} nights`}
                 </span>
                 {pkg.rating && (
                   <span className="bg-amber-400/20 text-amber-600 text-sm font-bold px-4 py-2 rounded-full flex items-center">
@@ -175,7 +175,7 @@ export default function PackageDetailPage() {
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-muted">
                   <span>Duration</span>
-                  <span className="font-semibold text-navy">{pkg.duration}</span>
+                  <span className="font-semibold text-navy">{pkg.duration || `${pkg.days} days / ${pkg.nights} nights`}</span>
                 </div>
                 <div className="flex justify-between text-muted">
                   <span>Max Travelers</span>

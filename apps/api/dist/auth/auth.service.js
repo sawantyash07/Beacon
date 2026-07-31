@@ -55,24 +55,34 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
     }
     async register(data) {
-        const existingUser = await this.usersService.findByEmail(data.email);
+        if (data.age != null && data.age < 18) {
+            throw new common_1.BadRequestException('You must be at least 18 years old to register.');
+        }
+        const existingUser = await this.usersService.findByEmailOrMobile(data.email, data.mobileNumber || undefined);
         if (existingUser) {
-            throw new common_1.ConflictException('User with this email already exists');
+            if (existingUser.email.toLowerCase() === data.email.trim().toLowerCase()) {
+                throw new common_1.ConflictException('User with this email already exists');
+            }
+            throw new common_1.ConflictException('User with this mobile number already exists');
         }
         const user = await this.usersService.createUser(data);
-        const payload = { sub: user.id, email: user.email, role: user.role };
         return {
-            access_token: await this.jwtService.signAsync(payload),
+            message: 'Account created successfully. Please log in to continue.',
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name,
+                mobileNumber: user.mobileNumber,
+                age: user.age,
+                gender: user.gender,
                 role: user.role,
             }
         };
     }
-    async validateUser(email, pass) {
-        const user = await this.usersService.findByEmail(email);
+    async validateUser(identifier, pass) {
+        if (!identifier || !pass)
+            return null;
+        const user = await this.usersService.findByIdentifier(identifier);
         if (!user || !user.password) {
             return null;
         }
@@ -91,6 +101,7 @@ let AuthService = class AuthService {
                 id: user.id,
                 email: user.email,
                 name: user.name,
+                mobileNumber: user.mobileNumber,
                 role: user.role,
             }
         };

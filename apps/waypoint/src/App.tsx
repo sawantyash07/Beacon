@@ -28,12 +28,14 @@ const OverviewPage = lazy(() => import('@/pages/dashboard/OverviewPage'))
 const InquiriesPage = lazy(() => import('@/pages/dashboard/InquiriesPage'))
 const PackagesPage = lazy(() => import('@/pages/dashboard/PackagesPage'))
 const PackageCreatePage = lazy(() => import('@/pages/dashboard/PackageCreatePage'))
+const PackageEditPage = lazy(() => import('@/pages/dashboard/PackageEditPage'))
 const BookingsPage = lazy(() => import('@/pages/dashboard/BookingsPage'))
 const TripGroupsPage = lazy(() => import('@/pages/dashboard/TripGroupsPage'))
 const SocialMediaPage = lazy(() => import('@/pages/dashboard/SocialMediaPage'))
 const MessagesPage = lazy(() => import('@/pages/dashboard/MessagesPage'))
 const PaymentsPage = lazy(() => import('@/pages/dashboard/PaymentsPage'))
 const AnalyticsPage = lazy(() => import('@/pages/dashboard/AnalyticsPage'))
+const OrganizerProfilePage = lazy(() => import('@/pages/dashboard/OrganizerProfilePage'))
 
 function PageLoader() {
   return (
@@ -97,12 +99,14 @@ function AnimatedRoutes() {
           <Route path="inquiries" element={<InquiriesPage />} />
           <Route path="packages" element={<PackagesPage />} />
           <Route path="packages/create" element={<PackageCreatePage />} />
+          <Route path="packages/edit/:id" element={<PackageEditPage />} />
           <Route path="bookings" element={<BookingsPage />} />
           <Route path="trip-groups" element={<TripGroupsPage />} />
           <Route path="social" element={<SocialMediaPage />} />
           <Route path="messages" element={<MessagesPage />} />
           <Route path="payments" element={<PaymentsPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
+          <Route path="organizer-profile" element={<OrganizerProfilePage />} />
         </Route>
       </Routes>
     </AnimatePresence>
