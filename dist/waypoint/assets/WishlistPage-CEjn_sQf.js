@@ -1,0 +1,1 @@
+import{t as e}from"./jsx-runtime-DiK4U9sA.js";var t=e();function n(){return(0,t.jsx)(`div`,{className:`min-h-screen pt-32 pb-20`,children:(0,t.jsx)(`div`,{className:`max-w-7xl mx-auto px-4`,children:(0,t.jsx)(`h1`,{className:`text-4xl font-bold text-navy`,children:`My Wishlist`})})})}export{n as default};

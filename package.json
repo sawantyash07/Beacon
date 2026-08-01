@@ -1,0 +1,13 @@
+{
+  "name": "beacon-travel-companion",
+  "version": "1.0.0",
+  "description": "Beacon - Premium AI Travel Companion UI/UX",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
