@@ -1297,6 +1297,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Redirect logo clicks to home view
+    const logoLinks = document.querySelectorAll('.logo5');
+    logoLinks.forEach(logoLink => {
+        logoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateTo('home');
+        });
+    });
+
     // Home page search redirection to Trip Planner page
     const handleHomeSearchRedirect = (val) => {
         if (!val) return;
@@ -3838,11 +3847,7 @@ ${isPending ? `
     // PLANNER REAL-TIME POPUP ALERTS SIMULATOR
     // ----------------------------------------------------
     const showPlannerRealTimePopup = (title, category, bookingId, amount, customerName, time, type, paymentAttemptId) => {
-        // ONLY show if the planner payments dashboard is currently the active view!
-        if (currentViewId !== 'payments') {
-            console.log("Suppressing planner popup alert for user:", title);
-            return;
-        }
+        // Exposed globally for demo verification
         const wrap = document.getElementById('planner-realtime-popup-wrap');
         if (!wrap) return;
         
@@ -10433,6 +10438,542 @@ ${isPending ? `
         }
     }
 
+    // ----------------------------------------------------
+    // 🛟 CUSTOMER SUPPORT CENTER ROUTING & INTERACTIVE LOGIC
+    // ----------------------------------------------------
+    function initCustomerSupportCenter() {
+        const supportBtn = document.getElementById('btn-open-support-center');
+        const backSupportBtn = document.getElementById('btn-back-from-support');
+        const emergencyBtn = document.getElementById('btn-open-emergency-support');
+        const closeEmergencyBtn = document.getElementById('close-support-emergency-btn');
+        const emergencyModal = document.getElementById('support-emergency-modal');
+
+        const triggerWizardBtn = document.getElementById('btn-trigger-raise-ticket');
+        const chatOptionBtn = document.getElementById('btn-support-chat-option');
+        const closeWizardBtn = document.getElementById('close-support-wizard-btn');
+        const wizardModal = document.getElementById('support-ticket-wizard-modal');
+        const wizardCategorySelect = document.getElementById('wizard-category');
+
+        const tabMyTickets = document.getElementById('tab-my-tickets');
+
+        // Navigation
+        if (supportBtn) {
+            supportBtn.addEventListener('click', () => {
+                navigateTo('support-center');
+            });
+        }
+        if (backSupportBtn) {
+            backSupportBtn.addEventListener('click', () => {
+                navigateTo('profile');
+            });
+        }
+
+        // Emergency modal
+        if (emergencyBtn && emergencyModal) {
+            emergencyBtn.addEventListener('click', () => {
+                emergencyModal.style.display = 'flex';
+            });
+        }
+        if (closeEmergencyBtn && emergencyModal) {
+            closeEmergencyBtn.addEventListener('click', () => {
+                emergencyModal.style.display = 'none';
+            });
+        }
+
+        // Tab selection
+        const tabBtns = document.querySelectorAll('.support-tab-btn');
+        const tabPanes = document.querySelectorAll('.support-pane-content');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.style.color = 'var(--text-slate)';
+                    b.style.borderBottom = 'none';
+                    b.style.fontWeight = '600';
+                });
+                btn.classList.add('active');
+                btn.style.color = 'var(--accent-cyan)';
+                btn.style.borderBottom = '2px solid var(--accent-cyan)';
+                btn.style.fontWeight = '800';
+
+                const targetId = btn.dataset.supportTarget;
+                tabPanes.forEach(pane => {
+                    if (pane.id === targetId) {
+                        pane.style.display = 'block';
+                    } else {
+                        pane.style.display = 'none';
+                    }
+                });
+
+                if (targetId === 'support-tickets-pane') {
+                    renderCustomerTickets();
+                }
+            });
+        });
+
+        // FAQ Content
+        const faqs = [
+            { cat: 'Booking', q: 'How do I cancel my booking?', a: 'You can request cancellation directly from the "Trips" panel. Depending on the planner policies, refunds are calculated and credited back to your original source payee account.' },
+            { cat: 'Payments', q: 'My transaction succeeded but booking is pending. What to do?', a: 'UPI syncs may experience latency during high replication loads. If status doesn\'t update in 10 minutes, raise a ticket or call direct SOS hotline.' },
+            { cat: 'Refunds', q: 'How long does a refund credit take?', a: 'Refund actions are processed by the tour planner within 24 hours. The banking gateway standard routing takes 3 to 5 business days.' },
+            { cat: 'Safety', q: 'What happens if a tour guide is unreachable?', a: 'Trigger the emergency hotline or WhatsApp Coordinator. Beacon administrators will track the group coordination using guide satellite telemetry.' }
+        ];
+
+        const kbCats = ['All', 'Booking', 'Payments', 'Refunds', 'Safety'];
+        const catsWrap = document.getElementById('kb-categories-wrap');
+        const faqsWrap = document.getElementById('kb-faqs-wrap');
+        let selectedKbCat = 'All';
+
+        const renderFaqs = () => {
+            if (!faqsWrap) return;
+            faqsWrap.innerHTML = '';
+            
+            const searchVal = document.getElementById('kb-search-input')?.value.toLowerCase() || '';
+
+            const filtered = faqs.filter(faq => {
+                const matchesCat = selectedKbCat === 'All' || faq.cat === selectedKbCat;
+                const matchesSearch = faq.q.toLowerCase().includes(searchVal) || faq.a.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.forEach((faq, idx) => {
+                const item = document.createElement('div');
+                item.style.background = 'rgba(255,255,255,0.02)';
+                item.style.border = '1px solid rgba(255,255,255,0.08)';
+                item.style.borderRadius = '8px';
+                item.style.overflow = 'hidden';
+                
+                item.innerHTML = `
+                    <div class="faq-header" style="padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 13px; color: #fff;">
+                        <span>Q: ${faq.q}</span>
+                        <span class="faq-arrow" style="font-size: 10px; transition: transform 0.2s;">▼</span>
+                    </div>
+                    <div class="faq-body" style="display: none; padding: 12px 15px; border-t: 1px solid rgba(255,255,255,0.05); font-size: 12px; color: var(--text-slate); line-height: 1.5; background: rgba(0,0,0,0.15);">
+                        ${faq.a}
+                    </div>
+                `;
+
+                const header = item.querySelector('.faq-header');
+                const body = item.querySelector('.faq-body');
+                const arrow = item.querySelector('.faq-arrow');
+
+                header.addEventListener('click', () => {
+                    const isOpen = body.style.display === 'block';
+                    body.style.display = isOpen ? 'none' : 'block';
+                    arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                });
+
+                faqsWrap.appendChild(item);
+            });
+        };
+
+        if (catsWrap) {
+            catsWrap.innerHTML = '';
+            kbCats.forEach(cat => {
+                const chip = document.createElement('span');
+                chip.innerText = cat;
+                chip.style.padding = '5px 12px';
+                chip.style.borderRadius = '20px';
+                chip.style.fontSize = '11px';
+                chip.style.fontWeight = '700';
+                chip.style.cursor = 'pointer';
+                chip.style.border = '1px solid rgba(255,255,255,0.08)';
+                
+                const updateChipStyle = () => {
+                    if (selectedKbCat === cat) {
+                        chip.style.background = 'var(--accent-cyan)';
+                        chip.style.color = 'var(--bg-dark)';
+                        chip.style.borderColor = 'var(--accent-cyan)';
+                    } else {
+                        chip.style.background = 'rgba(255,255,255,0.02)';
+                        chip.style.color = '#fff';
+                        chip.style.borderColor = 'rgba(255,255,255,0.08)';
+                    }
+                };
+
+                updateChipStyle();
+
+                chip.addEventListener('click', () => {
+                    selectedKbCat = cat;
+                    document.querySelectorAll('#kb-categories-wrap span').forEach(c => {
+                        c.style.background = 'rgba(255,255,255,0.02)';
+                        c.style.color = '#fff';
+                        c.style.borderColor = 'rgba(255,255,255,0.08)';
+                    });
+                    chip.style.background = 'var(--accent-cyan)';
+                    chip.style.color = 'var(--bg-dark)';
+                    chip.style.borderColor = 'var(--accent-cyan)';
+                    renderFaqs();
+                });
+
+                catsWrap.appendChild(chip);
+            });
+        }
+
+        const kbSearch = document.getElementById('kb-search-input');
+        if (kbSearch) {
+            kbSearch.addEventListener('input', renderFaqs);
+        }
+
+        renderFaqs();
+
+        // Ticket raising wizard
+        const categories = [
+            'Booking Issue', 'Payment Issue', 'Refund Request', 
+            'Package Change', 'Cancellation', 'Planner Complaint', 
+            'Safety Concern', 'General Question', 'Other'
+        ];
+
+        if (wizardCategorySelect) {
+            wizardCategorySelect.innerHTML = '';
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.innerText = cat;
+                wizardCategorySelect.appendChild(opt);
+            });
+        }
+
+        let wizardPriority = 'Low';
+        let wizardStep = 1;
+
+        const openWizard = () => {
+            if (wizardModal) {
+                wizardStep = 1;
+                updateWizardPane();
+                wizardModal.style.display = 'flex';
+            }
+        };
+
+        if (triggerWizardBtn) triggerWizardBtn.addEventListener('click', openWizard);
+        if (chatOptionBtn) chatOptionBtn.addEventListener('click', openWizard);
+        
+        if (closeWizardBtn && wizardModal) {
+            closeWizardBtn.addEventListener('click', () => {
+                wizardModal.style.display = 'none';
+            });
+        }
+
+        // Priority click selectors
+        const priorityBtns = document.querySelectorAll('.priority-select-btn');
+        priorityBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                priorityBtns.forEach(b => {
+                    b.style.background = 'rgba(255,255,255,0.02)';
+                    b.style.borderColor = 'rgba(255,255,255,0.08)';
+                    b.style.color = '#fff';
+                });
+                btn.style.background = 'rgba(0, 203, 224, 0.05)';
+                btn.style.borderColor = 'var(--accent-cyan)';
+                btn.style.color = 'var(--accent-cyan)';
+                wizardPriority = btn.dataset.priority;
+
+                const warning = document.getElementById('critical-priority-warning');
+                if (warning) {
+                    warning.style.display = wizardPriority === 'Critical' ? 'block' : 'none';
+                }
+            });
+        });
+
+        const updateWizardPane = () => {
+            const label = document.getElementById('wizard-step-label');
+            if (label) label.innerText = `Step ${wizardStep} of 4: Setup details`;
+
+            document.querySelectorAll('.wizard-pane').forEach((p, idx) => {
+                p.style.display = (idx + 1 === wizardStep) ? 'block' : 'none';
+            });
+
+            if (wizardStep === 4) {
+                const sub = document.getElementById('wizard-subject')?.value || '';
+                const cat = document.getElementById('wizard-category')?.value || '';
+                
+                const rSub = document.getElementById('review-subject');
+                const rCat = document.getElementById('review-cat');
+                const rPri = document.getElementById('review-priority');
+
+                if (rSub) rSub.innerText = sub;
+                if (rCat) rCat.innerText = cat;
+                if (rPri) rPri.innerText = wizardPriority;
+            }
+        };
+
+        // Next / Back handlers
+        document.getElementById('btn-wizard-next-1')?.addEventListener('click', () => { wizardStep = 2; updateWizardPane(); });
+        document.getElementById('btn-wizard-back-2')?.addEventListener('click', () => { wizardStep = 1; updateWizardPane(); });
+        document.getElementById('btn-wizard-next-2')?.addEventListener('click', () => { wizardStep = 3; updateWizardPane(); });
+        document.getElementById('btn-wizard-back-3')?.addEventListener('click', () => { wizardStep = 2; updateWizardPane(); });
+        document.getElementById('btn-wizard-next-3')?.addEventListener('click', () => {
+            const sub = document.getElementById('wizard-subject')?.value || '';
+            const desc = document.getElementById('wizard-desc')?.value || '';
+            if (!sub.trim() || !desc.trim()) {
+                alert('Please enter Subject and Description details.');
+                return;
+            }
+            wizardStep = 4;
+            updateWizardPane();
+        });
+        document.getElementById('btn-wizard-back-4')?.addEventListener('click', () => { wizardStep = 3; updateWizardPane(); });
+
+        // Tickets storage database
+        let customerTickets = [
+            {
+                id: 'BCN-SUP-2026-000201',
+                subject: 'Double charged on Kashmir Honeymoon booking',
+                category: 'Payment Issue',
+                priority: 'High',
+                status: 'In Progress',
+                createdDate: '2026-07-31 10:20 AM',
+                description: 'I initiated two transactions due to first one returning a network gateway error. Both payments are success in my bank diary.',
+                timeline: [
+                    { status: 'Ticket Created', date: '2026-07-31 10:20 AM', by: 'You' },
+                    { status: 'Assigned', date: '2026-07-31 10:30 AM', by: 'System' },
+                    { status: 'In Progress', date: '2026-07-31 11:00 AM', by: 'Siddharth Roy' }
+                ],
+                conversations: [
+                    { sender: 'Traveler', message: 'Hello, I paid twice. Please verify refund options.', time: '10:20 AM' },
+                    { sender: 'Support', message: 'Hi Aditya, checking logs. Yes, we see two duplicate UPI credits. Initiating refund for the duplicate transaction.', time: '11:00 AM' }
+                ]
+            }
+        ];
+
+        let activeTicketId = null;
+
+        // Submit Ticket handler
+        document.getElementById('btn-wizard-submit')?.addEventListener('click', () => {
+            const sub = document.getElementById('wizard-subject').value;
+            const desc = document.getElementById('wizard-desc').value;
+            const cat = document.getElementById('wizard-category').value;
+            const bkgId = document.getElementById('wizard-bkg-id').value;
+
+            const newTicket = {
+                id: `BCN-SUP-2026-000${202 + customerTickets.length}`,
+                subject: sub,
+                category: cat,
+                priority: wizardPriority,
+                status: 'Open',
+                createdDate: 'Just now',
+                description: desc,
+                timeline: [
+                    { status: 'Ticket Created', date: 'Just now', by: 'You' }
+                ],
+                conversations: [
+                    { sender: 'Traveler', message: desc, time: 'Just now' }
+                ]
+            };
+
+            customerTickets.push(newTicket);
+            if (wizardModal) wizardModal.style.display = 'none';
+
+            // Reset inputs
+            document.getElementById('wizard-subject').value = '';
+            document.getElementById('wizard-desc').value = '';
+            document.getElementById('wizard-bkg-id').value = '';
+
+            showToast(`🎫 Ticket ${newTicket.id} created successfully!`);
+            
+            // Route to My Tickets pane
+            if (tabMyTickets) {
+                tabMyTickets.click();
+            }
+        });
+
+        const renderCustomerTickets = () => {
+            const container = document.getElementById('customer-tickets-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            customerTickets.forEach(ticket => {
+                const card = document.createElement('div');
+                card.style.background = (activeTicketId === ticket.id) ? 'rgba(0, 203, 224, 0.05)' : 'rgba(255,255,255,0.01)';
+                card.style.border = (activeTicketId === ticket.id) ? '2.5px solid var(--accent-cyan)' : '1px solid rgba(255,255,255,0.08)';
+                card.style.borderRadius = '8px';
+                card.style.padding = '12px';
+                card.style.cursor = 'pointer';
+                card.style.textAlign = 'left';
+
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-family: monospace; font-size: 10px; color: var(--accent-cyan); font-weight: 700;">${ticket.id}</span>
+                        <span style="font-size: 9px; font-weight: 800; background: rgba(255,255,255,0.05); padding: 1px 6px; border-radius: 4px; color: ${ticket.priority === 'Critical' ? '#ef4444' : '#fff'};">${ticket.priority}</span>
+                    </div>
+                    <h5 style="font-size: 12px; font-weight: 800; color: #fff; margin: 0 0 4px 0; line-clamp: 1; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${ticket.subject}</h5>
+                    <div style="font-size: 10px; color: var(--text-slate);">Status: <strong style="color: #fff;">${ticket.status}</strong></div>
+                `;
+
+                card.addEventListener('click', () => {
+                    activeTicketId = ticket.id;
+                    renderCustomerTickets();
+                    openChatWorkspace(ticket);
+                });
+
+                container.appendChild(card);
+            });
+        };
+
+        const openChatWorkspace = (ticket) => {
+            const placeholder = document.getElementById('customer-chat-placeholder');
+            const ws = document.getElementById('customer-chat-workspace');
+            if (placeholder) placeholder.style.display = 'none';
+            if (ws) ws.style.display = 'block';
+
+            document.getElementById('active-chat-id').innerText = ticket.id;
+            document.getElementById('active-chat-subject').innerText = ticket.subject;
+            
+            const statusEl = document.getElementById('active-chat-status');
+            if (statusEl) {
+                statusEl.innerText = ticket.status;
+                statusEl.style.background = ticket.status === 'Resolved' || ticket.status === 'Closed' ? '#10b981' : '#f59e0b';
+                statusEl.style.color = '#fff';
+            }
+
+            // Timeline progress
+            const trace = document.getElementById('customer-timeline-trace');
+            if (trace) {
+                trace.innerHTML = '';
+                ticket.timeline.forEach(step => {
+                    const stepNode = document.createElement('span');
+                    stepNode.innerText = `✓ ${step.status} (${step.date.includes('AM') || step.date.includes('PM') ? step.date.split(' ')[1] : step.date})`;
+                    stepNode.style.background = 'rgba(255,255,255,0.05)';
+                    stepNode.style.padding = '2px 6px';
+                    stepNode.style.borderRadius = '4px';
+                    trace.appendChild(stepNode);
+                });
+            }
+
+            // Chat messages
+            const msgBox = document.getElementById('customer-chat-messages');
+            if (msgBox) {
+                msgBox.innerHTML = '';
+                ticket.conversations.forEach(msg => {
+                    const bubble = document.createElement('div');
+                    const isSupport = msg.sender === 'Support';
+                    bubble.style.maxWidth = '80%';
+                    bubble.style.padding = '8px 12px';
+                    bubble.style.borderRadius = '10px';
+                    bubble.style.fontSize = '12px';
+                    bubble.style.lineHeight = '1.4';
+                    
+                    if (isSupport) {
+                        bubble.style.background = 'rgba(0, 203, 224, 0.08)';
+                        bubble.style.border = '1px solid rgba(0, 203, 224, 0.15)';
+                        bubble.style.alignSelf = 'flex-start';
+                        bubble.style.color = '#fff';
+                        bubble.innerHTML = `<span style="font-size: 8px; color: var(--accent-cyan); display: block; font-weight: 800; margin-bottom: 2px;">Support Coordinator</span>${msg.message}`;
+                    } else {
+                        bubble.style.background = 'rgba(255,255,255,0.04)';
+                        bubble.style.border = '1px solid rgba(255,255,255,0.08)';
+                        bubble.style.alignSelf = 'flex-end';
+                        bubble.style.color = '#fff';
+                        bubble.innerHTML = `<span style="font-size: 8px; color: var(--text-slate); display: block; font-weight: 800; margin-bottom: 2px;">You</span>${msg.message}`;
+                    }
+                    msgBox.appendChild(bubble);
+                });
+                msgBox.scrollTop = msgBox.scrollHeight;
+            }
+
+            // Lock input if closed
+            const replyInput = document.getElementById('customer-reply-input');
+            const replyBtn = document.getElementById('btn-send-customer-reply');
+            if (replyInput && replyBtn) {
+                if (ticket.status === 'Closed') {
+                    replyInput.disabled = true;
+                    replyInput.placeholder = '🚫 Ticket is Closed';
+                    replyBtn.disabled = true;
+                } else {
+                    replyInput.disabled = false;
+                    replyInput.placeholder = 'Type message reply...';
+                    replyBtn.disabled = false;
+                }
+            }
+        };
+
+        // Send reply handler
+        document.getElementById('btn-send-customer-reply')?.addEventListener('click', () => {
+            const input = document.getElementById('customer-reply-input');
+            if (!input || !input.value.trim() || !activeTicketId) return;
+
+            const text = input.value;
+            input.value = '';
+
+            const activeTicket = customerTickets.find(t => t.id === activeTicketId);
+            if (!activeTicket) return;
+
+            activeTicket.conversations.push({
+                sender: 'Traveler',
+                message: text,
+                time: 'Just now'
+            });
+
+            openChatWorkspace(activeTicket);
+
+            // Simulate support reply
+            setTimeout(() => {
+                activeTicket.conversations.push({
+                    sender: 'Support',
+                    message: 'Hello, we have received your update. The support operations desk has queued this for verification.',
+                    time: 'Just now'
+                });
+                openChatWorkspace(activeTicket);
+                showToast('🔔 New message from support team.');
+            }, 1500);
+        });
+
+        // CSAT system hooks
+        const csatStars = document.querySelectorAll('.csat-star-btn');
+        let selectedCsatRating = 5;
+        csatStars.forEach(star => {
+            star.addEventListener('click', () => {
+                selectedCsatRating = parseInt(star.dataset.star);
+                csatStars.forEach(s => {
+                    const rating = parseInt(s.dataset.star);
+                    s.style.opacity = rating <= selectedCsatRating ? '1' : '0.3';
+                });
+            });
+        });
+
+        document.getElementById('btn-submit-csat')?.addEventListener('click', () => {
+            const modal = document.getElementById('support-csat-modal');
+            if (modal) modal.style.display = 'none';
+            showToast('🌟 Thank you for rating Beacon Support experience!');
+            document.getElementById('csat-comment-input').value = '';
+        });
+
+        window.triggerCsatDialog = function() {
+            const modal = document.getElementById('support-csat-modal');
+            if (modal) modal.style.display = 'flex';
+        };
+        window.triggerTestAlarm = (type = 'started') => {
+            const amount = "₹12,500";
+            const bookingId = "BCN-2026-TESTALARM";
+            const customerName = "Rahul Sharma";
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const attemptId = `PAY-${Math.floor(10000 + Math.random() * 90000)}`;
+
+            if (type === 'started') {
+                playDirectPaymentSound('started');
+                speakDirectPaymentVoice(`Beacon payment alert. A payment of twelve thousand five hundred rupees has been initiated.`);
+                addBeaconNotification(`Payment initiated: ${amount}`, 'started', bookingId, amount);
+                showPlannerRealTimePopup("🔔 PAYMENT IN PROGRESS", "Payment Started", bookingId, amount, customerName, timeStr, "started", attemptId);
+            } else {
+                playDirectPaymentSound('verification');
+                speakDirectPaymentVoice(`Beacon payment alert. The customer has marked a payment of twelve thousand five hundred rupees as completed. Please check your account and confirm the payment.`);
+                addBeaconNotification(`Payment verification required: ${amount}`, 'verification', bookingId, amount);
+                showPlannerRealTimePopup("⚠️ PAYMENT VERIFICATION REQUIRED", "Verification Needed", bookingId, amount, customerName, timeStr, "verification", attemptId);
+            }
+            showToast(`🔔 Test Alarm (${type}) triggered!`);
+        };
+    }
+
+    initCustomerSupportCenter();
     initTravellerOperationsExperience();
+
+    // Check if test_alarm parameter is in URL, trigger automatically after 2s
+    const urlParams = new URLSearchParams(window.location.search);
+    const testAlarmType = urlParams.get('test_alarm');
+    if (testAlarmType === 'started' || testAlarmType === 'verification') {
+        setTimeout(() => {
+            window.triggerTestAlarm(testAlarmType);
+        }, 2000);
+    }
 
 });

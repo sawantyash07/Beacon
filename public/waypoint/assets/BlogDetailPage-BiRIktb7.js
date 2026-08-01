@@ -1,1 +1,0 @@
-import{t as e}from"./jsx-runtime-DiK4U9sA.js";import{dn as t}from"./index-SvrxeIgF.js";var n=e();function r(){let{id:e}=t();return(0,n.jsx)(`div`,{className:`min-h-screen pt-32 pb-20`,children:(0,n.jsx)(`div`,{className:`max-w-7xl mx-auto px-4`,children:(0,n.jsxs)(`h1`,{className:`text-4xl font-bold text-navy`,children:[`Blog Detail: `,e]})})})}export{r as default};
