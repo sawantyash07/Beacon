@@ -12,7 +12,7 @@
 
 **The Unified Business Operating System & Booking Marketplace for the Travel Industry**
 
-[Explore B2C Portal](http://localhost:5173/) • [Access B2B Planner Workspace](http://localhost:5174/waypoint/) • [View API Docs](#api-documentation) • [Contribution Guide](#contributing-guide)
+[Explore B2C Portal](http://localhost:5173/) • [Access B2B Planner Workspace](http://localhost:5174/planner/) • [View API Docs](#api-documentation) • [Contribution Guide](#contributing-guide)
 
 </div>
 
@@ -162,7 +162,7 @@ Beacon is designed to scale from individual freelance guides managing single wee
 flowchart TB
     subgraph ClientLayer [Client Viewports]
         B2C[B2C Traveler Portal\nPort 5173]
-        B2B[B2B Planner Workspace\nPort 5174 /waypoint/]
+        B2B[B2B Planner Workspace\nPort 5174 /planner/]
     end
 
     subgraph GatewayLayer [Routing & Reverse Proxy]
@@ -227,14 +227,14 @@ beacon-travel-companion/ (B2C Workspace & Project Root)
 │   └── app.js                   # Client interactions: AI questionnaire, timeline accordion, checkout wizard
 ├── public/                      # Static resources
 │   ├── favicon.ico              # Web asset favicon file to prevent CORB warning errors
-│   └── waypoint/                # Compiled target directory for B2B Planner Workspace bundle
+│   └── planner/                 # Compiled target directory for B2B Planner Workspace bundle
 ├── package.json                 # Project execution script commands and developer configurations
 ├── vite.config.js               # B2C Vite development server configs and reverse proxies
-└── Beacon/                      # B2B Waypoint Monorepo Workspace
+└── Beacon/                      # B2B Planner Monorepo Workspace
     ├── package.json             # Workspace dependencies and monorepo workspace configurations
     └── apps/
-        └── waypoint/            # Waypoint React App Directory
-            ├── index.html       # Waypoint main HTML framework
+        └── planner/             # Planner React App Directory
+            ├── index.html       # Planner main HTML framework
             ├── vite.config.ts   # Port allocation configurations, aliases, and public build targets
             └── src/
                 ├── App.tsx      # Main application router and lazy loading page lists
@@ -696,7 +696,7 @@ flowchart TD
 # 💻 Frontend & Backend Documentation
 
 ### Frontend Architecture
-Waypoint is constructed as a React Single Page Application (SPA).
+Beacon Planner is constructed as a React Single Page Application (SPA).
 * **Router Management (`App.tsx`)**: Lazy loads core panels (OverviewPage, PackagesPage, TeamManagementPage, TripOperationsPage) to improve initial page load performance.
 * **Layout Wrappers (`DashboardLayout.tsx`)**: Integrates responsive sidebar elements, theme configurations, notifications overlays, and handles clean state cleanup on exit.
 * **Local Caches Engine**: Synchronizes state variables with `localStorage` (via keys like `beacon_planner_packages` and `beacon_bookings`), facilitating instant coordination between the traveler catalog views and the planner creation desk.
@@ -762,14 +762,14 @@ Waypoint is constructed as a React Single Page Application (SPA).
    
    # Start the B2B planner dashboard dev server (in a separate terminal)
    cd Beacon
-   npm run dev:waypoint
+   npm run dev:planner
    ```
 
 ### Production Bundling
 Compile and build static distribution files for hosting platforms:
 ```bash
 # Bundle Waypoint workspace assets
-npm run build:waypoint
+npm run build:planner
 
 # Bundle root B2C customer-facing files
 npm run build
@@ -786,7 +786,7 @@ npm run build
 
 ### Production Release Timeline
 * **Phase 1**: Custom Booking Wizard, timeline timelines, and layout updates. (Completed)
-* **Phase 2**: Launch B2B Waypoint dashboard monorepo and packages synchronization. (Completed)
+* **Phase 2**: Launch B2B Planner dashboard monorepo and packages synchronization. (Completed)
 * **Phase 3**: Package Management Center and Team Management modules implementation. (Completed)
 * **Phase 4**: Native Android/iOS applications wrappers setup and international payment checkouts. (Planned)
 
@@ -804,5 +804,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contacts
 * **Core Repository**: [https://github.com/sawantyash07/Beacon](https://github.com/sawantyash07/Beacon)
-* **Project Dashboard**: [http://localhost:5174/waypoint/](http://localhost:5174/waypoint/)
+* **Project Dashboard**: [http://localhost:5174/planner/](http://localhost:5174/planner/)
 * **Contact Email**: concierge@beaconplanner.com

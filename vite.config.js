@@ -10,7 +10,7 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       },
-      '/waypoint': {
+      '/planner': {
         target: 'http://localhost:5174',
         changeOrigin: true
       }

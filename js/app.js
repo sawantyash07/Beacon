@@ -3482,11 +3482,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // App Theme / Mode Selection logic
     const themeSelect = document.getElementById('user-theme-select');
     if (themeSelect) {
-        const currentTheme = localStorage.getItem('beacon_theme') || 'dark';
+        const currentTheme = localStorage.getItem('beacon_theme') || 'light';
         themeSelect.value = currentTheme;
         if (currentTheme === 'light') {
             document.documentElement.classList.add('light-theme');
+            document.documentElement.classList.remove('dark-theme');
         } else {
+            document.documentElement.classList.add('dark-theme');
             document.documentElement.classList.remove('light-theme');
         }
 
@@ -3495,8 +3497,10 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('beacon_theme', selected);
             if (selected === 'light') {
                 document.documentElement.classList.add('light-theme');
+                document.documentElement.classList.remove('dark-theme');
                 showToast("☀️ Switched to Light Theme!");
             } else {
+                document.documentElement.classList.add('dark-theme');
                 document.documentElement.classList.remove('light-theme');
                 showToast("🌙 Switched to Dark Theme!");
             }
