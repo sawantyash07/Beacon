@@ -21,7 +21,7 @@ export default function BookingPage() {
   useEffect(() => {
     const loadPackage = async () => {
       try {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/+$/, '');
         const res = await fetch(`${API_URL}/packages/${packageId}`);
         if (!res.ok) throw new Error('Failed to fetch package');
         const data = await res.json();
@@ -44,7 +44,7 @@ export default function BookingPage() {
     
     setSubmitting(true);
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/+$/, '');
       // Assume subagent built POST /bookings
       const res = await fetch(`${API_URL}/bookings`, {
         method: 'POST',

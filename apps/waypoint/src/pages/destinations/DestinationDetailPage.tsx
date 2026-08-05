@@ -14,7 +14,7 @@ export default function DestinationDetailPage() {
     // Assuming backend subagent implements GET /destinations/:id
     const loadDestination = async () => {
       try {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/+$/, '');
         const res = await fetch(`${API_URL}/destinations/${id}`);
         if (!res.ok) throw new Error('Failed to fetch destination');
         const data = await res.json();

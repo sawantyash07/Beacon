@@ -18,7 +18,7 @@ export default function PackageDetailPage() {
   useEffect(() => {
     const loadPackage = async () => {
       try {
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/+$/, '');
         const res = await fetch(`${API_URL}/packages/${id}`);
         if (!res.ok) throw new Error('Failed to fetch package');
         const data = await res.json();

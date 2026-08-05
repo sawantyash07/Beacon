@@ -1,4 +1,4 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+export const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3001').replace(/\/+$/, '');
 
 export async function fetchDestinations(search?: string) {
   const url = search ? `${API_URL}/destinations?search=${encodeURIComponent(search)}` : `${API_URL}/destinations`;
