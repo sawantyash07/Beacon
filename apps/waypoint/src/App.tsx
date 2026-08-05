@@ -10,51 +10,72 @@ import { MasterControlLayout } from '@/components/master/MasterControlLayout'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
-const LandingPage = lazy(() => import('@/pages/LandingPage'))
-const LoginPage = lazy(() => import('@/pages/LoginPage'))
-const SignUpPage = lazy(() => import('@/pages/SignUpPage'))
-const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'))
+// CORE PRIMARY PAGES (Eagerly Loaded to Prevent Dynamic Chunk Import Failures)
+import LandingPage from '@/pages/LandingPage'
+import LoginPage from '@/pages/LoginPage'
+import SignUpPage from '@/pages/SignUpPage'
+import ForgotPasswordPage from '@/pages/ForgotPasswordPage'
 
-const DestinationsPage = lazy(() => import('@/pages/destinations/DestinationsPage'))
-const DestinationDetailPage = lazy(() => import('@/pages/destinations/DestinationDetailPage'))
-const PackagesExplorePage = lazy(() => import('@/pages/packages/PackagesExplorePage'))
-const PackageDetailPage = lazy(() => import('@/pages/packages/PackageDetailPage'))
-const BlogsPage = lazy(() => import('@/pages/blogs/BlogsPage'))
-const BlogDetailPage = lazy(() => import('@/pages/blogs/BlogDetailPage'))
-const AboutPage = lazy(() => import('@/pages/about/AboutPage'))
-const ContactPage = lazy(() => import('@/pages/contact/ContactPage'))
-const WishlistPage = lazy(() => import('@/pages/wishlist/WishlistPage'))
-const BookingPage = lazy(() => import('@/pages/booking/BookingPage'))
+// MASTER CONTROL CORE PAGES
+import MasterLoginPage from '@/pages/master/MasterLoginPage'
+import MissionControlOverviewPage from '@/pages/master/MissionControlOverviewPage'
 
-const OverviewPage = lazy(() => import('@/pages/dashboard/OverviewPage'))
-const InquiriesPage = lazy(() => import('@/pages/dashboard/InquiriesPage'))
-const PackagesPage = lazy(() => import('@/pages/dashboard/PackagesPage'))
-const PackageCreatePage = lazy(() => import('@/pages/dashboard/PackageCreatePage'))
-const PackageEditPage = lazy(() => import('@/pages/dashboard/PackageEditPage'))
-const BookingsPage = lazy(() => import('@/pages/dashboard/BookingsPage'))
-const TripGroupsPage = lazy(() => import('@/pages/dashboard/TripGroupsPage'))
-const SocialMediaPage = lazy(() => import('@/pages/dashboard/SocialMediaPage'))
-const MessagesPage = lazy(() => import('@/pages/dashboard/MessagesPage'))
-const PaymentsPage = lazy(() => import('@/pages/dashboard/PaymentsPage'))
-const AnalyticsPage = lazy(() => import('@/pages/dashboard/AnalyticsPage'))
-const OrganizerProfilePage = lazy(() => import('@/pages/dashboard/OrganizerProfilePage'))
+// Helper for dynamic lazy imports with retry mechanism
+function lazyRetry<T extends React.ComponentType<any>>(componentImport: () => Promise<{ default: T }>) {
+  return lazy(async () => {
+    try {
+      return await componentImport()
+    } catch (error: any) {
+      console.warn('Dynamic import failed, retrying page reload...', error)
+      const reloaded = sessionStorage.getItem('lazy_retry_reload')
+      if (!reloaded) {
+        sessionStorage.setItem('lazy_retry_reload', 'true')
+        window.location.reload()
+      }
+      throw error
+    }
+  })
+}
 
-// BEACON MASTER CONTROL (SUPER ADMIN PORTAL) PAGES
-const MasterLoginPage = lazy(() => import('@/pages/master/MasterLoginPage'))
-const MissionControlOverviewPage = lazy(() => import('@/pages/master/MissionControlOverviewPage'))
-const VerificationCenterPage = lazy(() => import('@/pages/master/VerificationCenterPage'))
-const UserManagementPage = lazy(() => import('@/pages/master/UserManagementPage'))
-const LiveTripOperationsPage = lazy(() => import('@/pages/master/LiveTripOperationsPage'))
-const PackageManagementPage = lazy(() => import('@/pages/master/PackageManagementPage'))
-const BookingManagementPage = lazy(() => import('@/pages/master/BookingManagementPage'))
-const PaymentCenterPage = lazy(() => import('@/pages/master/PaymentCenterPage'))
-const CustomerCareCenterPage = lazy(() => import('@/pages/master/CustomerCareCenterPage'))
-const DisputesReportsPage = lazy(() => import('@/pages/master/DisputesReportsPage'))
-const ReviewModerationPage = lazy(() => import('@/pages/master/ReviewModerationPage'))
-const MarketingAnnouncementsPage = lazy(() => import('@/pages/master/MarketingAnnouncementsPage'))
-const PlatformAnalyticsPage = lazy(() => import('@/pages/master/PlatformAnalyticsPage'))
-const FraudAuditLogPage = lazy(() => import('@/pages/master/FraudAuditLogPage'))
-const PlatformSettingsPage = lazy(() => import('@/pages/master/PlatformSettingsPage'))
+// LAZY LOADED SECONDARY PAGES
+const DestinationsPage = lazyRetry(() => import('@/pages/destinations/DestinationsPage'))
+const DestinationDetailPage = lazyRetry(() => import('@/pages/destinations/DestinationDetailPage'))
+const PackagesExplorePage = lazyRetry(() => import('@/pages/packages/PackagesExplorePage'))
+const PackageDetailPage = lazyRetry(() => import('@/pages/packages/PackageDetailPage'))
+const BlogsPage = lazyRetry(() => import('@/pages/blogs/BlogsPage'))
+const BlogDetailPage = lazyRetry(() => import('@/pages/blogs/BlogDetailPage'))
+const AboutPage = lazyRetry(() => import('@/pages/about/AboutPage'))
+const ContactPage = lazyRetry(() => import('@/pages/contact/ContactPage'))
+const WishlistPage = lazyRetry(() => import('@/pages/wishlist/WishlistPage'))
+const BookingPage = lazyRetry(() => import('@/pages/booking/BookingPage'))
+
+const OverviewPage = lazyRetry(() => import('@/pages/dashboard/OverviewPage'))
+const InquiriesPage = lazyRetry(() => import('@/pages/dashboard/InquiriesPage'))
+const PackagesPage = lazyRetry(() => import('@/pages/dashboard/PackagesPage'))
+const PackageCreatePage = lazyRetry(() => import('@/pages/dashboard/PackageCreatePage'))
+const PackageEditPage = lazyRetry(() => import('@/pages/dashboard/PackageEditPage'))
+const BookingsPage = lazyRetry(() => import('@/pages/dashboard/BookingsPage'))
+const TripGroupsPage = lazyRetry(() => import('@/pages/dashboard/TripGroupsPage'))
+const SocialMediaPage = lazyRetry(() => import('@/pages/dashboard/SocialMediaPage'))
+const MessagesPage = lazyRetry(() => import('@/pages/dashboard/MessagesPage'))
+const PaymentsPage = lazyRetry(() => import('@/pages/dashboard/PaymentsPage'))
+const AnalyticsPage = lazyRetry(() => import('@/pages/dashboard/AnalyticsPage'))
+const OrganizerProfilePage = lazyRetry(() => import('@/pages/dashboard/OrganizerProfilePage'))
+
+// BEACON MASTER CONTROL MODULES
+const VerificationCenterPage = lazyRetry(() => import('@/pages/master/VerificationCenterPage'))
+const UserManagementPage = lazyRetry(() => import('@/pages/master/UserManagementPage'))
+const LiveTripOperationsPage = lazyRetry(() => import('@/pages/master/LiveTripOperationsPage'))
+const PackageManagementPage = lazyRetry(() => import('@/pages/master/PackageManagementPage'))
+const BookingManagementPage = lazyRetry(() => import('@/pages/master/BookingManagementPage'))
+const PaymentCenterPage = lazyRetry(() => import('@/pages/master/PaymentCenterPage'))
+const CustomerCareCenterPage = lazyRetry(() => import('@/pages/master/CustomerCareCenterPage'))
+const DisputesReportsPage = lazyRetry(() => import('@/pages/master/DisputesReportsPage'))
+const ReviewModerationPage = lazyRetry(() => import('@/pages/master/ReviewModerationPage'))
+const MarketingAnnouncementsPage = lazyRetry(() => import('@/pages/master/MarketingAnnouncementsPage'))
+const PlatformAnalyticsPage = lazyRetry(() => import('@/pages/master/PlatformAnalyticsPage'))
+const FraudAuditLogPage = lazyRetry(() => import('@/pages/master/FraudAuditLogPage'))
+const PlatformSettingsPage = lazyRetry(() => import('@/pages/master/PlatformSettingsPage'))
 
 function PageLoader() {
   return (
@@ -62,7 +83,7 @@ function PageLoader() {
       <div className="space-y-4 w-64 text-center">
         <Skeleton className="h-8 w-full bg-cyan/15" />
         <Skeleton className="h-32 w-full bg-cyan/10" />
-        <div className="text-xs font-mono text-cyan animate-pulse">Initializing Beacon Master Hub...</div>
+        <div className="text-xs font-mono text-cyan animate-pulse">Initializing Beacon Platform...</div>
       </div>
     </div>
   )
