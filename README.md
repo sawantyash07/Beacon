@@ -10,15 +10,16 @@
 [![MongoDB](https://img.shields.io/badge/Database-MongoDB_Atlas-47A248.svg?style=for-the-badge&logo=mongodb)](https://www.mongodb.com)
 [![TailwindCSS](https://img.shields.io/badge/Styling-TailwindCSS_v4-38B2AC.svg?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
 
-**Beacon** is an enterprise-grade, end-to-end travel marketplace monorepo platform designed to connect adventurous travelers with verified travel planners, boutique agency operators, and independent expedition leaders ("Organizers"). 
+**Beacon** is an enterprise-grade, end-to-end travel marketplace monorepo platform designed to connect adventurous travelers with verified travel planners, boutique agency operators, independent expedition leaders ("Organizers"), and platform super administrators.
 
-Whether creating custom multi-day itineraries, hosting group trips, tracking booking status, verifying business documentation, or facilitating real-time traveler-planner messaging, Beacon provides a seamless experience for all travel industry stakeholders.
+Whether creating custom multi-day itineraries, hosting group trips, tracking booking status, verifying business documentation, facilitating real-time traveler-planner messaging, or managing platform-wide operational health from Mission Control, Beacon provides a seamless experience for all travel industry stakeholders.
 
 ---
 
 ## 📋 Table of Contents
 
 - [🌟 System Overview & Core Capabilities](#-system-overview--core-capabilities)
+- [🛸 Master Command Hub (Super Admin Portal)](#-master-command-hub-super-admin-portal)
 - [🛠️ Technology Stack](#️-technology-stack)
 - [🏗️ High-Level System Architecture](#️-high-level-system-architecture)
 - [🔄 Data & Request Flow Diagrams](#-data--request-flow-diagrams)
@@ -26,7 +27,7 @@ Whether creating custom multi-day itineraries, hosting group trips, tracking boo
 - [📦 Module Responsibilities & Component Interaction](#-module-responsibilities--component-interaction)
 - [🗄️ Database & Schema Design](#️-database--schema-design)
 - [🔐 Authentication & Authorization Architecture](#-authentication--authorization-architecture)
-- [📡 Comprehensive API Reference](#-comprehensive-api-reference)
+- [📡 Comprehensive API & Portal Reference](#-comprehensive-api--portal-reference)
 - [🎯 Key Design Decisions & Engineering Strategy](#-key-design-decisions--engineering-strategy)
 - [⚙️ Environment Variables & Configuration](#️-environment-variables--configuration)
 - [🚀 Setup & Installation Guide](#-setup--installation-guide)
@@ -37,7 +38,7 @@ Whether creating custom multi-day itineraries, hosting group trips, tracking boo
 
 ## 🌟 System Overview & Core Capabilities
 
-Beacon solves the fragmentation in experiential travel planning by acting as a unified platform for both sides of the marketplace:
+Beacon solves the fragmentation in experiential travel planning by acting as a unified platform for all sides of the marketplace:
 
 ### 🧳 For Travelers
 - **Explore & Filter Expeditions**: Search travel packages by destination, difficulty level (`EASY`, `MODERATE`, `HARD`, `EXPERT`), duration, price, and category.
@@ -56,6 +57,34 @@ Beacon solves the fragmentation in experiential travel planning by acting as a u
 
 ---
 
+## 🛸 Master Command Hub (Super Admin Portal)
+
+The **Beacon Master Login & Mission Control Center** serves as the central operational brain for the entire nationwide platform, functioning similarly to enterprise products like Stripe Dashboard, Shopify Admin, Linear, and Vercel.
+
+### 🔐 Zero-Trust Master Authentication (`/master-login`)
+- **Multi-Role Persona Selection**: Support for 13 administrative roles including Super Admin, CEO, Operations Head, Verification Manager, Finance Manager, Customer Care Manager, Legal & Compliance Officer, and Marketing Manager.
+- **Security Protocols**: 6-digit Master Security PIN, YubiKey hardware token integration, WebAuthn biometric passkey simulation, and real-time IP/TLS security badges.
+- **Quick Demo Bypass**: Single-click access for rapid testing.
+
+### 🛰️ 14 Operational Operations Modules (`/master-control/*`)
+
+1. **Mission Control Overview**: Real-time 9-microservice health telemetry (APIs, Edge Nodes, DB, S3 Storage, Razorpay, Google Maps API, Email/SMS), 11 KPI metrics, auto-updating live event activity stream, intelligent threat alert panel, and emergency action bar.
+2. **Verification Center (Beacon Trust Engine)**: Strict 9-point document audit (Aadhaar, PAN Card, GST Certificate, Business Registration, Tourism License, Bank Passbook, Address Proof, Logo, Photos). Features duplicate PAN/GST detector, risk score calculator, internal notes, and Verified Badge issuance.
+3. **User Operations & RBAC Matrix**: Manages 1,240+ planners, 48,900+ customers, and internal staff. Includes profile dossiers, payout freeze toggles, customer blacklisting, JSON data exporters, and role privilege matrices.
+4. **Live Trip Operations Center**: Real-time monitoring of active departures across India/world. Tracks assigned vehicles, tour guide contacts, occupancy %, complaints, and interactive satellite GPS coordinate map.
+5. **Package Management & Quality Audit**: Categorizes packages (Drafts, Published, Hidden, Archived, Reported, Trending, Duplicate, Featured). Features quality score rating (0-100), AI duplicate text/image scanner, and policy violation removal.
+6. **Booking Operations**: Multi-parameter search by Booking ID, UTR, traveller name, planner, or destination. Full lifecycle inspection, tax invoice download, and refund processing.
+7. **Payment Center & Financial Command**: Financial ledger with UTR verification, duplicate UTR alerts, gateway transaction split (Razorpay/UPI), settlement queue, and live commission split calculator (8% - 15%).
+8. **Customer Care CRM & Support Desk**: CSAT metrics (4.8/5), 12-minute response time tracking, SLA countdowns, and dual-channel message desk to reply to customers and planners.
+9. **Reports & Disputes Tribunal**: Legal conflict resolution workspace for fraud, refund disputes, safety incidents, and package misrepresentation. Enables issuing binding legal rulings.
+10. **Review Moderation**: Moderates customer ratings, flags defamation/spam IP clusters, and manages review visibility.
+11. **Growth & Marketing**: Manages homepage banners, push broadcasts, festival campaigns, and conversion analytics.
+12. **Executive Intelligence & Analytics**: Average Booking Value (ABV), repeat customer retention cohorts, destination popularity heatmaps, and planner leaderboards.
+13. **Fraud Engine & Audit Logs**: Immutable audit log table recording actor, role, IP address, action, module, before/after diffs, and timestamp. AI risk rule evaluations.
+14. **Platform Settings & Engine**: Configures commission rates, GST tax %, minimum payout thresholds, API key integrations, and emergency lockdown toggles.
+
+---
+
 ## 🛠️ Technology Stack
 
 | Layer | Tech / Tool | Description |
@@ -66,9 +95,10 @@ Beacon solves the fragmentation in experiential travel planning by acting as a u
 | **Database** | **MongoDB Atlas** | NoSQL document database optimized for complex itinerary sub-documents |
 | **Authentication** | **Passport.js & JWT** | Dual Passport Local & JWT strategy with HTTP-Only cookie delivery & password hashing via `bcrypt` |
 | **Client Application** | **React 19 + Vite 8** | `apps/waypoint` - High-performance React SPA with React Router v7 & TailwindCSS v4 |
+| **Super Admin Command Center** | **React 19 + Framer Motion** | `apps/waypoint` - Master Control Hub, 14 operational modules & reactive state store |
 | **Web Portal Application** | **Next.js 16** | `apps/web` - React 19 App Router framework for SSR portal features |
-| **UI Components & Styling** | **TailwindCSS v4, Lucide Icons, Framer Motion, Sonner** | Glassmorphism aesthetics, micro-animations, toast notifications, responsive design |
-| **Charts & Data Viz** | **Recharts** | Dynamic analytics charts for organizer dashboard revenue & booking metrics |
+| **UI Components & Styling** | **TailwindCSS v4, Lucide Icons, Framer Motion, Sonner** | Dark theme aesthetics, glassmorphism, cyan/electric blue accents, micro-animations, toast notifications |
+| **Charts & Data Viz** | **Recharts** | Dynamic analytics charts for organizer dashboard & executive business intelligence |
 | **Form Validation** | **React Hook Form & Zod** | Schema-driven form handling and robust data validation |
 
 ---
@@ -79,14 +109,15 @@ Beacon is organized into a clean monorepo architecture separating backend micro-
 
 ```mermaid
 flowchart TB
-    subgraph Clients["📱 Client Layer"]
-        Waypoint["Waypoint Web App (Vite + React 19)\n(apps/waypoint : Port 5173/5174)"]
+    subgraph Clients["📱 Client & Operations Layer"]
+        Waypoint["Waypoint Web App & Master Control Center\n(Vite + React 19)\n(apps/waypoint : Port 5173/5174)"]
+        MasterLogin["Master Login Portal\n(/master-login)"]
         NextWeb["Web Portal (Next.js 16)\n(apps/web : Port 3000)"]
     end
 
     subgraph API_Gateway["🛡️ Backend API Layer (apps/api)"]
         CorsCookie["CORS & Cookie Parser Middleware"]
-        AuthGuards["Local & JWT Auth Guards / Passport Strategies"]
+        AuthGuards["Local & JWT Auth Guards / RBAC Passport Strategies"]
         
         subgraph Nest_Modules["NestJS Core Modules"]
             AuthMod["Auth Module"]
@@ -108,6 +139,7 @@ flowchart TB
         MongoAtlas[("MongoDB Atlas Database\n(Cluster0 / beacon)")]
     end
 
+    MasterLogin --> Waypoint
     Waypoint -->|REST APIs / Credentials Include| CorsCookie
     NextWeb -->|REST / Server Actions| CorsCookie
 
@@ -129,7 +161,7 @@ The authentication system employs Passport Local Strategy for login validation a
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Traveler as Traveler / Organizer
+    actor Traveler as Traveler / Planner / Super Admin
     participant Client as Waypoint Frontend (Vite)
     participant AuthCtrl as AuthController (NestJS)
     participant LocalGuard as Passport Local Strategy
@@ -137,7 +169,7 @@ sequenceDiagram
     participant Prisma as Prisma Service
     participant Mongo as MongoDB Atlas
 
-    Traveler->>Client: Enters credentials (email & password)
+    Traveler->>Client: Enters credentials or Master Security PIN
     Client->>AuthCtrl: POST /auth/login { email, password }
     AuthCtrl->>LocalGuard: Validate credentials
     LocalGuard->>AuthService: validateUser(email, password)
@@ -150,44 +182,20 @@ sequenceDiagram
     AuthCtrl->>AuthService: login(user)
     AuthService->>AuthService: Generate JWT payload & access_token
     AuthCtrl->>Client: Set-Cookie: access_token=... (httpOnly, SameSite=lax)<br/>Return JSON { message, user }
-    Client-->>Traveler: Redirect to /dashboard or /packages
+    Client-->>Traveler: Redirect to /dashboard or /master-control
 ```
 
-### 2. Package Booking & Status Flowchart
-
-```mermaid
-flowchart TD
-    Start([Traveler Selects Package]) --> ViewDetails[View Package Details & Itinerary]
-    ViewDetails --> SelectDate[Choose Travel Date & Passenger Count]
-    SelectDate --> SubmitBooking[Click Book Now: POST /bookings]
-    
-    SubmitBooking --> AuthCheck{Is Traveler Authenticated?}
-    AuthCheck -- No --> PromptLogin[Redirect to /login]
-    PromptLogin --> SubmitBooking
-    
-    AuthCheck -- Yes --> CreateBooking[Create Booking Document in DB\nStatus: PENDING]
-    CreateBooking --> GenPayment[Generate Payment Order\nStatus: PENDING]
-    GenPayment --> ProcessPayment{Simulate / Razorpay Payment}
-    
-    ProcessPayment -- Success --> ConfirmBooking[Update Booking: Status -> CONFIRMED\nUpdate Payment: Status -> SUCCESS]
-    ProcessPayment -- Failure --> CancelBooking[Update Booking: Status -> CANCELLED\nUpdate Payment: Status -> FAILED]
-    
-    ConfirmBooking --> Notify[Send Confirmation Notification & Message to Organizer]
-    CancelBooking --> AlertUser[Display Payment Error Message]
-    Notify --> End([Booking Complete])
-    AlertUser --> End
-```
-
-### 3. Organizer Verification Vault State Machine
+### 2. Planner Verification Vault & Verified Badge Pipeline
 
 ```mermaid
 stateDiagram-v2
-    [*] --> PENDING: Organizer Registers & Completes Profile
-    PENDING --> UNDER_REVIEW: Uploads Govt ID / Business Reg Document
-    UNDER_REVIEW --> VERIFIED: Admin Approves Documentation
-    UNDER_REVIEW --> REJECTED: Admin Rejects (Invalid / Expired ID)
-    REJECTED --> UNDER_REVIEW: Organizer Re-uploads Corrected File
-    VERIFIED --> [*]: Verified Organizer Badge Unlocked on Public Profile
+    [*] --> PENDING: Planner Application Submitted
+    PENDING --> UNDER_REVIEW: Uploads 9 Mandatory Documents (PAN, GST, Aadhaar, License)
+    UNDER_REVIEW --> AI_DUPLICATE_CHECK: Fraud Engine Scans Duplicate Credentials
+    AI_DUPLICATE_CHECK --> VERIFIED: Admin Approves Documentation & Risk Check
+    AI_DUPLICATE_CHECK --> REJECTED: Admin Rejects (Invalid / Expired ID / Duplicate Match)
+    REJECTED --> UNDER_REVIEW: Planner Re-uploads Corrected Documents
+    VERIFIED --> [*]: Verified Badge Issued & Payouts Unlocked
 ```
 
 ---
@@ -197,251 +205,79 @@ stateDiagram-v2
 ```
 d:\Beacon
 ├── .env                       # Root environment variables configuration
-├── .gitignore                 # Git ignore specs for node_modules, dist, builds
 ├── package.json               # Root monorepo package setup & NPM workspace scripts
-├── to run.txt                 # Quick developer execution cheat sheet
+├── README.md                  # Comprehensive platform documentation
 ├── apps/                      # Monorepo Application Directory
 │   ├── api/                   # NestJS REST API Backend
 │   │   ├── src/
-│   │   │   ├── main.ts        # Bootstrap entrypoint, dynamic port detection, CORS, cookie parser
+│   │   │   ├── main.ts        # Bootstrap entrypoint, dynamic port detection, CORS
 │   │   │   ├── app.module.ts  # Main NestJS module aggregating all domain modules
-│   │   │   ├── app.controller.ts
-│   │   │   ├── app.service.ts
-│   │   │   ├── auth/          # Authentication, Guards, Local & JWT Passport Strategies
-│   │   │   ├── users/         # User management domain
-│   │   │   ├── organizer-profile/ # Organizer 10-section profile & Verification Vault logic
-│   │   │   ├── packages/      # Travel package CRUD, search, filter & itinerary builder
-│   │   │   ├── bookings/      # Traveler bookings, checkout & status processing
-│   │   │   ├── destinations/  # Travel destination catalog & weather insights
-│   │   │   ├── reviews/       # Rating & comment evaluation engine
-│   │   │   ├── wishlist/      # Saved traveler package favorites
-│   │   │   ├── blogs/         # Travel story publishing, likes & comments
-│   │   │   ├── messages/      # Real-time chat service between travelers & planners
-│   │   │   ├── newsletter/    # Email subscription handling
-│   │   │   ├── stats/         # Telemetry & dashboard metrics provider
-│   │   │   └── prisma/        # Global Prisma ORM service wrapper
+│   │   │   └── auth/          # Auth Guards, Local & JWT Passport Strategies
 │   │   └── package.json
 │   │
-│   ├── waypoint/              # Main Vite + React 19 Frontend Web Application
+│   ├── waypoint/              # Main Vite + React 19 Frontend & Master Command Hub
 │   │   ├── src/
-│   │   │   ├── App.tsx        # React Router v7 animated routing & Auth Context wrapper
-│   │   │   ├── main.tsx       # Vite React application entrypoint
-│   │   │   ├── index.css      # Design tokens, custom scrollbars & glassmorphism theme
-│   │   │   ├── components/    # Modular component tree
-│   │   │   │   ├── auth/      # Auth form controls & social buttons
-│   │   │   │   ├── dashboard/ # Dashboard layout, sidebar navigation, topbar & stats widgets
-│   │   │   │   ├── landing/   # Hero banner, featured trips, top planners & CTA blocks
-│   │   │   │   └── ui/        # Reusable UI primitives (Buttons, Cards, Dialogs, Inputs, Skeletons)
-│   │   │   ├── context/       # AuthContext for global user state & session handling
-│   │   │   ├── pages/         # Application Views / Screens
-│   │   │   │   ├── LandingPage.tsx
-│   │   │   │   ├── LoginPage.tsx
-│   │   │   │   ├── SignUpPage.tsx
-│   │   │   │   ├── ForgotPasswordPage.tsx
-│   │   │   │   ├── about/
-│   │   │   │   ├── blogs/
-│   │   │   │   ├── booking/
-│   │   │   │   ├── contact/
-│   │   │   │   ├── destinations/
-│   │   │   │   ├── packages/
-│   │   │   │   ├── wishlist/
-│   │   │   │   └── dashboard/ # 12 Organizer & Traveler Management Views
-│   │   │   │       ├── OverviewPage.tsx
-│   │   │   │       ├── PackagesPage.tsx
-│   │   │   │       ├── PackageCreatePage.tsx
-│   │   │   │       ├── PackageEditPage.tsx
-│   │   │   │       ├── BookingsPage.tsx
-│   │   │   │       ├── InquiriesPage.tsx
-│   │   │   │       ├── TripGroupsPage.tsx
-│   │   │   │       ├── SocialMediaPage.tsx
-│   │   │   │       ├── MessagesPage.tsx
-│   │   │   │       ├── PaymentsPage.tsx
-│   │   │   │       ├── AnalyticsPage.tsx
-│   │   │   │       └── OrganizerProfilePage.tsx
-│   │   │   ├── routes/        # ProtectedRoute wrapper component
-│   │   │   ├── services/      # Fetch API clients (api.ts, auth.ts)
-│   │   │   └── utils/         # Helper functions & form formatters
+│   │   │   ├── App.tsx        # React Router v7 animated routing & Master Provider wrapper
+│   │   │   ├── index.css      # Design tokens, custom scrollbars & glassmorphic styling
+│   │   │   ├── components/
+│   │   │   │   ├── dashboard/ # Planner & Traveler dashboard components
+│   │   │   │   └── master/    # MasterControlLayout.tsx (Mission Control Frame & Top Bar)
+│   │   │   ├── context/
+│   │   │   │   ├── AuthContext.tsx       # User session state
+│   │   │   │   └── MasterAdminContext.tsx# Reactive state store across all 14 admin modules
+│   │   │   ├── data/
+│   │   │   │   └── masterAdminData.ts    # Complete mock telemetry & domain datasets
+│   │   │   ├── pages/
+│   │   │   │   ├── master/    # 14 Enterprise Master Control Module Views
+│   │   │   │   │   ├── MasterLoginPage.tsx
+│   │   │   │   │   ├── MissionControlOverviewPage.tsx
+│   │   │   │   │   ├── VerificationCenterPage.tsx
+│   │   │   │   │   ├── UserManagementPage.tsx
+│   │   │   │   │   ├── LiveTripOperationsPage.tsx
+│   │   │   │   │   ├── PackageManagementPage.tsx
+│   │   │   │   │   ├── BookingManagementPage.tsx
+│   │   │   │   │   ├── PaymentCenterPage.tsx
+│   │   │   │   │   ├── CustomerCareCenterPage.tsx
+│   │   │   │   │   ├── DisputesReportsPage.tsx
+│   │   │   │   │   ├── ReviewModerationPage.tsx
+│   │   │   │   │   ├── MarketingAnnouncementsPage.tsx
+│   │   │   │   │   ├── PlatformAnalyticsPage.tsx
+│   │   │   │   │   ├── FraudAuditLogPage.tsx
+│   │   │   │   │   └── PlatformSettingsPage.tsx
+│   │   │   │   └── ... (Traveler & Organizer pages)
 │   │   └── package.json
 │   │
 │   └── web/                   # Next.js 16 (App Router) Secondary Web Portal
-│       ├── src/
-│       │   ├── app/           # App router page hierarchy (/login, /register, /packages, /planner, etc.)
-│       │   ├── components/    # Shared Next.js UI components
-│       │   └── middleware.ts  # Route authorization middleware
-│       └── package.json
 │
 └── packages/                  # Monorepo Shared Package Directory
     └── database/              # Shared Prisma & MongoDB Database Layer
         ├── prisma/
         │   └── schema.prisma  # Master Prisma Schema (15+ Data Models & Enums)
-        ├── index.ts           # Shared exports (@beacon/database)
-        └── package.json
+        └── index.ts           # Shared exports (@beacon/database)
 ```
 
 ---
 
-## 📦 Module Responsibilities & Component Interaction
+## 📡 Comprehensive API & Portal Reference
 
-| Module / Package | Responsibility & Role | Primary Consumers / Dependents |
+### 🛸 Master Control Portal Routes (`apps/waypoint`)
+| Endpoint Route | Module Name | Primary Administrative Capabilities |
 | :--- | :--- | :--- |
-| **`@beacon/database`** | Defines master MongoDB schema, Prisma generator specs, data enums, relational cascading rules, and exposes Prisma Client. | `apps/api`, database migration scripts |
-| **`AuthModule`** | Manages user registration, bcrypt password hashing, Passport Local strategy login, JWT token generation, cookie parsing, and profile lookup. | All client apps (`waypoint`, `web`), Protected routes |
-| **`OrganizerProfileModule`** | Handles deep 10-section profile editing (expertise, locations, SLA, banking) and document verification file uploads. | `Waypoint Dashboard -> OrganizerProfilePage` |
-| **`PackagesModule`** | Full CRUD for travel packages, day-by-day itinerary arrays, photo galleries, price discounts, and filtering algorithms. | `PackagesExplorePage`, `PackageDetailPage`, `PackageCreatePage` |
-| **`BookingsModule`** | Manages booking lifecycles (`PENDING` -> `CONFIRMED` -> `CANCELLED`), passenger counts, total costs, and payment linkages. | `BookingPage`, `BookingsPage (Dashboard)` |
-| **`MessagesModule`** | Direct message storage and communication exchange between travelers and organizers. | `MessagesPage (Dashboard)` |
-| **`StatsModule`** | Aggregates system metrics (active packages, revenue sum, total travelers served, booking conversion). | `OverviewPage`, `AnalyticsPage` |
-| **`DestinationsModule`** | Curates top geographic travel spots, weather insights, best visiting seasons, and high-resolution galleries. | `DestinationsPage`, `DestinationDetailPage` |
-
----
-
-## 🗄️ Database & Schema Design
-
-The Beacon database layer is constructed with **Prisma ORM** targeting **MongoDB Atlas**. MongoDB was specifically chosen for its document model flexibility, allowing nested sub-documents (such as day-by-day itinerary arrays and dynamic service toggles) to be stored alongside tabular user credentials.
-
-```mermaid
-erDiagram
-    User ||--o| Profile : "has profile"
-    User ||--o{ Package : "creates packages"
-    User ||--o{ Review : "writes reviews"
-    User ||--o{ Wishlist : "saves wishlists"
-    User ||--o{ Blog : "authors blogs"
-    User ||--o{ BlogComment : "comments"
-    User ||--o{ Message : "sends/receives messages"
-    
-    Profile ||--o{ VerificationDocument : "vault documents"
-    
-    Package ||--o{ PackageImage : "has gallery images"
-    Package ||--o{ ItineraryDay : "contains day-by-day schedule"
-    Package ||--o{ Booking : "booked in"
-    Package ||--o{ Review : "reviewed by"
-    Package ||--o{ Wishlist : "wishlisted in"
-    Destination ||--o{ Package : "belongs to"
-    
-    Booking ||--o| Payment : "has payment record"
-    Blog ||--o{ BlogComment : "has discussion comments"
-```
-
-### Core Model Breakdown
-
-#### 1. `User` Model
-- **`id`**: `ObjectId` (`@id @map("_id")`)
-- **`email`**: String (Unique)
-- **`password`**: String (Nullable for OAuth users)
-- **`role`**: Enum (`TRAVELER`, `PLANNER`, `ADMIN`)
-- **`partnerType`**: Enum (`COMPANY`, `FREELANCER`)
-- **`mobileNumber`**, **`name`**, **`age`**, **`gender`**: Optional metadata
-
-#### 2. `Profile` Model (Organizer & Traveler Master Hub)
-- **Basic Info**: `displayName`, `bio`, `avatarUrl`, `coverBannerUrl`, `phone`, `whatsappNumber`, `city`, `country`.
-- **Travel Expertise**: `specializations[]`, `languages[]`, `travelStyles[]`, `groupSizes[]`, `yearsExperience`.
-- **Operating Locations**: `countriesServed[]`, `operatingRegions[]`, `popularDestinations[]`.
-- **Business Credentials**: `companyName`, `registrationNumber` (CIN/LLPIN), `gstNumber`, `panNumber`, `companyWebsite`, `officeAddress`, `occupation`, `govtIdType`, `govtIdNumber`.
-- **Service Toggles**: Boolean flags for `serviceFlights`, `serviceHotels`, `serviceMeals`, `serviceLocalTransport`, `serviceVisaAssistance`, `serviceTravelInsurance`, `serviceTourGuide`, `serviceCustomizedItinerary`.
-- **Availability & Banking**: `workingDays[]`, `workingHoursStart/End`, `responseTimeSla`, `bankAccountName`, `bankAccountNumber`, `bankName`, `ifscOrSwiftCode`, `upiOrPaypalId`.
-- **Verification Status**: `isVerified` (Boolean), `verificationProgress` (`PENDING`, `UNDER_REVIEW`, `VERIFIED`, `REJECTED`), `rejectionReason`.
-- **Performance Metrics**: `partnerLevel`, `averageRating`, `tripsCompleted`, `happyTravelers`, `responseRate`.
-
-#### 3. `Package` & `ItineraryDay` Models
-- **`Package`**: `title`, `description`, `destination`, `days`, `nights`, `basePrice`, `discountedPrice`, `category`, `difficulty` (`EASY`, `MODERATE`, `HARD`, `EXPERT`), `status` (`DRAFT`, `PUBLISHED`, `ARCHIVED`), `inclusions[]`, `exclusions[]`.
-- **`ItineraryDay`**: `dayNumber`, `title`, `description`, `activities[]`, `meals[]`, `hotelName`, `hotelAddress`, `latitude`, `longitude`.
-
-#### 4. `Booking` & `Payment` Models
-- **`Booking`**: `travelerId`, `packageId`, `travelDate`, `passengerCount`, `totalAmount`, `status` (`PENDING`, `CONFIRMED`, `CANCELLED`).
-- **`Payment`**: `bookingId`, `amount`, `currency` (Default: "INR"), `status` (`PENDING`, `SUCCESS`, `FAILED`), `razorpayOrderId`, `razorpayPaymentId`.
-
----
-
-## 🔐 Authentication & Authorization Architecture
-
-Beacon enforces security across client and server applications through a multi-tiered security model:
-
-1. **Password Encryption**: User passwords are encrypted using `bcrypt` (10 rounds) prior to storage.
-2. **Passport Local Strategy**: Handles initial `/auth/login` requests by verifying email/password matches.
-3. **JWT Session Tokens**: Issued upon successful authentication, containing `userId`, `email`, `role`, and `partnerType`.
-4. **HTTP-Only Cookie Delivery**: Tokens are written directly into an HTTP-Only cookie (`access_token`) with `sameSite: 'lax'`, shielding credentials from XSS attacks.
-5. **Role-Based Guards (`JwtAuthGuard`)**: Endpoints are protected by NestJS guards that decode incoming JWT cookies or Authorization Bearer headers to enforce permissions for `TRAVELER`, `PLANNER`, or `ADMIN`.
-
----
-
-## 📡 Comprehensive API Reference
-
-### 🔑 Auth Endpoints (`/auth`)
-| Method | Endpoint | Access Guard | Description |
-| :--- | :--- | :--- | :--- |
-| `POST` | `/auth/register` | Public | Register a new user (`TRAVELER` or `PLANNER`) |
-| `POST` | `/auth/login` | LocalAuthGuard | Authenticate user & set `access_token` HTTP-Only cookie |
-| `POST` | `/auth/logout` | Public | Clear `access_token` cookie & destroy session |
-| `GET` | `/auth/profile` | JwtAuthGuard | Retrieve current logged-in user profile payload |
-
-### 🧭 Organizer Profile Endpoints (`/organizer-profile`)
-| Method | Endpoint | Access Guard | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/organizer-profile/me` | JwtAuthGuard | Get active planner's full 10-section profile & document vault |
-| `PATCH` | `/organizer-profile/me/section/:sectionKey` | JwtAuthGuard | Update specific section key (e.g., `expertise`, `banking`, `services`) |
-| `POST` | `/organizer-profile/me/verification/upload` | JwtAuthGuard | Upload verification credential to document vault |
-| `GET` | `/organizer-profile/public/:id` | Public | Fetch public-facing organizer profile with metrics & badges |
-
-### 📦 Packages Endpoints (`/packages`)
-| Method | Endpoint | Access Guard | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/packages` | Public | List all published packages with optional search/category filter |
-| `GET` | `/packages/:id` | Public | Fetch complete package details including itinerary & organizer |
-| `POST` | `/packages` | JwtAuthGuard | Create a new travel package with itinerary days & pricing |
-| `PATCH` | `/packages/:id` | JwtAuthGuard | Update existing package details or status (`PUBLISHED`/`DRAFT`) |
-| `DELETE` | `/packages/:id` | JwtAuthGuard | Remove a package from marketplace |
-
-### 🎟️ Bookings & Payments Endpoints (`/bookings`)
-| Method | Endpoint | Access Guard | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/bookings` | JwtAuthGuard | List bookings for current user (traveler or planner view) |
-| `POST` | `/bookings` | JwtAuthGuard | Create a new trip reservation & generate payment order |
-| `PATCH` | `/bookings/:id/status` | JwtAuthGuard | Update booking status (`CONFIRMED`, `CANCELLED`) |
-
-### 📊 Stats & Reviews Endpoints (`/stats`, `/reviews`, `/destinations`)
-| Method | Endpoint | Access Guard | Description |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/stats` | Public | Fetch platform summary stats for landing & dashboard overview |
-| `GET` | `/destinations` | Public | List featured travel destinations with weather info |
-| `GET` | `/reviews` | Public | Fetch traveler reviews & ratings |
-
----
-
-## 🎯 Key Design Decisions & Engineering Strategy
-
-1. **Monorepo Architecture (NPM Workspaces)**:
-   - *Rationale*: Storing `api`, `waypoint`, `web`, and `database` in a single monorepo ensures atomic changes across frontend contracts and backend Prisma schemas without maintaining multiple repositories.
-
-2. **Vite + React 19 for Waypoint Application**:
-   - *Rationale*: Provides ultra-fast Hot Module Replacement (HMR) and lightning-quick build times. React 19 enables modern concurrency primitives and state management.
-
-3. **NestJS Modular Architecture**:
-   - *Rationale*: NestJS provides clear separation of concerns (Controllers, Services, Guards, DTOs). Each feature (Auth, Packages, Bookings, Organizer Profile) resides in its self-contained domain directory.
-
-4. **Dynamic Graceful Port Binding**:
-   - *Rationale*: In `apps/api/src/main.ts`, the bootstrap code checks if port `3001` is already in use using native `net` socket checks. If occupied, it automatically increments and binds to the next available port (e.g. `3002`), preventing server crashes during dev restarts.
-
-5. **Prisma + MongoDB Atlas**:
-   - *Rationale*: Combines relational-like type safety in TypeScript with MongoDB's document flexibility. Allows rich itinerary sub-documents while maintaining foreign key relations via `@db.ObjectId`.
-
----
-
-## ⚙️ Environment Variables & Configuration
-
-Create a `.env` file in the root directory `d:\Beacon\.env`:
-
-```env
-# Database Connection (MongoDB Atlas Connection String)
-DATABASE_URL="mongodb+srv://<username>:<password>@cluster0.mongodb.net/beacon?retryWrites=true&w=majority"
-
-# Backend API Service Settings
-PORT=3001
-JWT_SECRET="beacon-super-secret-jwt-key-2026"
-ALLOWED_ORIGINS="http://localhost:5173,http://localhost:5174,http://localhost:3000"
-
-# Waypoint Client API Endpoint (apps/waypoint/.env)
-VITE_API_URL="http://localhost:3001"
-```
+| `/master-login` | **Master Login Portal** | 13-role selector, PIN entry, hardware key, biometric scan simulation |
+| `/master-control` | **Mission Control Overview** | Live microservice health, executive KPIs, live event stream, threat alerts |
+| `/master-control/verification` | **Verification Center** | 9-document audit drawer, duplicate PAN/GST detector, Verified Badge issuance |
+| `/master-control/users` | **User Operations & RBAC** | Manage 1.2k+ planners, 48k+ customers, staff privileges, payout freezes |
+| `/master-control/trips` | **Live Trip Operations** | Real-time departure monitoring, guide contact, vehicle info, satellite GPS map |
+| `/master-control/packages` | **Package Management** | Quality score audit, AI duplicate text/image scanner, spotlight featuring |
+| `/master-control/bookings` | **Booking Operations** | Search by Booking ID / UTR, lifecycle dossiers, tax invoices, full refunds |
+| `/master-control/payments` | **Payment Center** | UTR verification ledger, duplicate UTR alerts, commission split calculator |
+| `/master-control/support` | **Customer Care CRM** | CSAT metrics, response times, SLA countdowns, dual-channel chat desk |
+| `/master-control/disputes` | **Disputes Tribunal** | Legal conflict resolution, evidence inspection, binding verdict rulings |
+| `/master-control/reviews` | **Review Moderation** | Moderates customer ratings, flags defamation/spam IP clusters |
+| `/master-control/marketing` | **Growth & Marketing** | Manages homepage banners, push broadcasts, festival promo campaigns |
+| `/master-control/analytics` | **Executive Intelligence** | ABV metrics, retention cohorts, destination heatmaps, planner leaderboards |
+| `/master-control/fraud-audit` | **Fraud & Audit Engine** | Immutable audit log table recording IP, actor, role, timestamps, state diffs |
+| `/master-control/settings` | **Platform Settings** | Commission rates, GST tax %, minimum payouts, emergency lockdown switches |
 
 ---
 
@@ -450,7 +286,7 @@ VITE_API_URL="http://localhost:3001"
 ### Prerequisites
 - **Node.js**: v20.0.0 or higher
 - **NPM**: v10.0.0 or higher
-- **MongoDB**: Access to a MongoDB Atlas cluster or local MongoDB instance
+- **MongoDB**: Access to a MongoDB Atlas cluster or local instance
 
 ### Step-by-Step Installation
 
@@ -465,101 +301,32 @@ VITE_API_URL="http://localhost:3001"
    npm install
    ```
 
-3. **Configure Environment Variables**:
-   Verify `.env` exists in the root folder with a valid `DATABASE_URL` and `JWT_SECRET`.
-
-4. **Generate Prisma Database Client**:
+3. **Generate Prisma Client**:
    ```bash
    npm run db:generate --workspace=@beacon/database
    ```
 
-5. **Push Schema to MongoDB**:
+4. **Launch Application Workspaces**:
    ```bash
-   npm run db:push --workspace=@beacon/database
+   # Run Vite React Frontend & Master Control Hub
+   npm run dev:waypoint
+   # Access Master Login at http://localhost:5173/master-login
    ```
 
 ---
 
-## 🏃 Running the Applications
+## 🧪 Testing & Build Pipeline
 
-### Concurrent Development Run (Root Command)
-To launch all workspace applications simultaneously:
-```bash
-npm run dev
-```
-
-### Running Individual Workspace Applications
-
-#### Option A: NestJS Backend API Only (`apps/api`)
-```bash
-npm run dev --workspace=api
-# Server will listen on http://localhost:3001
-```
-
-#### Option B: Waypoint React Frontend Only (`apps/waypoint`)
-```bash
-npm run dev:waypoint
-# Vite server will launch on http://localhost:5173 or http://localhost:5174
-```
-
-#### Option C: Next.js Web Portal Only (`apps/web`)
-```bash
-cd apps/web
-npm run dev
-# Next.js app will launch on http://localhost:3000
-```
-
----
-
-## 🧪 Testing, Build & Deployment Pipeline
-
-### Code Linting & Formatting
-```bash
-# Run ESLint & Oxlint across all workspaces
-npm run lint
-
-# Format code with Prettier in NestJS API
-npm run format --workspace=api
-```
-
-### Unit & E2E Testing
-```bash
-# Run Jest unit tests in NestJS API
-npm run test --workspace=api
-
-# Run E2E tests
-npm run test:e2e --workspace=api
-```
-
-### Production Build
 ```bash
 # Build all monorepo applications and packages
 npm run build
+
+# Build waypoint client application
+npm run build:waypoint
 ```
-
----
-
-## 🤝 Contribution Guidelines
-
-We welcome contributions to the Beacon Ecosystem! Follow these steps:
-
-1. **Fork the Repository** on GitHub.
-2. **Create a Feature Branch**:
-   ```bash
-   git checkout -b feature/amazing-travel-feature
-   ```
-3. **Commit your changes**:
-   ```bash
-   git commit -m "feat(packages): add interactive route map viewer"
-   ```
-4. **Push to the Branch**:
-   ```bash
-   git push origin feature/amazing-travel-feature
-   ```
-5. **Open a Pull Request** with a detailed summary of your changes.
 
 ---
 
 <p align="center">
-  Built with ❤️ for adventurous travelers and passionate trip organizers around the world.
+  Built with ❤️ for adventurous travelers, passionate trip organizers, and enterprise platform administrators around the world.
 </p>
