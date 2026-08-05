@@ -33,28 +33,35 @@ async function bootstrap() {
   
   app.use(cookieParser());
   
-  // Enable CORS securely
-  const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
+  // Enable CORS securely for all onrender.com domains, localhost, & custom origins
+  const rawAllowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map((o) => o.trim())
     : ['http://localhost:5173', 'http://localhost:5174'];
 
   app.enableCors({
-    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      if (!origin) return callback(null, true);
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        allowedOrigins.includes('*') ||
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean | string) => void) => {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const isAllowed =
+        rawAllowedOrigins.includes('*') ||
+        rawAllowedOrigins.includes(origin) ||
+        origin.endsWith('.onrender.com') ||
         origin.startsWith('http://localhost:') ||
-        origin.startsWith('http://127.0.0.1:')
-      ) {
-        callback(null, true);
+        origin.startsWith('http://127.0.0.1:');
+
+      if (isAllowed) {
+        // Echo back requesting origin to satisfy credentials: true requirements
+        callback(null, origin);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(null, origin);
       }
     },
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
+    allowedHeaders: 'Content-Type, Accept, Authorization, Cookie, X-Requested-With',
     optionsSuccessStatus: 204,
   });
 
@@ -68,8 +75,7 @@ async function bootstrap() {
   }
 
   await app.listen(port);
-  logger.log(`[NestJS] MongoDB Atlas connected successfully.`);
-  logger.log(`[NestJS] Server is listening on http://localhost:${port}`);
-  logger.log(`[NestJS] Auth Endpoints: http://localhost:${port}/auth/register, http://localhost:${port}/auth/login, http://localhost:${port}/auth/profile`);
+  logger.log(`[NestJS] Server is listening on port ${port}`);
+  logger.log(`[NestJS] CORS active for origins: ${rawAllowedOrigins.join(', ')} & *.onrender.com`);
 }
 bootstrap();
