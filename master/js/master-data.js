@@ -1,0 +1,1261 @@
+/**
+ * BEACON MASTER — DATASTORE & DEMO DATA ENGINE
+ * Realistic Indian & Global travel platform dataset for Master Admin command center.
+ */
+
+export const MASTER_INITIAL_DATA = {
+  // Summary KPIs
+  stats: {
+    totalTravellers: 12482,
+    travellersGrowth: 14.8,
+    totalPlanners: 1284,
+    plannersGrowth: 8.2,
+    activeTrips: 3846,
+    tripsGrowth: 19.4,
+    totalBookings: 2164,
+    bookingsGrowth: 11.3,
+    grossBookingValue: 4860000, // ₹48.6L
+    gbvGrowth: 22.1,
+    platformRevenue: 680400, // ₹6.8L (approx 14% take rate)
+    revenueGrowth: 18.7,
+    plannerEarnings: 4179600, // ₹41.8L
+    pendingVerifications: 37,
+    openSupportTickets: 14,
+    reportedAccounts: 6,
+    pendingApprovals: 9,
+    systemUptime: 99.98
+  },
+
+  // Active Admin User Session
+  currentAdmin: {
+    id: "ADM-001",
+    name: "Vikram Malhotra",
+    email: "master@beacon.travel",
+    role: "Super Admin",
+    roleCode: "SUPER_ADMIN",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    phone: "+91 98200 84920",
+    location: "Mumbai, India",
+    lastLogin: "2026-08-10 14:48:22 IST",
+    ipAddress: "103.246.40.112",
+    mfaEnabled: true,
+    mfaMethod: "Authenticator App (TOTP)",
+    activeSessions: [
+      { id: "SESS-1", device: "MacBook Pro 16\"", browser: "Chrome 128.0", location: "Mumbai, MH (Current)", ip: "103.246.40.112", lastActive: "Just now", current: true },
+      { id: "SESS-2", device: "iPhone 15 Pro", browser: "Safari Mobile", location: "Mumbai, MH", ip: "103.246.40.112", lastActive: "2 hours ago", current: false },
+      { id: "SESS-3", device: "iPad Air M2", browser: "Chrome Mobile", location: "Pune, MH", ip: "49.36.12.88", lastActive: "Yesterday", current: false }
+    ]
+  },
+
+  // System Health Telemetry
+  systemHealth: {
+    overallStatus: "OPERATIONAL", // OPERATIONAL | DEGRADED | DOWN
+    uptime: "99.98%",
+    avgLatency: "38ms",
+    requestsPerMin: "4,820 rpm",
+    errorRate: "0.02%",
+    activeWebSocketConnections: 1842,
+    services: [
+      { id: "srv-api", name: "Core API Gateway", status: "OPERATIONAL", latency: "24ms", uptime: "99.99%", load: "34%" },
+      { id: "srv-db", name: "PostgreSQL Primary Cluster", status: "OPERATIONAL", latency: "8ms", uptime: "99.99%", load: "42%" },
+      { id: "srv-redis", name: "Redis Distributed Cache", status: "OPERATIONAL", latency: "3ms", uptime: "100.0%", load: "18%" },
+      { id: "srv-auth", name: "MFA & Identity Vault", status: "OPERATIONAL", latency: "19ms", uptime: "99.98%", load: "12%" },
+      { id: "srv-pay", name: "Razorpay / Stripe Webhooks", status: "OPERATIONAL", latency: "62ms", uptime: "99.95%", load: "28%" },
+      { id: "srv-maps", name: "Mapbox & Geospatial Engine", status: "OPERATIONAL", latency: "45ms", uptime: "99.96%", load: "51%" },
+      { id: "srv-media", name: "AWS S3 / Cloudflare CDN", status: "OPERATIONAL", latency: "14ms", uptime: "100.0%", load: "64%" },
+      { id: "srv-notify", name: "Notification & SMS Dispatcher", status: "DEGRADED", latency: "210ms", uptime: "98.84%", load: "88%", note: "Carrier throughput throttled in North India" }
+    ]
+  },
+
+  // Users Directory (Travellers, Planners, Admins)
+  users: [
+    {
+      id: "USR-1082",
+      name: "Aarav Mehta",
+      email: "aarav.mehta@gmail.com",
+      phone: "+91 98210 11920",
+      type: "TRAVELLER",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2025-11-14",
+      lastActive: "10 mins ago",
+      location: "Mumbai, India",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      tripsCount: 6,
+      bookingsCount: 4,
+      totalSpent: "₹1,84,000",
+      favouriteDestinations: ["Goa", "Kashmir", "Dubai", "Bali"],
+      bio: "Serial globetrotter, mountain lover, and drone landscape photographer.",
+      reportsCount: 0
+    },
+    {
+      id: "USR-1083",
+      name: "Ananya Sharma",
+      email: "ananya.journeys@gmail.com",
+      phone: "+91 98450 77123",
+      type: "PLANNER",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2025-08-20",
+      lastActive: "Just now",
+      location: "Bengaluru, India",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      plannerBadge: "Gold Organizer",
+      tripsCount: 48,
+      bookingsCount: 132,
+      totalEarned: "₹8,45,000",
+      rating: 4.9,
+      reviewsCount: 64,
+      specialization: ["Luxury Expeditions", "Honeymoon & Romantic", "Himalayan Treks"],
+      responseRate: "98%",
+      cancellationRate: "0.2%",
+      reportsCount: 0
+    },
+    {
+      id: "USR-1084",
+      name: "Rohan Varma",
+      email: "rohan.v@outlook.com",
+      phone: "+91 97110 34821",
+      type: "TRAVELLER",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2026-01-10",
+      lastActive: "1 hour ago",
+      location: "Delhi NCR, India",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+      tripsCount: 3,
+      bookingsCount: 2,
+      totalSpent: "₹92,500",
+      favouriteDestinations: ["Manali", "Goa", "Singapore"],
+      bio: "Software architect escaping on weekend roadtrips & coastal dives.",
+      reportsCount: 0
+    },
+    {
+      id: "USR-1085",
+      name: "Karan Johar Travels (Karan Deshmukh)",
+      email: "karan@peaksandvalleys.in",
+      phone: "+91 99201 44510",
+      type: "PLANNER",
+      status: "PENDING_VERIFICATION",
+      verificationStatus: "PENDING",
+      registeredDate: "2026-08-04",
+      lastActive: "3 hours ago",
+      location: "Pune, India",
+      avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+      plannerBadge: "New Applicant",
+      tripsCount: 2,
+      bookingsCount: 0,
+      totalEarned: "₹0",
+      rating: 0,
+      reviewsCount: 0,
+      specialization: ["Western Ghats", "Monsoon Camping", "Heritage Forts"],
+      responseRate: "100%",
+      cancellationRate: "0%",
+      reportsCount: 0
+    },
+    {
+      id: "USR-1086",
+      name: "Pooja Hegde",
+      email: "pooja.h@travelaura.com",
+      phone: "+91 98860 99401",
+      type: "PLANNER",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2025-06-12",
+      lastActive: "25 mins ago",
+      location: "Goa, India",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+      plannerBadge: "Gold Organizer",
+      tripsCount: 72,
+      bookingsCount: 210,
+      totalEarned: "₹14,20,000",
+      rating: 4.95,
+      reviewsCount: 112,
+      specialization: ["Private Yacht Charters", "Goan Heritage", "Scuba & Marine"],
+      responseRate: "99%",
+      cancellationRate: "0.1%",
+      reportsCount: 0
+    },
+    {
+      id: "USR-1087",
+      name: "Vikram Malhotra",
+      email: "master@beacon.travel",
+      phone: "+91 98200 84920",
+      type: "ADMIN",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2025-01-01",
+      lastActive: "Now",
+      location: "Mumbai, India",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      adminRole: "Super Admin",
+      permissions: "ALL_ACCESS"
+    },
+    {
+      id: "USR-1088",
+      name: "Sneha Nair",
+      email: "sneha.ops@beacon.travel",
+      phone: "+91 98205 33201",
+      type: "ADMIN",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2025-04-10",
+      lastActive: "5 mins ago",
+      location: "Kochi, India",
+      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
+      adminRole: "Operations Admin",
+      permissions: "TRIPS, BOOKINGS, PLANNERS"
+    },
+    {
+      id: "USR-1089",
+      name: "Tariq Abdullah",
+      email: "tariq.kashmir@gmail.com",
+      phone: "+91 94190 22109",
+      type: "PLANNER",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2025-07-15",
+      lastActive: "40 mins ago",
+      location: "Srinagar, Kashmir",
+      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80",
+      plannerBadge: "Silver Organizer",
+      tripsCount: 39,
+      bookingsCount: 88,
+      totalEarned: "₹6,12,000",
+      rating: 4.86,
+      reviewsCount: 42,
+      specialization: ["Gulmarg Skiing", "Dal Lake Houseboats", "Pahalgam Treks"],
+      responseRate: "96%",
+      cancellationRate: "0.5%",
+      reportsCount: 0
+    },
+    {
+      id: "USR-1090",
+      name: "Devendra Patel",
+      email: "dev.patel99@gmail.com",
+      phone: "+91 99090 12891",
+      type: "TRAVELLER",
+      status: "SUSPENDED",
+      verificationStatus: "UNVERIFIED",
+      registeredDate: "2026-07-20",
+      lastActive: "3 days ago",
+      location: "Ahmedabad, India",
+      avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80",
+      tripsCount: 1,
+      bookingsCount: 0,
+      totalSpent: "₹0",
+      reportsCount: 3,
+      suspensionReason: "Suspected payment chargeback fraud & abusive planner communication"
+    },
+    {
+      id: "USR-1091",
+      name: "Elena Rostova",
+      email: "elena.r@voyageur.fr",
+      phone: "+33 6 44 91 20 18",
+      type: "PLANNER",
+      status: "ACTIVE",
+      verificationStatus: "VERIFIED",
+      registeredDate: "2025-09-01",
+      lastActive: "15 mins ago",
+      location: "Paris, France",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      plannerBadge: "Gold Organizer",
+      tripsCount: 31,
+      bookingsCount: 94,
+      totalEarned: "₹18,40,000",
+      rating: 4.98,
+      reviewsCount: 52,
+      specialization: ["European Art Tours", "French Riviera", "Swiss Alps Escapes"],
+      responseRate: "100%",
+      cancellationRate: "0%",
+      reportsCount: 0
+    }
+  ],
+
+  // Trip Directory
+  trips: [
+    {
+      id: "TRIP-20481",
+      title: "Kashmir Winter Wonderland & Ski Expedition",
+      traveller: { name: "Aarav Mehta", email: "aarav.mehta@gmail.com", id: "USR-1082" },
+      planner: { name: "Tariq Abdullah", email: "tariq.kashmir@gmail.com", id: "USR-1089" },
+      destination: "Srinagar & Gulmarg, Kashmir",
+      country: "India",
+      startDate: "2026-08-18",
+      endDate: "2026-08-25",
+      durationDays: 7,
+      members: 4,
+      budget: "₹1,45,000",
+      actualCost: "₹1,42,800",
+      commissionRate: "14%",
+      platformCommission: "₹19,992",
+      status: "ACTIVE", // DRAFT | PLANNING | CONFIRMED | ACTIVE | COMPLETED | CANCELLED | DISPUTED
+      paymentStatus: "PAID",
+      createdDate: "2026-08-01",
+      itinerary: [
+        { day: 1, title: "Arrival in Srinagar & Traditional Houseboat Check-in on Nigeen Lake", activities: "Private Shikara cruise, evening Wazwan dinner" },
+        { day: 2, title: "Mughal Gardens, Shankaracharya Temple & Old Srinagar Spice Walk", activities: "Heritage walking tour with local historian" },
+        { day: 3, title: "Scenic Transfer to Gulmarg & Gondola Phase 1 & 2 Ascent", activities: "Ski orientation and high-altitude photography" },
+        { day: 4, title: "Full Day Ski Course & Snowmobiling at Apharwat Peak", activities: "Certified instructor guidance and equipment rental" },
+        { day: 5, title: "Day excursion to Betaab Valley & Aru Valley in Pahalgam", activities: "Pony trek, river rafting along Lidder river" },
+        { day: 6, title: "Local Pashmina Art & Saffron Plantation Tour in Pampore", activities: "Artisan workshop and culinary tea tasting" },
+        { day: 7, title: "Departure Transfer to Sheikh ul-Alam International Airport", activities: "Airport VIP drop-off" }
+      ],
+      bookingsLinked: [
+        { type: "Stay", name: "Wangnoo Heritage Houseboat (2 Nights)", status: "CONFIRMED", cost: "₹28,000" },
+        { type: "Stay", name: "The Khyber Himalayan Resort & Spa (3 Nights)", status: "CONFIRMED", cost: "₹72,000" },
+        { type: "Transport", name: "Innova Crysta 4x4 Private Chauffeur (7 Days)", status: "CONFIRMED", cost: "₹26,000" },
+        { type: "Experience", name: "Gulmarg Heli-Ski Access & Gondola VIP Tickets", status: "CONFIRMED", cost: "₹16,800" }
+      ],
+      recentChat: [
+        { sender: "Traveller", message: "Can we request an early morning Shikara ride at sunrise on Day 2?", time: "Yesterday, 18:20" },
+        { sender: "Planner", message: "Absolutely! I have arranged Master Ghulam for 5:45 AM sunrise photography.", time: "Yesterday, 18:45" }
+      ]
+    },
+    {
+      id: "TRIP-20482",
+      title: "Goa Coastal Yacht & Heritage Gastronomy",
+      traveller: { name: "Rohan Varma", email: "rohan.v@outlook.com", id: "USR-1084" },
+      planner: { name: "Pooja Hegde", email: "pooja.h@travelaura.com", id: "USR-1086" },
+      destination: "South Goa & Mandovi River",
+      country: "India",
+      startDate: "2026-08-28",
+      endDate: "2026-09-02",
+      durationDays: 5,
+      members: 2,
+      budget: "₹85,000",
+      actualCost: "₹82,000",
+      commissionRate: "14%",
+      platformCommission: "₹11,480",
+      status: "CONFIRMED",
+      paymentStatus: "PAID",
+      createdDate: "2026-08-05",
+      itinerary: [
+        { day: 1, title: "Check-in at Alila Diwa Goa & Sunset Beach Walk", activities: "Welcome kokum cocktail & private beach cabana" },
+        { day: 2, title: "Private 4-Hour Sunset Luxury Catamaran on Mandovi River", activities: "Champagne, chef grilled seafood, dolphin sighting" },
+        { day: 3, title: "Fontainhas Latin Quarter Architecture & Fado Music Dinner", activities: "Private historian guided walk through Portuguese villas" },
+        { day: 4, title: "Spice Plantation Sensory Tour & Organic Culinary Masterclass", activities: "Traditional clay-pot cooking session with Goan chef" },
+        { day: 5, title: "Morning Yoga & Dabolim Airport Transfer", activities: "Ayurvedic massage and departure" }
+      ],
+      bookingsLinked: [
+        { type: "Stay", name: "Alila Diwa Luxury Resort (4 Nights)", status: "CONFIRMED", cost: "₹52,000" },
+        { type: "Experience", name: "Private 42ft Luxury Catamaran Charter", status: "CONFIRMED", cost: "₹24,000" },
+        { type: "Transport", name: "Mercedes Benz E-Class Airport VIP", status: "CONFIRMED", cost: "₹6,000" }
+      ]
+    },
+    {
+      id: "TRIP-20483",
+      title: "Paris & French Alps Romantic Odyssey",
+      traveller: { name: "Kabir Roy", email: "kabir.roy@innovate.co", id: "USR-1092" },
+      planner: { name: "Elena Rostova", email: "elena.r@voyageur.fr", id: "USR-1091" },
+      destination: "Paris & Chamonix, France",
+      country: "France",
+      startDate: "2026-09-12",
+      endDate: "2026-09-22",
+      durationDays: 10,
+      members: 2,
+      budget: "₹4,80,000",
+      actualCost: "₹4,75,000",
+      commissionRate: "12%",
+      platformCommission: "₹57,000",
+      status: "PLANNING",
+      paymentStatus: "PARTIAL_DEPOSIT",
+      createdDate: "2026-08-08"
+    },
+    {
+      id: "TRIP-20484",
+      title: "Dubai Skyline & Desert Stargazing Safari",
+      traveller: { name: "Ananya Sharma", email: "ananya.s@me.com", id: "USR-1093" },
+      planner: { name: "Farhan Qureshi", email: "farhan@emiratesvoyage.ae", id: "USR-1094" },
+      destination: "Dubai, United Arab Emirates",
+      country: "UAE",
+      startDate: "2026-08-10",
+      endDate: "2026-08-15",
+      durationDays: 5,
+      members: 3,
+      budget: "₹2,10,000",
+      actualCost: "₹2,05,000",
+      commissionRate: "15%",
+      platformCommission: "₹30,750",
+      status: "ACTIVE",
+      paymentStatus: "PAID",
+      createdDate: "2026-07-28"
+    },
+    {
+      id: "TRIP-20485",
+      title: "Bali Sacred Temples & Ubud Rainforest Retreat",
+      traveller: { name: "Siddharth Jain", email: "sid.jain@techcorp.in", id: "USR-1095" },
+      planner: { name: "Wayan Sudirta", email: "wayan@balicustomtrips.com", id: "USR-1096" },
+      destination: "Ubud & Seminyak, Bali",
+      country: "Indonesia",
+      startDate: "2026-08-01",
+      endDate: "2026-08-08",
+      durationDays: 8,
+      members: 2,
+      budget: "₹1,60,000",
+      actualCost: "₹1,58,000",
+      commissionRate: "14%",
+      platformCommission: "₹22,120",
+      status: "COMPLETED",
+      paymentStatus: "PAID",
+      createdDate: "2026-07-10"
+    },
+    {
+      id: "TRIP-20486",
+      title: "Manali High Pass Motorbike Expedition",
+      traveller: { name: "Aditya Kasod", email: "aditya@kasod.in", id: "USR-1097" },
+      planner: { name: "Ananya Sharma", email: "ananya.journeys@gmail.com", id: "USR-1083" },
+      destination: "Manali & Spiti Valley, Himachal",
+      country: "India",
+      startDate: "2026-09-05",
+      endDate: "2026-09-14",
+      durationDays: 9,
+      members: 6,
+      budget: "₹1,95,000",
+      actualCost: "₹1,95,000",
+      commissionRate: "14%",
+      platformCommission: "₹27,300",
+      status: "CONFIRMED",
+      paymentStatus: "PAID",
+      createdDate: "2026-08-07"
+    }
+  ],
+
+  // Destinations Catalog
+  destinations: [
+    {
+      id: "DEST-01",
+      name: "Srinagar & Kashmir Valley",
+      country: "India",
+      state: "Jammu & Kashmir",
+      coordinates: "34.0837° N, 74.7973° E",
+      heroImage: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?w=800&auto=format&fit=crop&q=80",
+      description: "Paradise on Earth famed for majestic Dal Lake houseboats, Mughal gardens, and snow-laden peaks of Gulmarg.",
+      bestTime: "Apr - Oct (Greenery) & Dec - Feb (Snow / Skiing)",
+      weather: "19°C · Clear Alpine Skies",
+      status: "PUBLISHED",
+      activeTrips: 342,
+      activePlanners: 28,
+      avgBudget: "₹35,000 - ₹95,000",
+      tags: ["Mountains", "Snow", "Romantic", "Culture", "Houseboats"]
+    },
+    {
+      id: "DEST-02",
+      name: "Goa (North & South)",
+      country: "India",
+      state: "Goa",
+      coordinates: "15.2993° N, 74.1240° E",
+      heroImage: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&auto=format&fit=crop&q=80",
+      description: "Sun-kissed Arabian shores, Portuguese heritage villas, vibrant beach clubs, and spice plantations.",
+      bestTime: "Oct - Apr (Beach & Party) & Jun - Sep (Monsoon Lush)",
+      weather: "28°C · Tropical Breeze",
+      status: "PUBLISHED",
+      activeTrips: 684,
+      activePlanners: 64,
+      avgBudget: "₹25,000 - ₹75,000",
+      tags: ["Beaches", "Nightlife", "Heritage", "Water Sports", "Luxury Villas"]
+    },
+    {
+      id: "DEST-03",
+      name: "Manali & Solang Valley",
+      country: "India",
+      state: "Himachal Pradesh",
+      coordinates: "32.2396° N, 77.1887° E",
+      heroImage: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?w=800&auto=format&fit=crop&q=80",
+      description: "High altitude adventure hub nestled in the Beas River valley, serving as gateway to Rohtang and Spiti.",
+      bestTime: "Year-round",
+      weather: "16°C · Misty Mountain Air",
+      status: "PUBLISHED",
+      activeTrips: 412,
+      activePlanners: 42,
+      avgBudget: "₹20,000 - ₹55,000",
+      tags: ["Trekking", "Paragliding", "Rivers", "Cafes", "Backpacking"]
+    },
+    {
+      id: "DEST-04",
+      name: "Jaipur (Pink City)",
+      country: "India",
+      state: "Rajasthan",
+      coordinates: "26.9124° N, 75.7873° E",
+      heroImage: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&auto=format&fit=crop&q=80",
+      description: "Royal capital of Rajasthan featuring Amber Palace, Hawa Mahal, luxury havelis, and artisan bazaars.",
+      bestTime: "Oct - Mar",
+      weather: "31°C · Sunny",
+      status: "PUBLISHED",
+      activeTrips: 290,
+      activePlanners: 35,
+      avgBudget: "₹22,000 - ₹80,000",
+      tags: ["Royal Heritage", "Palaces", "Shopping", "Food", "Photography"]
+    },
+    {
+      id: "DEST-05",
+      name: "Dubai & Emirates",
+      country: "United Arab Emirates",
+      state: "Dubai",
+      coordinates: "25.2048° N, 55.2708° E",
+      heroImage: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&auto=format&fit=crop&q=80",
+      description: "Futuristic metropolis boasting Burj Khalifa, luxury desert safaris, mega malls, and world-class fine dining.",
+      bestTime: "Nov - Apr",
+      weather: "36°C · Sunny Desert",
+      status: "PUBLISHED",
+      activeTrips: 512,
+      activePlanners: 48,
+      avgBudget: "₹65,000 - ₹2,50,000",
+      tags: ["Luxury", "Shopping", "Desert", "Skyline", "Theme Parks"]
+    },
+    {
+      id: "DEST-06",
+      name: "Bali Island & Ubud",
+      country: "Indonesia",
+      state: "Bali",
+      coordinates: "8.3405° S, 115.0920° E",
+      heroImage: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&auto=format&fit=crop&q=80",
+      description: "Island of Gods celebrated for lush emerald rice terraces, cliffside Uluwatu temples, and volcanic surf spots.",
+      bestTime: "Apr - Oct",
+      weather: "27°C · Island Sunshine",
+      status: "PUBLISHED",
+      activeTrips: 420,
+      activePlanners: 39,
+      avgBudget: "₹50,000 - ₹1,40,000",
+      tags: ["Spiritual", "Surfing", "Wellness", "Villas", "Temples"]
+    },
+    {
+      id: "DEST-07",
+      name: "Paris & Île-de-France",
+      country: "France",
+      state: "Paris Region",
+      coordinates: "48.8566° N, 2.3522° E",
+      heroImage: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&auto=format&fit=crop&q=80",
+      description: "The City of Light famed for Haute Couture, Michelin gastronomy, the Louvre Museum, and romantic Seine cruises.",
+      bestTime: "May - Sep",
+      weather: "22°C · Pleasant",
+      status: "PUBLISHED",
+      activeTrips: 218,
+      activePlanners: 24,
+      avgBudget: "₹1,80,000 - ₹4,50,000",
+      tags: ["Romance", "Art", "Gastronomy", "Architecture", "Luxury"]
+    },
+    {
+      id: "DEST-08",
+      name: "Tokyo & Kanto",
+      country: "Japan",
+      state: "Tokyo",
+      coordinates: "35.6762° N, 139.6503° E",
+      heroImage: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800&auto=format&fit=crop&q=80",
+      description: "Hyper-modern neon wonderland seamlessly blending ancient Shinto shrines with cutting-edge pop culture & culinary art.",
+      bestTime: "Mar - May (Cherry Blossoms) & Oct - Nov",
+      weather: "25°C · Clear",
+      status: "PUBLISHED",
+      activeTrips: 184,
+      activePlanners: 19,
+      avgBudget: "₹1,90,000 - ₹5,00,000",
+      tags: ["Tech", "Culinary", "Culture", "Cherry Blossoms", "Anime"]
+    }
+  ],
+
+  // Experiences & Curated Activities
+  experiences: [
+    {
+      id: "EXP-801",
+      title: "Dal Lake Sunrise Shikara & Floating Market Tour",
+      destination: "Srinagar & Kashmir Valley",
+      category: "Culture",
+      provider: "Ghulam Shikara Guild",
+      price: "₹2,500",
+      duration: "3 Hours",
+      capacity: 4,
+      rating: 4.95,
+      reviewsCount: 88,
+      status: "ACTIVE",
+      image: "https://images.unsplash.com/photo-1595815771614-ade9d652a65d?w=400&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "EXP-802",
+      title: "Mandovi River Private Catamaran Sunset Charter",
+      destination: "Goa (North & South)",
+      category: "Luxury",
+      provider: "Goa Marine Yachts Ltd.",
+      price: "₹24,000",
+      duration: "4 Hours",
+      capacity: 12,
+      rating: 4.92,
+      reviewsCount: 46,
+      status: "ACTIVE",
+      image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "EXP-803",
+      title: "Solang Valley Tandem Paragliding & GoPro Flight",
+      destination: "Manali & Solang Valley",
+      category: "Adventure",
+      provider: "Himalayan Sky Wings",
+      price: "₹3,800",
+      duration: "45 Mins",
+      capacity: 1,
+      rating: 4.88,
+      reviewsCount: 132,
+      status: "ACTIVE",
+      image: "https://images.unsplash.com/photo-1517649763962-0c623266ddc0?w=400&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "EXP-804",
+      title: "Amber Palace Private Heritage Walk with Royal Historian",
+      destination: "Jaipur (Pink City)",
+      category: "Heritage",
+      provider: "Rajputana Living Archives",
+      price: "₹4,200",
+      duration: "3.5 Hours",
+      capacity: 6,
+      rating: 4.97,
+      reviewsCount: 65,
+      status: "ACTIVE",
+      image: "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=400&auto=format&fit=crop&q=80"
+    },
+    {
+      id: "EXP-805",
+      title: "Private Desert Dune Bashing & Arabian Bedouin Feast",
+      destination: "Dubai & Emirates",
+      category: "Adventure",
+      provider: "Emirates Royal Safaris",
+      price: "₹18,500",
+      duration: "6 Hours",
+      capacity: 6,
+      rating: 4.91,
+      reviewsCount: 94,
+      status: "ACTIVE",
+      image: "https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=400&auto=format&fit=crop&q=80"
+    }
+  ],
+
+  // Bookings & Transactions Ledger
+  bookings: [
+    {
+      id: "BK-8291",
+      tripId: "TRIP-20481",
+      traveller: "Aarav Mehta",
+      planner: "Tariq Abdullah",
+      service: "All-Inclusive Kashmir Ski Package",
+      destination: "Kashmir",
+      date: "2026-08-01",
+      amount: "₹1,45,000",
+      rawAmount: 145000,
+      paymentMethod: "UPI / HDFC Bank",
+      gateway: "Razorpay",
+      gatewayTxnId: "pay_On92klA91xP",
+      paymentStatus: "SUCCESS",
+      bookingStatus: "CONFIRMED"
+    },
+    {
+      id: "BK-8292",
+      tripId: "TRIP-20482",
+      traveller: "Rohan Varma",
+      planner: "Pooja Hegde",
+      service: "Goa Luxury Catamaran & Stay Package",
+      destination: "Goa",
+      date: "2026-08-05",
+      amount: "₹85,000",
+      rawAmount: 85000,
+      paymentMethod: "Credit Card (Visa Signature)",
+      gateway: "Razorpay",
+      gatewayTxnId: "pay_Kq78nnM02aX",
+      paymentStatus: "SUCCESS",
+      bookingStatus: "CONFIRMED"
+    },
+    {
+      id: "BK-8293",
+      tripId: "TRIP-20483",
+      traveller: "Kabir Roy",
+      planner: "Elena Rostova",
+      service: "Paris Private Louvre & Alps Package (Deposit)",
+      destination: "Paris & Alps",
+      date: "2026-08-08",
+      amount: "₹2,40,000",
+      rawAmount: 240000,
+      paymentMethod: "Bank Wire Transfer (SWIFT)",
+      gateway: "Stripe",
+      gatewayTxnId: "ch_3N82b9a761xZ",
+      paymentStatus: "SUCCESS",
+      bookingStatus: "PENDING_FINAL_PAYMENT"
+    },
+    {
+      id: "BK-8294",
+      tripId: "TRIP-20484",
+      traveller: "Ananya Sharma",
+      planner: "Farhan Qureshi",
+      service: "Dubai Skyview & Desert Safari",
+      destination: "Dubai",
+      date: "2026-07-28",
+      amount: "₹2,10,000",
+      rawAmount: 210000,
+      paymentMethod: "Apple Pay / Amex",
+      gateway: "Stripe",
+      gatewayTxnId: "ch_91La80nm12Qa",
+      paymentStatus: "SUCCESS",
+      bookingStatus: "ACTIVE"
+    },
+    {
+      id: "BK-8295",
+      tripId: "TRIP-20480",
+      traveller: "Neha Chawla",
+      planner: "Ananya Sharma",
+      service: "Ladakh Monasteries Trek (Cancelled Due to Landslide)",
+      destination: "Leh Ladakh",
+      date: "2026-07-25",
+      amount: "₹68,000",
+      rawAmount: 68000,
+      paymentMethod: "UPI / ICICI Bank",
+      gateway: "Razorpay",
+      gatewayTxnId: "pay_Xm9100qL91z",
+      paymentStatus: "REFUNDED",
+      bookingStatus: "REFUNDED",
+      refundReason: "Severe flash flood advisory issued by District Disaster Authority."
+    }
+  ],
+
+  // Planner Verifications Queue & KYC Vault
+  verifications: [
+    {
+      id: "VRF-901",
+      applicantName: "Karan Johar Travels (Karan Deshmukh)",
+      applicantId: "USR-1085",
+      category: "Planner Verification",
+      plannerType: "COMPANY",
+      email: "karan@peaksandvalleys.in",
+      phone: "+91 99201 44510",
+      location: "Pune & Western Ghats, Maharashtra",
+      submittedDate: "2026-08-04 14:22 IST",
+      status: "PENDING",
+      overallMatchScore: 98.4,
+      notes: "Documents submitted with valid active GST, registered MTDC tourism license, and 98.4% live facial biometric match.",
+      documents: [
+        {
+          id: "DOC-901-1",
+          title: "Official Tourism Operator License",
+          documentType: "Tourism License",
+          fileName: "Maharashtra_Tourism_License_2026.pdf",
+          fileSize: "2.8 MB",
+          uploadedAt: "2026-08-04 14:18 IST",
+          status: "PENDING",
+          docNumber: "TRV-MH-2026-881920",
+          issuingAuthority: "Maharashtra Tourism Development Corporation (MTDC)",
+          issueDate: "2024-01-15",
+          expiryDate: "2029-01-14",
+          matchScore: 99.1,
+          previewType: "certificate",
+          previewTitle: "GOVERNMENT OF MAHARASHTRA — TOURISM OPERATOR REGISTRATION",
+          previewSubtitle: "Licensed Category A Expeditions & Trekking Operator",
+          ocrExtracted: {
+            "Entity Name": "Peaks & Valleys Adventure Travel Ltd.",
+            "License No": "TRV-MH-2026-881920",
+            "Operating Zone": "Pune, Sahyadri, Raigad, Ratnagiri",
+            "Security Bond": "Deposited ₹5,00,000 Bank Guarantee",
+            "QR Signature": "VERIFIED_DIGITAL_MTDC_2026"
+          }
+        },
+        {
+          id: "DOC-901-2",
+          title: "Corporate GST & Tax Identification Certificate",
+          documentType: "Tax Document",
+          fileName: "GSTIN_27AAACD9012E1Z3.pdf",
+          fileSize: "1.4 MB",
+          uploadedAt: "2026-08-04 14:19 IST",
+          status: "PENDING",
+          docNumber: "27AAACD9012E1Z3",
+          issuingAuthority: "Goods and Services Tax Network (GSTN), Govt of India",
+          issueDate: "2021-06-10",
+          expiryDate: "PERPETUAL (ACTIVE)",
+          matchScore: 100.0,
+          previewType: "gst",
+          previewTitle: "FORM GST REG-06 — REGISTRATION CERTIFICATE",
+          previewSubtitle: "Government of India — Central Board of Indirect Taxes",
+          ocrExtracted: {
+            "Legal Name": "PEAKS AND VALLEYS TOURS LLP",
+            "GSTIN / UIN": "27AAACD9012E1Z3",
+            "State Code": "27 (Maharashtra)",
+            "Constitution": "Limited Liability Partnership",
+            "Tax Status": "Regular / Active / Compliant"
+          }
+        },
+        {
+          id: "DOC-901-3",
+          title: "Authorized Signatory Government ID (Passport)",
+          documentType: "Government ID",
+          fileName: "Passport_Karan_Front_Back.pdf",
+          fileSize: "3.2 MB",
+          uploadedAt: "2026-08-04 14:20 IST",
+          status: "VERIFIED",
+          docNumber: "P892104912",
+          issuingAuthority: "Ministry of External Affairs, India (RPO Pune)",
+          issueDate: "2022-03-12",
+          expiryDate: "2032-03-11",
+          matchScore: 97.8,
+          previewType: "passport",
+          previewTitle: "REPUBLIC OF INDIA — PASSPORT",
+          previewSubtitle: "Personal Identity Verification Document",
+          ocrExtracted: {
+            "Given Name": "KARAN DESHMUKH",
+            "Nationality": "INDIAN",
+            "DOB": "1991-08-14",
+            "MRZ Code": "P<INDDESHMUKH<<KARAN<<<<<<<<<<<<<<<<<<<<<<<\nP892104912IND9108144M3203112<<<<<<<<<<<<<<04",
+            "Address Match": "100% Match with Business Profile Address"
+          }
+        },
+        {
+          id: "DOC-901-4",
+          title: "Live Liveness & Biometric Face Match Telemetry",
+          documentType: "Biometric Selfie",
+          fileName: "Selfie_Match_Score_98pct.jpg",
+          fileSize: "1.9 MB",
+          uploadedAt: "2026-08-04 14:21 IST",
+          status: "VERIFIED",
+          docNumber: "BIO-REC-99182",
+          issuingAuthority: "Beacon Automated Biometric Engine (DeepFace v4)",
+          issueDate: "2026-08-04",
+          expiryDate: "N/A",
+          matchScore: 98.4,
+          previewType: "selfie",
+          previewTitle: "LIVE FACIAL RECOGNITION MATCH TELEMETRY",
+          previewSubtitle: "Real-time camera feed vs Passport portrait match",
+          ocrExtracted: {
+            "Liveness Check": "PASS (Active Blink & Head Turn Verified)",
+            "Confidence Score": "98.4% Match with Passport Photo",
+            "Anti-Spoofing Score": "0.01% (No screen/paper artifact detected)",
+            "Geo-Stamp": "18.5204° N, 73.8567° E (Pune, Maharashtra)",
+            "Device Fingerprint": "Apple iPhone 15 Pro / Safari iOS 18"
+          }
+        }
+      ]
+    },
+    {
+      id: "VRF-902",
+      applicantName: "Ananya Journeys (Ananya Sharma)",
+      applicantId: "USR-1083",
+      category: "Planner Verification",
+      plannerType: "COMPANY",
+      email: "ananya.journeys@gmail.com",
+      phone: "+91 98450 77123",
+      location: "Bengaluru, Karnataka & Himachal",
+      submittedDate: "2026-08-02 11:15 IST",
+      status: "VERIFIED",
+      overallMatchScore: 99.6,
+      notes: "Gold Tier certified organizer. Verified Karnataka Tourism Board registration and comprehensive public liability insurance.",
+      documents: [
+        {
+          id: "DOC-902-1",
+          title: "Official Karnataka Tourism Council Operator License",
+          documentType: "Tourism License",
+          fileName: "Karnataka_Tourism_Operator_License.pdf",
+          fileSize: "3.1 MB",
+          uploadedAt: "2026-08-02 11:10 IST",
+          status: "VERIFIED",
+          docNumber: "KTC-TRV-2025-0912",
+          issuingAuthority: "Department of Tourism, Government of Karnataka",
+          issueDate: "2023-04-01",
+          expiryDate: "2028-03-31",
+          matchScore: 99.8,
+          previewType: "certificate",
+          previewTitle: "DEPARTMENT OF TOURISM — TOUR OPERATOR CERTIFICATE",
+          previewSubtitle: "Class-A Accredited Himalayan Expedition Agency",
+          ocrExtracted: {
+            "Entity Name": "Ananya Journeys Private Limited",
+            "Registration No": "KTC-TRV-2025-0912",
+            "Headquarters": "Indiranagar, Bengaluru 560038",
+            "Accreditation": "IATO & ADTOI Recognized"
+          }
+        },
+        {
+          id: "DOC-902-2",
+          title: "Comprehensive Public Liability & Adventure Insurance",
+          documentType: "Insurance Policy",
+          fileName: "Public_Liability_Policy_2Crore.pdf",
+          fileSize: "4.5 MB",
+          uploadedAt: "2026-08-02 11:12 IST",
+          status: "VERIFIED",
+          docNumber: "POL-HDFC-99120412",
+          issuingAuthority: "HDFC ERGO General Insurance Co.",
+          issueDate: "2026-01-01",
+          expiryDate: "2027-01-01",
+          matchScore: 100.0,
+          previewType: "insurance",
+          previewTitle: "COMMERCIAL EXPEDITION PUBLIC LIABILITY POLICY",
+          previewSubtitle: "₹2,00,00,000 Group Traveller Medical & Evacuation Coverage",
+          ocrExtracted: {
+            "Policy Holder": "Ananya Journeys Pvt Ltd",
+            "Coverage Amount": "₹2,00,00,000 (Two Crores INR)",
+            "Risk Zones": "High Altitude Treks, Motorbiking, River Rafting",
+            "Emergency Air Rescue": "Included up to 18,000 ft"
+          }
+        },
+        {
+          id: "DOC-902-3",
+          title: "Company GSTIN Registration Certificate",
+          documentType: "Tax Document",
+          fileName: "GSTIN_29ABCDE1234F1Z5.pdf",
+          fileSize: "1.2 MB",
+          uploadedAt: "2026-08-02 11:14 IST",
+          status: "VERIFIED",
+          docNumber: "29ABCDE1234F1Z5",
+          issuingAuthority: "GST Council, Government of India",
+          issueDate: "2021-09-15",
+          expiryDate: "ACTIVE",
+          matchScore: 100.0,
+          previewType: "gst",
+          previewTitle: "GST REGISTRATION CERTIFICATE",
+          previewSubtitle: "Tax Identification for Tour Services",
+          ocrExtracted: {
+            "Legal Name": "ANANYA JOURNEYS PRIVATE LIMITED",
+            "GSTIN": "29ABCDE1234F1Z5",
+            "State": "29 (Karnataka)",
+            "Status": "ACTIVE / REGULAR"
+          }
+        }
+      ]
+    },
+    {
+      id: "VRF-903",
+      applicantName: "Himalayan Sky Wings (Rajat Thakur)",
+      applicantId: "USR-1099",
+      category: "Experience Provider Verification",
+      plannerType: "COMPANY",
+      email: "rajat@skywingsmanali.in",
+      phone: "+91 94180 88219",
+      location: "Solang Valley, Manali, Himachal Pradesh",
+      submittedDate: "2026-08-07 16:45 IST",
+      status: "PENDING",
+      overallMatchScore: 97.2,
+      notes: "Commercial tandem pilot flight licenses and equipment safety certification for Solang Valley paragliding operations.",
+      documents: [
+        {
+          id: "DOC-903-1",
+          title: "DGCA Commercial Paragliding Pilot License",
+          documentType: "Flight License",
+          fileName: "DGCA_Commercial_Flight_Cert.pdf",
+          fileSize: "2.6 MB",
+          uploadedAt: "2026-08-07 16:40 IST",
+          status: "PENDING",
+          docNumber: "DGCA-AERO-2025-9921",
+          issuingAuthority: "Directorate General of Civil Aviation (DGCA)",
+          issueDate: "2023-08-20",
+          expiryDate: "2028-08-19",
+          matchScore: 98.6,
+          previewType: "certificate",
+          previewTitle: "DIRECTORATE GENERAL OF CIVIL AVIATION",
+          previewSubtitle: "Commercial Tandem Paragliding Pilot Certificate",
+          ocrExtracted: {
+            "Pilot Name": "RAJAT THAKUR",
+            "License Grade": "Class-1 Tandem Instructor (High Altitude)",
+            "Total Logged Hours": "3,420 Hours Flight Time",
+            "Medical Fitness": "Class 1 Medical Validated"
+          }
+        },
+        {
+          id: "DOC-903-2",
+          title: "Equipment Safety & Glider Airworthiness Certificate",
+          documentType: "Safety Cert",
+          fileName: "Glider_Airworthiness_Inspection_2026.pdf",
+          fileSize: "1.8 MB",
+          uploadedAt: "2026-08-07 16:42 IST",
+          status: "PENDING",
+          docNumber: "DHV-AIR-882104",
+          issuingAuthority: "European Glider Safety Standards (DHV / EN-B)",
+          issueDate: "2026-02-10",
+          expiryDate: "2027-02-09",
+          matchScore: 96.0,
+          previewType: "certificate",
+          previewTitle: "PARAGLIDER AIRWORTHINESS & CANOPY POROSITY TEST",
+          previewSubtitle: "Ozone Rush Tandem 42 sqm Canopy Inspection",
+          ocrExtracted: {
+            "Glider Model": "Ozone Magnum 3 Tandem (Serial #OZ-9912)",
+            "Line Strength Test": "PASS (420 daN Breaking Load)",
+            "Reserve Parachute": "Repacked & Inspected June 2026"
+          }
+        }
+      ]
+    },
+    {
+      id: "VRF-904",
+      applicantName: "Meera Sen (Wildlife Expeditions)",
+      applicantId: "USR-1098",
+      category: "Planner Verification",
+      plannerType: "FREELANCER",
+      email: "meera.wildlife@gmail.com",
+      phone: "+91 97550 11928",
+      location: "Bandhavgarh & Kanha, Madhya Pradesh",
+      submittedDate: "2026-08-06 09:30 IST",
+      status: "PENDING",
+      overallMatchScore: 99.2,
+      notes: "Freelance naturalist and wildlife photographer with 8 years experience leading tiger safari expeditions.",
+      documents: [
+        {
+          id: "DOC-904-1",
+          title: "Government Aadhaar Identity Card (Masked)",
+          documentType: "Government ID",
+          fileName: "Aadhaar_Masked_Front_Back.pdf",
+          fileSize: "1.5 MB",
+          uploadedAt: "2026-08-06 09:20 IST",
+          status: "VERIFIED",
+          docNumber: "•••• •••• 8821",
+          issuingAuthority: "Unique Identification Authority of India (UIDAI)",
+          issueDate: "2018-05-12",
+          expiryDate: "PERPETUAL",
+          matchScore: 99.4,
+          previewType: "aadhaar",
+          previewTitle: "UNIQUE IDENTIFICATION AUTHORITY OF INDIA — AADHAAR",
+          previewSubtitle: "Government of India Citizen Identity",
+          ocrExtracted: {
+            "Name": "MEERA SEN",
+            "DOB": "1994-11-23",
+            "Gender": "Female",
+            "Aadhaar No": "XXXX XXXX 8821",
+            "QR Verification": "CRYPTOGRAPHICALLY_VALID_UIDAI"
+          }
+        },
+        {
+          id: "DOC-904-2",
+          title: "Certified Naturalist & Jungle Guide License",
+          documentType: "Guide License",
+          fileName: "MP_Eco_Tourism_Naturalist_Cert.pdf",
+          fileSize: "2.1 MB",
+          uploadedAt: "2026-08-06 09:25 IST",
+          status: "PENDING",
+          docNumber: "MP-ECO-GUIDE-882",
+          issuingAuthority: "Madhya Pradesh Ecotourism Development Board",
+          issueDate: "2022-09-01",
+          expiryDate: "2027-08-31",
+          matchScore: 99.0,
+          previewType: "certificate",
+          previewTitle: "CERTIFIED MASTER NATURALIST CREDENTIAL",
+          previewSubtitle: "Kanha, Bandhavgarh & Pench National Parks",
+          ocrExtracted: {
+            "Candidate": "MEERA SEN",
+            "Specialization": "Tiger Behaviour, Mammalian Tracking & Birding",
+            "First Aid Certified": "Wilderness First Responder (WFR) Validated"
+          }
+        }
+      ]
+    }
+  ],
+
+  // Support Tickets Queue & SOS Hotlines
+  supportTickets: [
+    {
+      id: "TCK-401",
+      userId: "USR-1082",
+      userName: "Aarav Mehta",
+      userType: "TRAVELLER",
+      category: "Trip Coordination",
+      priority: "HIGH",
+      subject: "Driver contact number needed for airport pickup in Srinagar",
+      assignedAdmin: "Sneha Nair",
+      created: "2026-08-10 13:10",
+      updated: "10 mins ago",
+      status: "OPEN",
+      notes: "Planner Tariq has sent updated cab number JK-01-AB-9821. WhatsApp dispatch triggered."
+    },
+    {
+      id: "TCK-402",
+      userId: "USR-1085",
+      userName: "Karan Deshmukh",
+      userType: "PLANNER",
+      category: "Verification",
+      priority: "MEDIUM",
+      subject: "Status of pending business registration verification",
+      assignedAdmin: "Vikram Malhotra",
+      created: "2026-08-09 16:40",
+      updated: "1 hour ago",
+      status: "PENDING",
+      notes: "Awaiting final GST tax active status check on GST portal."
+    },
+    {
+      id: "TCK-403",
+      userId: "USR-1084",
+      userName: "Rohan Varma",
+      userType: "TRAVELLER",
+      category: "Payment",
+      priority: "LOW",
+      subject: "Requesting GST tax invoice with company entity name",
+      assignedAdmin: "Sneha Nair",
+      created: "2026-08-08 11:20",
+      updated: "2 days ago",
+      status: "RESOLVED",
+      notes: "Invoice with GSTIN generated and emailed to billing@varma.in."
+    },
+    {
+      id: "TCK-404",
+      userId: "USR-1090",
+      userName: "Devendra Patel",
+      userType: "TRAVELLER",
+      category: "Safety & Abuse",
+      priority: "CRITICAL",
+      subject: "Account suspended - Appeal filed",
+      assignedAdmin: "Vikram Malhotra",
+      created: "2026-08-08 09:15",
+      updated: "Yesterday",
+      status: "ESCALATED",
+      notes: "Under investigation by Risk Team for fraudulent payment chargeback claims."
+    }
+  ],
+
+  // Reviews & Moderation Queue
+  moderationItems: [
+    {
+      id: "MOD-301",
+      type: "REVIEW",
+      reporter: "Pooja Hegde (Planner)",
+      target: "Review on Mandovi River Cruise",
+      reason: "Competitor spam / abusive language detected",
+      evidence: "User never booked this yacht charter and left 1-star review mentioning rival agency.",
+      date: "2026-08-09",
+      status: "PENDING_REVIEW"
+    },
+    {
+      id: "MOD-302",
+      type: "USER_REPORT",
+      reporter: "Tariq Abdullah (Planner)",
+      target: "Devendra Patel (Traveller)",
+      reason: "Abusive threats and chargeback blackmail",
+      evidence: "Threatened negative reviews if free 5-star hotel upgrade wasn't provided.",
+      date: "2026-08-07",
+      status: "INVESTIGATED"
+    }
+  ],
+
+  // Admin Audit Logs (Immutable action history)
+  auditLogs: [
+    {
+      id: "LOG-501",
+      admin: "Vikram Malhotra (Super Admin)",
+      adminId: "ADM-001",
+      action: "SUSPEND_USER",
+      entity: "User #USR-1090 (Devendra Patel)",
+      previousValue: "Status: ACTIVE",
+      newValue: "Status: SUSPENDED (Reason: Chargeback fraud)",
+      timestamp: "2026-08-08 10:15:40 IST",
+      ip: "103.246.40.112",
+      device: "MacBook Pro / Chrome 128",
+      severity: "HIGH"
+    },
+    {
+      id: "LOG-502",
+      admin: "Sneha Nair (Operations Admin)",
+      adminId: "ADM-002",
+      action: "APPROVE_VERIFICATION",
+      entity: "Planner #USR-1089 (Tariq Abdullah)",
+      previousValue: "Verification: PENDING",
+      newValue: "Verification: VERIFIED (Gold Tier)",
+      timestamp: "2026-08-07 14:22:18 IST",
+      ip: "49.36.12.88",
+      device: "Windows 11 / Edge",
+      severity: "MEDIUM"
+    },
+    {
+      id: "LOG-503",
+      admin: "Vikram Malhotra (Super Admin)",
+      adminId: "ADM-001",
+      action: "PROCESS_REFUND",
+      entity: "Booking #BK-8295 (Ladakh Monasteries)",
+      previousValue: "Status: CONFIRMED · Escrow: ₹68,000",
+      newValue: "Status: REFUNDED · Credited to Payee Bank",
+      timestamp: "2026-08-06 18:04:12 IST",
+      ip: "103.246.40.112",
+      device: "MacBook Pro / Chrome 128",
+      severity: "HIGH"
+    },
+    {
+      id: "LOG-504",
+      admin: "Vikram Malhotra (Super Admin)",
+      adminId: "ADM-001",
+      action: "UPDATE_COMMISSION_POLICY",
+      entity: "Platform Settings: Tier 1 Planners",
+      previousValue: "Take Rate: 15.0%",
+      newValue: "Take Rate: 14.0%",
+      timestamp: "2026-08-01 09:00:00 IST",
+      ip: "103.246.40.112",
+      device: "MacBook Pro / Chrome 128",
+      severity: "CRITICAL"
+    }
+  ],
+
+  // Platform Broadcast Announcements
+  notifications: [
+    {
+      id: "NOTIF-101",
+      title: "Security Update: MFA Mandatory for all Level-2 Admins",
+      type: "SECURITY",
+      channel: "IN_APP, EMAIL",
+      recipients: "All Admins (12)",
+      status: "SENT",
+      sentAt: "2026-08-01 10:00"
+    },
+    {
+      id: "NOTIF-102",
+      title: "Monsoon Travel Safety Advisory for Western Ghats & Himachal",
+      type: "TRAVEL_ALERT",
+      channel: "IN_APP, PUSH",
+      recipients: "Active Travellers in North & West India (1,480)",
+      status: "SCHEDULED",
+      sentAt: "2026-08-12 08:00"
+    }
+  ],
+
+  // Content Management Articles & Guides
+  contentItems: [
+    {
+      id: "CNT-201",
+      title: "Ultimate 7-Day Guide to Kashmir: Shikarhas, Skiing & Secrets",
+      category: "Travel Guide",
+      author: "Beacon Editorial Team",
+      status: "PUBLISHED",
+      views: 24800,
+      publishDate: "2026-07-15",
+      destination: "Kashmir"
+    },
+    {
+      id: "CNT-202",
+      title: "Hidden Portuguese Architecture in South Goa's Fontainhas",
+      category: "Culture Story",
+      author: "Pooja Hegde",
+      status: "PUBLISHED",
+      views: 18200,
+      publishDate: "2026-07-22",
+      destination: "Goa"
+    },
+    {
+      id: "CNT-203",
+      title: "The Solo Hiker's Manifesto for Spiti Valley 2026",
+      category: "Adventure Guide",
+      author: "Ananya Sharma",
+      status: "REVIEW",
+      views: 0,
+      publishDate: "Scheduled for 2026-08-15",
+      destination: "Himachal"
+    }
+  ],
+
+  // Platform Configuration Settings
+  settings: {
+    general: {
+      platformName: "Beacon",
+      adminPortalName: "Beacon Master",
+      supportEmail: "concierge@beacon.travel",
+      emergencySosHotline: "+91 800 BEACON (232266)",
+      defaultCurrency: "INR (₹)",
+      timezone: "Asia/Kolkata (IST, UTC+05:30)",
+      maintenanceMode: false
+    },
+    commission: {
+      standardTakeRate: 14.0, // percent
+      goldPlannerTakeRate: 12.0,
+      experienceProviderFee: 10.0,
+      payoutSchedule: "WEEKLY_EVERY_MONDAY",
+      minimumPayoutThreshold: 5000
+    },
+    security: {
+      enforceMfaForAdmins: true,
+      sessionTimeoutMinutes: 60,
+      maxFailedLoginAttempts: 3,
+      lockoutDurationMinutes: 15,
+      requireTypedConfirmations: true
+    }
+  }
+};

@@ -4,6 +4,7 @@
   "description": "Beacon - Premium AI Travel Companion UI/UX",
   "scripts": {
     "dev": "vite",
+    "build:planner": "cd Beacon/apps/planner && npm run build",
     "build": "vite build",
     "preview": "vite preview"
   },
