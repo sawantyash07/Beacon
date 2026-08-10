@@ -1,11 +1,8 @@
 {
-  "version": 2,
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/master/:path*", "destination": "/master/index.html" },
-    { "source": "/master", "destination": "/master/index.html" },
-    { "source": "/planner/:path*", "destination": "/planner/index.html" },
-    { "source": "/planner", "destination": "/planner/index.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/master.*", "dest": "/master/index.html" },
+    { "src": "/planner.*", "dest": "/planner/index.html" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }
