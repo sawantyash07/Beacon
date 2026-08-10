@@ -1,0 +1,17 @@
+{
+  "name": "beacon-marketplace",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:planner": "npm run dev --workspace=planner",
+    "build": "npm run build --workspaces --if-present",
+    "build:planner": "npm run build --workspace=planner",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  }
+}
