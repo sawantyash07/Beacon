@@ -91,16 +91,8 @@ export default function LandingPage() {
     elementRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  // Auth helper
-  const handleBecomePlanner = async () => {
-    try {
-      await login({ identifier: 'demo@beaconplanner.com', password: 'password' })
-      toast.success('Welcome to your Beacon Planner workspace!')
-      navigate('/dashboard')
-    } catch (e) {
-      console.error(e)
-      navigate('/signup')
-    }
+  const handleBecomePlanner = () => {
+    navigate('/signup')
   }
 
   const testimonials = [
@@ -189,9 +181,11 @@ export default function LandingPage() {
                 Login
               </Button>
             </Link>
-            <Button glow onClick={handleBecomePlanner} className="text-sm font-bold bg-cyan text-navy px-5 py-2.5 rounded-[12px]">
-              Become a Planner
-            </Button>
+            <Link to="/signup">
+              <Button glow className="text-sm font-bold bg-cyan text-navy px-5 py-2.5 rounded-[12px]">
+                Sign Up
+              </Button>
+            </Link>
           </div>
 
           <button 
@@ -223,9 +217,11 @@ export default function LandingPage() {
                     Login
                   </Button>
                 </Link>
-                <Button glow onClick={handleBecomePlanner} className="w-full justify-center py-3 bg-cyan text-navy font-bold rounded-[12px]">
-                  Become a Planner
-                </Button>
+                <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
+                  <Button glow className="w-full justify-center py-3 bg-cyan text-navy font-bold rounded-[12px]">
+                    Sign Up
+                  </Button>
+                </Link>
               </div>
             </motion.div>
           )}

@@ -25,9 +25,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [showGoogleModal, setShowGoogleModal] = useState(false)
-  const [customGoogleEmail, setCustomGoogleEmail] = useState('adityakasod2005@gmail.com')
-  const { login, user, isKycVerified } = useAuth()
+  const { login, loginWithGoogle, user, isKycVerified } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const defaultTarget = isKycVerified ? '/dashboard' : '/onboarding'
@@ -68,16 +66,14 @@ export default function LoginPage() {
     }
   }
 
-  const handleGoogleSelect = async (email: string, name: string) => {
+  const handleGoogleSignIn = async () => {
     setLoading(true)
-    setShowGoogleModal(false)
+    setError('')
     try {
-      const res = await login({ email, identifier: email, name, role: 'PLANNER' })
-      const target = getPlannerTarget(email, (res as any)?.user?.kycStatus)
-      toast.success(`Signed in as ${name} (${email})`)
-      navigate(target, { replace: true })
+      await loginWithGoogle()
+      // Note: we don't need to manually navigate here because the useEffect on `user` will trigger and navigate automatically.
     } catch (err) {
-      toast.error('Google sign in failed')
+      // Error handled in context
     } finally {
       setLoading(false)
     }
@@ -180,7 +176,7 @@ export default function LoginPage() {
             type="button"
             variant="outline"
             className="w-full bg-white/5 hover:bg-white/10 border-white/15 text-white font-medium flex items-center justify-center gap-2.5 py-2.5 rounded-[12px] transition-all"
-            onClick={() => setShowGoogleModal(true)}
+            onClick={handleGoogleSignIn}
             disabled={loading}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.17 3.32v2.77h3.51c2.05-1.89 3.24-4.67 3.24-7.95z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.51-2.77c-.98.66-2.23 1.06-3.77 1.06-2.9 0-5.35-1.98-6.22-4.66H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.78 14.06c-.22-.66-.35-1.36-.35-2.06s.13-1.4.35-2.06V7.1H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.9l2.85-2.22.75-.62z"/><path fill="#EA4335" d="M12 5.06c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.1l3.6 2.84c.87-2.68 3.32-4.66 6.22-4.66z"/></svg>
@@ -195,96 +191,6 @@ export default function LoginPage() {
           </p>
         </div>
       </motion.div>
-
-      {/* Google Account Selector Modal */}
-      <AnimatePresence>
-        {showGoogleModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              className="relative w-full max-w-sm bg-white text-navy rounded-[24px] shadow-2xl p-6 overflow-hidden"
-            >
-              <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.17 3.32v2.77h3.51c2.05-1.89 3.24-4.67 3.24-7.95z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.51-2.77c-.98.66-2.23 1.06-3.77 1.06-2.9 0-5.35-1.98-6.22-4.66H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.78 14.06c-.22-.66-.35-1.36-.35-2.06s.13-1.4.35-2.06V7.1H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.9l2.85-2.22.75-.62z"/><path fill="#EA4335" d="M12 5.06c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.1l3.6 2.84c.87-2.68 3.32-4.66 6.22-4.66z"/></svg>
-                  <span className="font-bold text-sm text-navy">Sign in with Google</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowGoogleModal(false)}
-                  className="p-1 rounded-full text-muted hover:text-navy hover:bg-page"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <p className="text-xs text-muted mb-4">
-                Choose an account to continue to <strong>Beacon Planner</strong>
-              </p>
-
-              <div className="space-y-2">
-                {/* Account 1: User's Account */}
-                <button
-                  type="button"
-                  onClick={() => handleGoogleSelect('adityakasod2005@gmail.com', 'Aditya Kasod')}
-                  className="w-full p-3 rounded-[12px] border border-border hover:border-cyan hover:bg-[#F3F9FD] flex items-center gap-3 text-left transition-all group"
-                >
-                  <div className="w-9 h-9 rounded-full bg-cyan text-navy font-bold flex items-center justify-center text-sm shrink-0">
-                    A
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-navy truncate">Aditya Kasod</p>
-                    <p className="text-[11px] text-muted truncate">adityakasod2005@gmail.com</p>
-                  </div>
-                </button>
-
-                {/* Account 2: Demo Concierge Account */}
-                <button
-                  type="button"
-                  onClick={() => handleGoogleSelect('concierge@beaconplanner.com', 'Beacon Concierge Partner')}
-                  className="w-full p-3 rounded-[12px] border border-border hover:border-cyan hover:bg-[#F3F9FD] flex items-center gap-3 text-left transition-all group"
-                >
-                  <div className="w-9 h-9 rounded-full bg-teal text-white font-bold flex items-center justify-center text-sm shrink-0">
-                    B
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-navy truncate">Beacon Concierge Partner</p>
-                    <p className="text-[11px] text-muted truncate">concierge@beaconplanner.com</p>
-                  </div>
-                </button>
-              </div>
-
-              {/* Custom Google Account Entry */}
-              <div className="mt-4 pt-4 border-t border-border">
-                <span className="text-[11px] font-semibold text-muted block mb-1.5">Or enter another Google Email</span>
-                <div className="flex gap-2">
-                  <input
-                    type="email"
-                    value={customGoogleEmail}
-                    onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                    placeholder="name@gmail.com"
-                    className="flex-1 px-3 py-1.5 text-xs rounded-[8px] border border-border focus:outline-none focus:ring-1 focus:ring-cyan"
-                  />
-                  <Button
-                    size="xs"
-                    type="button"
-                    onClick={() => {
-                      if (customGoogleEmail.trim()) {
-                        handleGoogleSelect(customGoogleEmail.trim(), customGoogleEmail.split('@')[0])
-                      }
-                    }}
-                    className="bg-navy text-white text-xs px-3"
-                  >
-                    Continue
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }

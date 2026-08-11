@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { Compass } from 'lucide-react'
 import { authService, type User } from '@/services/auth'
 import { toast } from 'sonner'
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
+import { auth as firebaseAuth } from '@/lib/firebase'
 
 interface AuthContextType {
   user: User | null
@@ -11,6 +13,7 @@ interface AuthContextType {
   isKycVerified: boolean
   highlightBusinessProfile: boolean
   login: (data: Record<string, string>) => Promise<void>
+  loginWithGoogle: () => Promise<void>
   register: (data: Record<string, string>) => Promise<void>
   logout: () => Promise<void>
   updateKycStatus: (status: 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED') => void
@@ -114,6 +117,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const loginWithGoogle = async () => {
+    try {
+      const provider = new GoogleAuthProvider()
+      const result = await signInWithPopup(firebaseAuth, provider)
+      const gUser = result.user
+      
+      const loggedUser: User = {
+        id: gUser.uid,
+        email: gUser.email || '',
+        name: gUser.displayName || gUser.email?.split('@')[0] || 'Travel Partner',
+        role: 'PLANNER'
+      }
+      
+      setUser(loggedUser)
+      setKycStatus(getInitialKycStatus(loggedUser.email))
+    } catch (err: any) {
+      console.error('Google Sign In failed:', err)
+      toast.error(err.message || 'Google Sign In failed')
+      throw err
+    }
+  }
+
   const register = async (data: Record<string, string>) => {
     try {
       const res = await authService.register(data)
@@ -138,10 +163,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await authService.logout()
-      toast.success('Logged out successfully')
     } catch (e) {
       console.error('Logout API failed', e)
     }
+    try {
+      await signOut(firebaseAuth)
+    } catch (e) {
+      console.error('Firebase sign out failed', e)
+    }
+    toast.success('Logged out successfully')
     setUser(null)
   }
 

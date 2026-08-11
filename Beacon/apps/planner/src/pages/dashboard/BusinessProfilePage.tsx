@@ -95,7 +95,7 @@ export default function BusinessProfilePage() {
       return {
         partnerType: 'COMPANY' as 'COMPANY' | 'FREELANCER',
         displayName: 'Beacon Planner Luxury Expeditions',
-        personalName: 'Aditya Kumar',
+        personalName: 'Demo Partner',
         bio: 'We curate premium domestic and international travel experiences across the Himalayas, Western Ghats, and private atolls.',
         avatarUrl: 'https://images.unsplash.com/photo-1540959733336-eab4deabeeaf?w=200&q=80',
         phone: '9876682069',
@@ -116,13 +116,13 @@ export default function BusinessProfilePage() {
         establishedYear: 2020,
         teamSize: '11-50 Employees',
         // Freelancer Legal
-        legalName: 'Aditya Vijay Kumar',
+        legalName: 'Demo Partner',
         aadhaarNumber: '234567890123',
         voterIdNumber: 'ABC1234567',
         residentialAddress: 'Flat 402, Green Meadows, Bandra West, Mumbai',
         udyamNumber: 'UDYAM-MH-01-0012345',
         occupation: 'Senior Expedition Architect & Mountain Guide',
-        portfolioUrl: 'https://adityatravels.in',
+        portfolioUrl: 'https://demopartner.in',
         // Banking
         bankAccountName: 'Beacon Planner Travel International Pvt Ltd',
         bankAccountNumber: '987654321098',

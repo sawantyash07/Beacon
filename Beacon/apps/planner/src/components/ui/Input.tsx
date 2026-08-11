@@ -32,6 +32,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               error && 'border-rose-500 ring-1 ring-rose-400 bg-rose-50/20 focus:ring-rose-400 focus:border-rose-500',
               className
             )}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                const focusableElements = Array.from(
+                  document.querySelectorAll('input:not([disabled]), select:not([disabled]), textarea:not([disabled])')
+                ) as HTMLElement[];
+                const index = focusableElements.indexOf(e.currentTarget);
+                if (index > -1 && index < focusableElements.length - 1) {
+                  focusableElements[index + 1].focus();
+                }
+              }
+              if (props.onKeyDown) props.onKeyDown(e);
+            }}
             {...props}
           />
           {endElement && (
