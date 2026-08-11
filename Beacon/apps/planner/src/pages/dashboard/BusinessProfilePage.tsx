@@ -147,8 +147,8 @@ export default function BusinessProfilePage() {
     // Fresh clean state for Indian Onboarding
     return {
       partnerType: 'COMPANY' as 'COMPANY' | 'FREELANCER',
-      displayName: user?.name || '',
-      personalName: '',
+      displayName: '',
+      personalName: user?.name || '',
       bio: '',
       avatarUrl: '',
       phone: '',
