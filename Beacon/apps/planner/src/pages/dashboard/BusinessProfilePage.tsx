@@ -351,61 +351,79 @@ export default function BusinessProfilePage() {
     { id: 5, title: 'Specializations & Public Profile', shortTitle: 'Specializations', icon: Award, isMandatory: false },
   ]
 
-  // Step Completion Validation Rules
-  const isStepComplete = (stepId: number): boolean => {
+  // Step Missing Fields Inspector
+  const getStepMissingFields = (stepId: number): string[] => {
+    const missing: string[] = []
     switch (stepId) {
       case 1: {
-        const hasBrand = Boolean(profile.displayName?.trim())
-        const hasPersonalName = profile.partnerType === 'FREELANCER' ? Boolean(profile.personalName?.trim()) : true
-        const hasPhone = validateIndianMobile(profile.phone).isValid
-        const hasEmail = Boolean(profile.email?.trim())
-        const hasLocation = Boolean(profile.city?.trim() && profile.state?.trim() && profile.country?.trim())
-        return hasBrand && hasPersonalName && hasPhone && hasEmail && hasLocation
+        if (!profile.displayName?.trim()) missing.push('Public Brand / Display Name')
+        if (profile.partnerType === 'FREELANCER' && !profile.personalName?.trim()) missing.push("Planner's Personal Name")
+        if (!profile.phone?.trim() || !validateIndianMobile(profile.phone).isValid) missing.push('Valid 10-Digit Mobile Number')
+        if (!profile.email?.trim()) missing.push('Business Email')
+        if (!profile.city?.trim()) missing.push('Operating City')
+        if (!profile.state?.trim()) missing.push('Operating State')
+        break
       }
       case 2: {
         if (profile.partnerType === 'COMPANY') {
-          const hasName = Boolean(profile.companyName?.trim())
-          const hasPan = validatePAN(profile.panNumber, 'COMPANY').isValid
-          const hasReg = validateCINorLLPIN(profile.registrationNumber).isValid
-          const hasGst = profile.isGstExempt ? Boolean(profile.gstExemptionReason?.trim()) : validateGSTIN(profile.gstNumber, profile.panNumber).isValid
-          const hasAddress = Boolean(profile.officeAddress?.trim())
-          return hasName && hasPan && hasReg && hasGst && hasAddress
+          if (!profile.companyName?.trim()) missing.push('Registered Legal Company Name')
+          if (!profile.panNumber?.trim() || !validatePAN(profile.panNumber, 'COMPANY').isValid) missing.push('Valid Company PAN Card')
+          if (!profile.registrationNumber?.trim() || !validateCINorLLPIN(profile.registrationNumber).isValid) missing.push('Valid CIN / LLPIN / Registration Number')
+          if (!profile.isGstExempt && (!profile.gstNumber?.trim() || !validateGSTIN(profile.gstNumber, profile.panNumber).isValid)) missing.push('Valid GSTIN Number')
+          if (profile.isGstExempt && !profile.gstExemptionReason?.trim()) missing.push('GST Exemption Reason')
+          if (!profile.officeAddress?.trim()) missing.push('Registered Office Address')
+          if (!profile.pinCode?.trim() || !validatePINCode(profile.pinCode).isValid) missing.push('Valid 6-Digit PIN Code')
         } else {
-          const hasName = Boolean(profile.legalName?.trim())
-          const hasPan = validatePAN(profile.panNumber, 'INDIVIDUAL').isValid
-          const hasAadhaar = validateAadhaar(profile.aadhaarNumber).isValid
-          const hasVoter = validateVoterID(profile.voterIdNumber).isValid
-          const hasAddress = Boolean(profile.residentialAddress?.trim())
-          return hasName && hasPan && hasAadhaar && hasVoter && hasAddress
+          if (!profile.legalName?.trim()) missing.push('Full Legal Name as per Govt ID')
+          if (!profile.panNumber?.trim() || !validatePAN(profile.panNumber, 'INDIVIDUAL').isValid) missing.push('Valid Personal PAN (4th letter P)')
+          if (!profile.aadhaarNumber?.trim() || !validateAadhaar(profile.aadhaarNumber).isValid) missing.push('Valid 12-Digit Aadhaar (with Verhoeff Checksum)')
+          if (!profile.voterIdNumber?.trim() || !validateVoterID(profile.voterIdNumber).isValid) missing.push('Valid Voter ID (EPIC Number)')
+          if (!profile.residentialAddress?.trim()) missing.push('Residential / Operating Address')
+          if (!profile.pinCode?.trim() || !validatePINCode(profile.pinCode).isValid) missing.push('Valid 6-Digit PIN Code')
         }
+        break
       }
       case 3: {
-        const hasName = Boolean(profile.bankAccountName?.trim())
-        const hasAccount = validateBankAccount(profile.bankAccountNumber).isValid
-        const hasIfsc = validateIFSC(profile.ifscOrSwiftCode).isValid
-        const hasUpi = validateUPI(profile.upiOrPaypalId).isValid
-        return hasName && hasAccount && hasIfsc && hasUpi
+        if (!profile.bankAccountName?.trim()) missing.push('Bank Account Beneficiary Name')
+        if (!profile.bankAccountNumber?.trim() || !validateBankAccount(profile.bankAccountNumber).isValid) missing.push('Valid Bank Account Number')
+        if (!profile.ifscOrSwiftCode?.trim() || !validateIFSC(profile.ifscOrSwiftCode).isValid) missing.push('Valid 11-Character IFSC Code')
+        if (!profile.upiOrPaypalId?.trim() || !validateUPI(profile.upiOrPaypalId).isValid) missing.push('Valid UPI ID')
+        break
       }
       case 4: {
-        const requiredDocsCount = 4
-        return documents.length >= requiredDocsCount || kycStatus === 'VERIFIED' || profile.isVerified
-      }
-      case 5: {
-        return (profile.specializations?.length || 0) > 0 || Boolean(profile.whyChooseMe?.trim())
+        const requiredKeys = profile.partnerType === 'COMPANY'
+          ? (profile.isGstExempt ? ['company_registration', 'company_pan', 'bank_proof', 'office_address_proof'] : ['company_registration', 'company_pan', 'bank_proof', 'office_address_proof', 'gst_certificate'])
+          : ['personal_pan', 'aadhaar_doc', 'voter_id_doc', 'bank_proof', 'address_proof']
+
+        const uploadedKeys = documents.map(d => d.id?.toLowerCase() || '')
+        const missingDocs = requiredKeys.filter(k => 
+          !uploadedKeys.includes(k.toLowerCase()) && 
+          !documents.some(d => d.title.toLowerCase().includes(k.replace(/_/g, ' ').toLowerCase()) || d.documentType.toLowerCase().includes(k.replace(/_/g, ' ').toLowerCase()))
+        )
+
+        if (missingDocs.length > 0) {
+          missing.push(`Required Documents (${documents.length}/${requiredKeys.length} uploaded)`)
+        }
+        break
       }
       default:
-        return false
+        break
     }
+    return missing
   }
 
-  // Calculate Overall Completion Percentage (Mandatory 4 count for 80%, Step 5 gives remaining 20%)
+  // Step Completion Validation Rules
+  const isStepComplete = (stepId: number): boolean => {
+    return getStepMissingFields(stepId).length === 0
+  }
+
+  // Calculate Overall Completion Percentage
   const calculateCompletion = () => {
     let completedCount = 0
-    if (isStepComplete(1)) completedCount += 20
+    if (isStepComplete(1)) completedCount += 25
     if (isStepComplete(2)) completedCount += 25
-    if (isStepComplete(3)) completedCount += 20
+    if (isStepComplete(3)) completedCount += 25
     if (isStepComplete(4)) completedCount += 25
-    if (isStepComplete(5)) completedCount += 10
     return Math.min(100, completedCount)
   }
 
@@ -413,6 +431,12 @@ export default function BusinessProfilePage() {
   const mandatoryComplete = isStepComplete(1) && isStepComplete(2) && isStepComplete(3) && isStepComplete(4)
 
   const handleNextStep = () => {
+    const missing = getStepMissingFields(activeStep)
+    if (missing.length > 0) {
+      toast.error(`Please complete all required details in Step ${activeStep}: ${missing.slice(0, 2).join(', ')}${missing.length > 2 ? ` and ${missing.length - 2} more` : ''}`)
+      return
+    }
+
     triggerAutoSave(steps[activeStep - 1]?.title)
     if (activeStep < steps.length) {
       setActiveStep(prev => prev + 1)
@@ -420,6 +444,27 @@ export default function BusinessProfilePage() {
     } else {
       setShowVerificationPreviewModal(true)
     }
+  }
+
+  const handleNavigateToStep = (targetStep: number) => {
+    if (targetStep < activeStep) {
+      setActiveStep(targetStep)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
+    // Gated check: cannot jump forward if current or intermediate steps are incomplete
+    for (let s = 1; s < targetStep; s++) {
+      const stepMissing = getStepMissingFields(s)
+      if (stepMissing.length > 0) {
+        toast.error(`Please complete Step ${s} (${steps[s - 1]?.shortTitle}) first before moving ahead.`)
+        return
+      }
+    }
+
+    triggerAutoSave(steps[activeStep - 1]?.title)
+    setActiveStep(targetStep)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleDocumentSubmit = (e: React.FormEvent) => {
@@ -667,34 +712,9 @@ export default function BusinessProfilePage() {
         ) : (
           <>
             {/* ---------------- FULL-WIDTH HORIZONTAL STEP RAIL ---------------- */}
-            <div className="w-full bg-surface border border-border rounded-[24px] p-5 shadow-sm space-y-4">
-              <div className="flex items-center justify-between gap-4 border-b border-border/50 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-teal">
-                    Step {activeStep} of {steps.length}
-                  </span>
-                  <span className="text-muted/40">•</span>
-                  <span className="text-sm font-bold text-navy">
-                    {steps[activeStep - 1]?.title}
-                  </span>
-                  {steps[activeStep - 1]?.isMandatory && (
-                    <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full ml-1">
-                      Mandatory KYC Gate
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold text-muted hidden sm:inline">
-                    Score: <strong className="text-navy">{completionPercentage}%</strong>
-                  </span>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                    {steps.filter(s => isStepComplete(s.id)).length}/{steps.length} Completed
-                  </span>
-                </div>
-              </div>
-
+            <div className="w-full bg-surface border border-border rounded-[24px] p-4 sm:p-5 shadow-sm">
               {/* Connected Step Markers Row */}
-              <div className="pt-2 pb-1 px-1">
+              <div className="py-1 px-1">
                 <div className="flex items-center justify-between relative">
                   {steps.map((step, idx) => {
                     const isCompleted = isStepComplete(step.id)
@@ -706,7 +726,7 @@ export default function BusinessProfilePage() {
                         {/* Marker Button */}
                         <button
                           type="button"
-                          onClick={() => setActiveStep(step.id)}
+                          onClick={() => handleNavigateToStep(step.id)}
                           className="flex flex-col items-center gap-1.5 focus:outline-none cursor-pointer group shrink-0"
                           title={`${step.id}. ${step.title}`}
                         >
@@ -760,20 +780,10 @@ export default function BusinessProfilePage() {
               {/* ---------------- STEP 1: FIRM & BRAND INFORMATION ---------------- */}
               {activeStep === 1 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <User className="w-5 h-5 text-teal" /> 1. Firm & Brand Information
-                      </h3>
-                      <p className="text-xs text-muted mt-1">Basic public identity and operating contact details.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Basic Information')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
-                    </Button>
+                  <div className="pb-4 border-b border-border">
+                    <h3 className="text-base font-bold text-navy flex items-center gap-2">
+                      <User className="w-5 h-5 text-teal" /> 1. Firm & Brand Information
+                    </h3>
                   </div>
 
                   {/* Brand Firm Photo / Logo Upload */}
@@ -895,22 +905,10 @@ export default function BusinessProfilePage() {
               {/* ---------------- STEP 2: LEGAL & TAX IDENTITY (KYC GATE) ---------------- */}
               {activeStep === 2 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-teal" /> 2. {profile.partnerType === 'COMPANY' ? 'Company Legal & Tax Identity' : 'Freelancer Identity & Legal'}
-                      </h3>
-                      <p className="text-xs text-muted mt-1">
-                        Mandatory compliance verification under Indian business and tax laws.
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Legal Details')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
-                    </Button>
+                  <div className="pb-4 border-b border-border">
+                    <h3 className="text-base font-bold text-navy flex items-center gap-2">
+                      <Building2 className="w-5 h-5 text-teal" /> 2. {profile.partnerType === 'COMPANY' ? 'Company Legal & Tax Identity' : 'Freelancer Identity & Legal'}
+                    </h3>
                   </div>
 
                   {profile.partnerType === 'COMPANY' ? (
@@ -1152,22 +1150,10 @@ export default function BusinessProfilePage() {
               {/* ---------------- STEP 3: BANKING & PAYOUTS ---------------- */}
               {activeStep === 3 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <CreditCard className="w-5 h-5 text-teal" /> 3. Banking & Payout Credentials
-                      </h3>
-                      <p className="text-xs text-muted mt-1">
-                        Bank details for booking payouts and UPI settlement.
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Banking Details', 'banking')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
-                    </Button>
+                  <div className="pb-4 border-b border-border">
+                    <h3 className="text-base font-bold text-navy flex items-center gap-2">
+                      <CreditCard className="w-5 h-5 text-teal" /> 3. Banking & Payout Credentials
+                    </h3>
                   </div>
 
                   <div className="space-y-4">
@@ -1245,14 +1231,9 @@ export default function BusinessProfilePage() {
               {activeStep === 4 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
                   <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5 text-teal" /> 4. Document Vault & eKYC Verification
-                      </h3>
-                      <p className="text-xs text-muted mt-1">
-                        Upload official proof documents to unlock verified organizer status.
-                      </p>
-                    </div>
+                    <h3 className="text-base font-bold text-navy flex items-center gap-2">
+                      <ShieldCheck className="w-5 h-5 text-teal" /> 4. Document Vault & eKYC Verification
+                    </h3>
                     <Button
                       size="sm"
                       onClick={() => setShowUploadModal(true)}
@@ -1381,24 +1362,10 @@ export default function BusinessProfilePage() {
               {/* ---------------- STEP 5: OPTIONAL PROFILE-COMPLETION TRACK ---------------- */}
               {activeStep === 5 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                          <Award className="w-5 h-5 text-teal" /> 5. Specializations & Public Profile
-                        </h3>
-                      </div>
-                      <p className="text-xs text-muted mt-1">
-                        Answers key traveler questions: where you operate, certifications, and what you are known for.
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Profile Track')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
-                    </Button>
+                  <div className="pb-4 border-b border-border">
+                    <h3 className="text-base font-bold text-navy flex items-center gap-2">
+                      <Award className="w-5 h-5 text-teal" /> 5. Specializations & Public Profile
+                    </h3>
                   </div>
 
                   <div className="space-y-5">
