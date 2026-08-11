@@ -27,8 +27,9 @@ const VERHOEFF_P = [
 /**
  * Validates 12-digit Indian Aadhaar number using UIDAI's Verhoeff checksum algorithm.
  */
-export function validateAadhaar(aadhaar: string): { isValid: boolean; message?: string } {
-  const clean = aadhaar.replace(/\s|-/g, '')
+export function validateAadhaar(aadhaar?: string | null): { isValid: boolean; message?: string } {
+  if (!aadhaar) return { isValid: false, message: 'Aadhaar number is required.' }
+  const clean = String(aadhaar).replace(/\s|-/g, '')
   if (!/^\d{12}$/.test(clean)) {
     return { isValid: false, message: 'Aadhaar must be exactly 12 numeric digits.' }
   }
@@ -57,8 +58,9 @@ export function validateAadhaar(aadhaar: string): { isValid: boolean; message?: 
  * @param pan - 10-character alphanumeric PAN
  * @param expectedType - 'INDIVIDUAL' ('P') or 'COMPANY' ('C', 'F', 'A', 'T', 'B', 'L', 'J', 'G')
  */
-export function validatePAN(pan: string, expectedType?: 'INDIVIDUAL' | 'COMPANY'): { isValid: boolean; message?: string } {
-  const upper = pan.trim().toUpperCase()
+export function validatePAN(pan?: string | null, expectedType?: 'INDIVIDUAL' | 'COMPANY'): { isValid: boolean; message?: string } {
+  if (!pan) return { isValid: false, message: 'PAN is required.' }
+  const upper = String(pan).trim().toUpperCase()
   const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/
 
   if (!panRegex.test(upper)) {
@@ -80,8 +82,9 @@ export function validatePAN(pan: string, expectedType?: 'INDIVIDUAL' | 'COMPANY'
 /**
  * Validates 15-char Indian GSTIN and cross-checks embedded PAN.
  */
-export function validateGSTIN(gstin: string, pan?: string): { isValid: boolean; message?: string } {
-  const upper = gstin.trim().toUpperCase()
+export function validateGSTIN(gstin?: string | null, pan?: string | null): { isValid: boolean; message?: string } {
+  if (!gstin) return { isValid: false, message: 'GSTIN is required.' }
+  const upper = String(gstin).trim().toUpperCase()
   const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/
 
   if (!gstinRegex.test(upper)) {
@@ -94,7 +97,7 @@ export function validateGSTIN(gstin: string, pan?: string): { isValid: boolean; 
   }
 
   if (pan) {
-    const cleanPan = pan.trim().toUpperCase()
+    const cleanPan = String(pan).trim().toUpperCase()
     const embeddedPan = upper.substring(2, 12)
     if (cleanPan && embeddedPan !== cleanPan) {
       return { isValid: false, message: `GSTIN does not match entered PAN (${cleanPan}). Embedded: ${embeddedPan}` }
@@ -107,8 +110,9 @@ export function validateGSTIN(gstin: string, pan?: string): { isValid: boolean; 
 /**
  * Validates Indian Voter ID (EPIC) format (3 letters + 7 digits).
  */
-export function validateVoterID(epic: string): { isValid: boolean; message?: string } {
-  const upper = epic.trim().toUpperCase()
+export function validateVoterID(epic?: string | null): { isValid: boolean; message?: string } {
+  if (!epic) return { isValid: false, message: 'Voter ID is required.' }
+  const upper = String(epic).trim().toUpperCase()
   if (!/^[A-Z]{3}[0-9]{7}$/.test(upper)) {
     return { isValid: false, message: 'Voter ID (EPIC) must be 3 uppercase letters followed by 7 digits (e.g. ABC1234567).' }
   }
@@ -118,8 +122,9 @@ export function validateVoterID(epic: string): { isValid: boolean; message?: str
 /**
  * Validates CIN (Company Identification Number) or LLPIN.
  */
-export function validateCINorLLPIN(val: string): { isValid: boolean; message?: string } {
-  const upper = val.trim().toUpperCase()
+export function validateCINorLLPIN(val?: string | null): { isValid: boolean; message?: string } {
+  if (!val) return { isValid: false, message: 'Registration Number is required.' }
+  const upper = String(val).trim().toUpperCase()
   const cinRegex = /^[LUF]{1}[0-9]{5}[A-Z]{2}[0-9]{4}[A-Z]{3}[0-9]{6}$/
   const llpinRegex = /^[A-Z]{3}-[0-9]{4}$/
 
@@ -132,8 +137,9 @@ export function validateCINorLLPIN(val: string): { isValid: boolean; message?: s
 /**
  * Validates Indian IFSC Code (11 chars, 5th char always 0).
  */
-export function validateIFSC(ifsc: string): { isValid: boolean; message?: string } {
-  const upper = ifsc.trim().toUpperCase()
+export function validateIFSC(ifsc?: string | null): { isValid: boolean; message?: string } {
+  if (!ifsc) return { isValid: false, message: 'IFSC code is required.' }
+  const upper = String(ifsc).trim().toUpperCase()
   if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(upper)) {
     return { isValid: false, message: 'IFSC must be 11 characters (4 letters, "0", 6 alphanumeric chars, e.g. HDFC0001234).' }
   }
@@ -143,8 +149,9 @@ export function validateIFSC(ifsc: string): { isValid: boolean; message?: string
 /**
  * Validates Indian Bank Account Number (9 to 18 digits).
  */
-export function validateBankAccount(accountNumber: string): { isValid: boolean; message?: string } {
-  const clean = accountNumber.replace(/\s/g, '')
+export function validateBankAccount(accountNumber?: string | null): { isValid: boolean; message?: string } {
+  if (!accountNumber) return { isValid: false, message: 'Bank Account Number is required.' }
+  const clean = String(accountNumber).replace(/\s/g, '')
   if (!/^\d{9,18}$/.test(clean)) {
     return { isValid: false, message: 'Bank Account Number must be between 9 and 18 numeric digits.' }
   }
@@ -157,8 +164,9 @@ export function validateBankAccount(accountNumber: string): { isValid: boolean; 
 /**
  * Validates UPI ID format (e.g. name@bank, phone@paytm).
  */
-export function validateUPI(upi: string): { isValid: boolean; message?: string } {
-  const clean = upi.trim().toLowerCase()
+export function validateUPI(upi?: string | null): { isValid: boolean; message?: string } {
+  if (!upi) return { isValid: false, message: 'UPI ID is required.' }
+  const clean = String(upi).trim().toLowerCase()
   if (!/^[\w.\-]{2,256}@[a-zA-Z]{2,64}$/.test(clean)) {
     return { isValid: false, message: 'Invalid UPI ID format (e.g. business@okaxis, 9876543210@paytm).' }
   }
@@ -168,8 +176,9 @@ export function validateUPI(upi: string): { isValid: boolean; message?: string }
 /**
  * Validates 10-digit Indian Mobile Number.
  */
-export function validateIndianMobile(phone: string): { isValid: boolean; message?: string } {
-  const clean = phone.replace(/[\s+()-]/g, '')
+export function validateIndianMobile(phone?: string | null): { isValid: boolean; message?: string } {
+  if (!phone) return { isValid: false, message: 'Mobile number is required.' }
+  const clean = String(phone).replace(/[\s+()-]/g, '')
   // strip 91 prefix if present
   const number = clean.startsWith('91') && clean.length === 12 ? clean.substring(2) : clean
   if (!/^[6-9]\d{9}$/.test(number)) {
@@ -181,8 +190,9 @@ export function validateIndianMobile(phone: string): { isValid: boolean; message
 /**
  * Validates 6-digit Indian Postal PIN Code.
  */
-export function validatePINCode(pin: string): { isValid: boolean; message?: string } {
-  const clean = pin.trim()
+export function validatePINCode(pin?: string | null): { isValid: boolean; message?: string } {
+  if (!pin) return { isValid: false, message: 'PIN code is required.' }
+  const clean = String(pin).trim()
   if (!/^[1-9][0-9]{5}$/.test(clean)) {
     return { isValid: false, message: 'PIN Code must be exactly 6 digits starting with 1-9.' }
   }
@@ -192,8 +202,9 @@ export function validatePINCode(pin: string): { isValid: boolean; message?: stri
 /**
  * Mask sensitive Aadhaar to show only last 4 digits (e.g. XXXX-XXXX-1234)
  */
-export function maskAadhaar(aadhaar: string): string {
-  const clean = aadhaar.replace(/\s|-/g, '')
-  if (clean.length !== 12) return aadhaar
+export function maskAadhaar(aadhaar?: string | null): string {
+  if (!aadhaar) return ''
+  const clean = String(aadhaar).replace(/\s|-/g, '')
+  if (clean.length !== 12) return String(aadhaar)
   return `XXXX-XXXX-${clean.slice(-4)}`
 }

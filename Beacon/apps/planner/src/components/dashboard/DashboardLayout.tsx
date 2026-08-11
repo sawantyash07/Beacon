@@ -86,7 +86,7 @@ export function DashboardLayout() {
       // Voice Text-to-Speech (TTS) Announcement
       if ('speechSynthesis' in window) {
         const voiceMsg = new SpeechSynthesisUtterance()
-        const amountText = amount.replace('₹', '').replace(',', ' ')
+        const amountText = (amount || '').toString().replace('₹', '').replace(',', ' ')
         if (type === 'started') {
           voiceMsg.text = `Beacon payment alert. A payment of ${amountText} rupees has been initiated by ${customerName}.`
         } else {
