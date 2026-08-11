@@ -430,6 +430,24 @@ export default function BusinessProfilePage() {
     toast.success('Verification document submitted. Vault status updated to Under Review.')
   }
 
+  const handleNextStep = () => {
+    triggerAutoSave(steps[activeStep - 1]?.title || `Section ${activeStep}`)
+    if (activeStep < 10) {
+      setActiveStep(prev => prev + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      toast.success('🎉 Business Profile saved and updated successfully!')
+      navigate('/dashboard')
+    }
+  }
+
+  const handlePrevStep = () => {
+    if (activeStep > 1) {
+      setActiveStep(prev => prev - 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
   const handleSimulateApproval = () => {
     setDocuments((prev) => prev.map(d => ({ ...d, status: 'VERIFIED' as const })))
     setProfile((prev) => {
@@ -1501,56 +1519,45 @@ export default function BusinessProfilePage() {
             </motion.div>
           </AnimatePresence>
 
-          {/* ---------------- READ-ONLY ORGANIZER PERFORMANCE SECTION ---------------- */}
-          <Card className="p-6 border border-border shadow-md rounded-[24px] space-y-4 bg-surface">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
-              <div>
-                <h3 className="text-sm font-extrabold text-navy uppercase tracking-wider flex items-center gap-2">
-                  <Award className="w-4 h-4 text-teal" /> Organizer Performance & System Metrics (Read-Only)
-                </h3>
-                <p className="text-xs text-muted mt-0.5">
-                  Platform-generated metrics dynamically calculated from your activity, reviews, and booking completion rates.
-                </p>
-              </div>
-              <span className="text-[11px] font-semibold bg-teal/10 text-teal px-3 py-1 rounded-full border border-teal/20">
-                Auto-Calculated System Values
-              </span>
+          {/* ---------------- NAVIGATION CONTROLS: SAVE & NEXT SECTION ---------------- */}
+          <div className="bg-white border border-border rounded-[24px] p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              size="md"
+              onClick={handlePrevStep}
+              disabled={activeStep === 1}
+              className="w-full sm:w-auto font-bold text-xs px-5 py-2.5 rounded-[12px] border-border text-navy hover:bg-page disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            >
+              ← Previous Step
+            </Button>
+
+            <div className="flex items-center gap-2 text-xs text-muted">
+              <span>Step <strong className="text-navy">{activeStep}</strong> of 10</span>
+              <span>•</span>
+              <span className="font-semibold text-teal">{steps[activeStep - 1]?.title}</span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-1">
-              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
-                <span className="label-caps block">Partner Level</span>
-                <strong className="text-sm font-extrabold text-teal block">{profile.partnerLevel}</strong>
-              </div>
-
-              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
-                <span className="label-caps block">Average Rating</span>
-                <strong className="text-base font-extrabold text-amber-600 flex items-center justify-center gap-1">
-                  ⭐ {profile.averageRating} <span className="text-xs text-muted font-normal">({profile.totalReviewsCount})</span>
-                </strong>
-              </div>
-
-              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
-                <span className="label-caps block">Response Rate</span>
-                <strong className="text-base font-extrabold text-emerald-600 block">{profile.responseRate}%</strong>
-              </div>
-
-              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
-                <span className="label-caps block">Response SLA</span>
-                <strong className="text-sm font-bold text-navy block">{profile.responseTimeSla}</strong>
-              </div>
-
-              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
-                <span className="label-caps block">Trips Completed</span>
-                <strong className="text-base font-extrabold text-navy block">{profile.tripsCompleted}</strong>
-              </div>
-
-              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
-                <span className="label-caps block">Happy Travelers</span>
-                <strong className="text-base font-extrabold text-navy block">{profile.happyTravelers.toLocaleString()}</strong>
-              </div>
-            </div>
-          </Card>
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              onClick={handleNextStep}
+              className="w-full sm:w-auto bg-gradient-to-r from-teal to-cyan text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              {activeStep < 10 ? (
+                <>
+                  <span>Save & Next Step</span>
+                  <span className="text-sm font-bold">→</span>
+                </>
+              ) : (
+                <>
+                  <span>Save & Return to Dashboard</span>
+                  <span>🎉</span>
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
 
