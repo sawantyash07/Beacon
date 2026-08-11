@@ -747,13 +747,7 @@ export default function BusinessProfilePage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <Input
-                      label="WhatsApp Line"
-                      value={profile.whatsappNumber}
-                      placeholder="+91 98765 43210"
-                      onChange={(e) => setProfile((prev) => ({ ...prev, whatsappNumber: e.target.value }))}
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
                       label="Business Email"
                       type="email"
@@ -763,18 +757,34 @@ export default function BusinessProfilePage() {
                       icon={<Mail className="w-4 h-4 text-teal" />}
                     />
                     <Input
-                      label="City & State"
-                      placeholder="e.g. Mumbai, Maharashtra"
-                      value={profile.city ? (profile.state ? `${profile.city}, ${profile.state}` : profile.city) : (profile.state || '')}
+                      label="WhatsApp Line"
+                      value={profile.whatsappNumber}
+                      placeholder="+91 98765 43210"
+                      onChange={(e) => setProfile((prev) => ({ ...prev, whatsappNumber: e.target.value }))}
+                      icon={<Phone className="w-4 h-4 text-teal" />}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <Input
+                      label="City"
+                      placeholder="e.g. Jalna"
+                      value={profile.city || ''}
                       onChange={(e) => {
                         const val = e.target.value
-                        const parts = val.split(',')
-                        setProfile((prev) => ({
-                          ...prev,
-                          city: parts[0] ? parts[0].trim() : '',
-                          state: parts[1] ? parts[1].trim() : ''
-                        }))
-                        triggerAutoSave('City & State')
+                        setProfile((prev) => ({ ...prev, city: val }))
+                        triggerAutoSave('City')
+                      }}
+                      icon={<MapPin className="w-4 h-4 text-teal" />}
+                    />
+                    <Input
+                      label="State / Province"
+                      placeholder="e.g. Maharashtra"
+                      value={profile.state || ''}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setProfile((prev) => ({ ...prev, state: val }))
+                        triggerAutoSave('State')
                       }}
                       icon={<MapPin className="w-4 h-4 text-teal" />}
                     />

@@ -452,17 +452,23 @@ export default function PlannerOnboardingPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <Input
-                      label="City & State *"
-                      placeholder="e.g. Jalna, Maharashtra"
-                      value={profile.city}
+                      label="City *"
+                      placeholder="e.g. Jalna"
+                      value={profile.city || ''}
                       onChange={(e) => setProfile(p => ({ ...p, city: e.target.value }))}
                     />
                     <Input
+                      label="State / Province *"
+                      placeholder="e.g. Maharashtra"
+                      value={profile.state || ''}
+                      onChange={(e) => setProfile(p => ({ ...p, state: e.target.value }))}
+                    />
+                    <Input
                       label="Country *"
-                      placeholder="India"
-                      value={profile.country}
+                      placeholder="e.g. India"
+                      value={profile.country || ''}
                       onChange={(e) => setProfile(p => ({ ...p, country: e.target.value }))}
                     />
                   </div>
