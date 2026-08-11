@@ -220,9 +220,9 @@ export default function OverviewPage() {
           <div className="space-y-1">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-navy">Monthly Earnings</span>
-              <span className="font-bold text-teal font-mono">{formatCurrency(stats.monthlyEarnings)}</span>
+              <span className="font-extrabold text-navy">{formatCurrency(stats.monthlyEarnings)}</span>
             </div>
-            <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden mt-1.5">
+            <div className="w-full h-2 bg-page border border-border rounded-full overflow-hidden mt-1.5">
               <div className="h-full bg-teal" style={{ width: '100%' }} />
             </div>
             <span className="text-[10px] text-muted block mt-2">Dynamically loaded from DB</span>
@@ -324,7 +324,7 @@ export default function OverviewPage() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-navy">{enq.client}</span>
-                      <span className="text-[10px] text-muted font-mono">{enq.date}</span>
+                      <span className="text-[10px] text-muted font-medium">{enq.date}</span>
                     </div>
                     <p className="text-[11px] text-muted mt-0.5">{enq.details}</p>
                   </div>
@@ -350,13 +350,13 @@ export default function OverviewPage() {
               <div className="w-24 h-24 rounded-full border-[10px] border-teal flex items-center justify-center relative border-t-teal/30">
                 <div className="text-center">
                   <span className="text-xl font-extrabold text-navy">28</span>
-                  <p className="text-[8px] text-muted uppercase">Confirmed</p>
+                  <p className="label-caps">Confirmed</p>
                 </div>
               </div>
             </div>
             <div className="flex justify-between text-xs text-muted mt-4 border-t border-border/5 pt-3">
-              <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-teal" /> Confirmed (28)</span>
-              <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-teal/30" /> Pending (8)</span>
+              <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Confirmed (28)</span>
+              <span className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Pending (8)</span>
             </div>
           </Card>
 
@@ -377,7 +377,7 @@ export default function OverviewPage() {
                 <div key={i} className="p-3 rounded-[12px] border border-border bg-page/50 space-y-1">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-navy">{dep.title}</span>
-                    <Badge variant={dep.date === 'Tomorrow' ? 'success' : 'muted'} className="text-[9px] py-0.5 px-1.5 font-mono">{dep.date}</Badge>
+                    <Badge variant={dep.date === 'Tomorrow' ? 'success' : 'muted'} className="text-[10px] py-0.5 px-2 font-semibold">{dep.date}</Badge>
                   </div>
                   <div className="flex justify-between text-[11px] text-muted">
                     <span>{dep.pax}</span>
@@ -397,7 +397,7 @@ export default function OverviewPage() {
                   <div className="w-2 h-2 rounded-full bg-teal mt-1.5 shrink-0" />
                   <div className="space-y-0.5">
                     <p className="text-navy leading-tight">{activity.text}</p>
-                    <span className="text-[10px] text-muted font-mono block">{formatRelativeTime(activity.time)}</span>
+                    <span className="text-[10px] text-muted block font-medium">{formatRelativeTime(activity.time)}</span>
                   </div>
                 </div>
               ))}

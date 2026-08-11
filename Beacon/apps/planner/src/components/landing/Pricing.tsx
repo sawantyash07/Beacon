@@ -49,7 +49,7 @@ export function Pricing() {
                 {plan.description}
               </p>
               <div className="mb-8">
-                <span className={`text-4xl font-bold font-mono ${plan.popular ? 'text-cyan' : 'text-navy'}`}>
+                <span className={`text-4xl font-extrabold font-heading ${plan.popular ? 'text-cyan' : 'text-navy'}`}>
                   ${plan.price}
                 </span>
                 <span className={`text-sm ${plan.popular ? 'text-white/60' : 'text-muted'}`}>/month</span>

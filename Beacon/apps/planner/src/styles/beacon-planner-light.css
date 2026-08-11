@@ -1,0 +1,124 @@
+/**
+ * Beacon Design System — Surface B: Planner Dashboard (Light Mode Only)
+ * High-Efficiency Operations Dashboard for Travel Organizers & Ops Staff
+ * Reference: Warm off-white canvas, white elevated cards, near-black action CTAs,
+ * Brand color strictly isolated to identity/navigation, 7 independent status colors.
+ */
+
+:root,
+[data-surface="planner"] {
+  /* Brand Primitives (Identity Only — Never Used as Status Signals) */
+  --brand-navy: #002349;
+  --brand-teal: #0097a6;
+  --brand-cyan: #00cbe0;
+  --brand-white: #ffffff;
+
+  /* Typography System (Single Unified Sans-Serif Family) */
+  --font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-heading: "Space Grotesk", "Inter", sans-serif;
+  --font-family-mono: "IBM Plex Mono", "SF Mono", Consolas, ui-monospace, monospace; /* Reserved ONLY for technical IDs/codes */
+
+  /* Type Scale Tokens with paired line-heights */
+  --text-xs: 0.75rem;     /* 12px */
+  --leading-xs: 1rem;     /* 16px */
+  --text-sm: 0.875rem;   /* 14px */
+  --leading-sm: 1.25rem;  /* 20px */
+  --text-base: 1rem;      /* 16px */
+  --leading-base: 1.5rem; /* 24px */
+  --text-lg: 1.125rem;   /* 18px */
+  --leading-lg: 1.75rem;  /* 28px */
+  --text-xl: 1.25rem;    /* 20px */
+  --leading-xl: 1.75rem;  /* 28px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --leading-2xl: 2rem;    /* 32px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --leading-3xl: 2.25rem; /* 36px */
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Formalized Section Label Caps Token */
+  --letter-spacing-caps: 0.04em;
+
+  /* Warm-Neutral Chrome Palette (Surface B Light) */
+  --color-bg-canvas: #f8fafc; /* Neutral warm off-white, NOT navy-tinted */
+  --color-bg-surface: #ffffff; /* Elevated clean card surface */
+  --color-bg-surface-raised: #ffffff;
+  --color-bg-surface-sunken: #f1f5f9;
+
+  /* Neutral Borders */
+  --color-border-subtle: #f1f5f9;
+  --color-border-default: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /* Typography Colors (WCAG AA & AAA Compliant) */
+  --color-text-primary: #0f172a;   /* 16.5:1 contrast vs #FFFFFF — Crisp near-black */
+  --color-text-secondary: #334155; /* 9.5:1 contrast vs #FFFFFF — Clean slate */
+  --color-text-muted: #64748b;     /* 4.8:1 contrast vs #FFFFFF — Legible meta/caption */
+  --color-text-disabled: #94a3b8;
+  --color-text-on-dark: #ffffff;
+
+  /* Primary Action Buttons (Near-Black Neutral — NOT Cyan/Teal) */
+  --button-primary-bg: #0f172a;
+  --button-primary-hover: #1e293b;
+  --button-primary-text: #ffffff;
+  --button-primary-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
+  /* Brand Element Isolated Roles (Sidebar / Wordmark / Active Nav Bar) */
+  --planner-sidebar-bg: #ffffff;
+  --planner-sidebar-border: #e2e8f0;
+  --planner-nav-active-bg: rgba(0, 203, 224, 0.12);
+  --planner-nav-active-bar: #0097a6;
+  --planner-nav-active-text: #002349;
+
+  /* -------------------------------------------------------------
+     7 INDEPENDENT COLORBLIND-SAFE SEMANTIC STATUS TOKENS
+     (Visually distinct from brand-teal and brand-cyan)
+     ------------------------------------------------------------- */
+  
+  /* 1. New / Unread Enquiry (Info Indigo) */
+  --status-inquiry-bg: #eef2ff;
+  --status-inquiry-text: #3730a3;
+  --status-inquiry-border: #c7d2fe;
+  --status-inquiry-dot: #4f46e5;
+
+  /* 2. Payment Pending / Awaiting Verification (Amber Warning) */
+  --status-pending-bg: #fffbeb;
+  --status-pending-text: #92400e;
+  --status-pending-border: #fde68a;
+  --status-pending-dot: #d97706;
+
+  /* 3. Confirmed Booking / Verified KYC (Success Green) */
+  --status-confirmed-bg: #f0fdf4;
+  --status-confirmed-text: #166534;
+  --status-confirmed-border: #bbf7d0;
+  --status-confirmed-dot: #16a34a;
+
+  /* 4. In-Progress / Ongoing Trip (Neutral Slate / Violet) */
+  --status-inprogress-bg: #f5f3ff;
+  --status-inprogress-text: #5b21b6;
+  --status-inprogress-border: #ddd6fe;
+  --status-inprogress-dot: #7c3aed;
+
+  /* 5. Completed / Settled (Settled Teal-Slate) */
+  --status-completed-bg: #f0fdfa;
+  --status-completed-text: #115e59;
+  --status-completed-border: #99f6e4;
+  --status-completed-dot: #0d9488;
+
+  /* 6. Cancelled / Declined (Danger Red) */
+  --status-cancelled-bg: #fef2f2;
+  --status-cancelled-text: #991b1b;
+  --status-cancelled-border: #fecaca;
+  --status-cancelled-dot: #dc2626;
+
+  /* 7. Complaint / Urgent Flag (Alert Orange) */
+  --status-urgent-bg: #fff7ed;
+  --status-urgent-text: #9a3412;
+  --status-urgent-border: #fed7aa;
+  --status-urgent-dot: #ea580c;
+}

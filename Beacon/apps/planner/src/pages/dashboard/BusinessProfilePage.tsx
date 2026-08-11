@@ -1430,42 +1430,42 @@ export default function BusinessProfilePage() {
                   Platform-generated metrics dynamically calculated from your activity, reviews, and booking completion rates.
                 </p>
               </div>
-              <span className="text-[10px] font-mono font-bold bg-teal/10 text-teal px-2.5 py-1 rounded-full">
+              <span className="text-[11px] font-semibold bg-teal/10 text-teal px-3 py-1 rounded-full border border-teal/20">
                 Auto-Calculated System Values
               </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-1">
-              <div className="p-3 bg-page border border-border rounded-[16px] text-center">
-                <span className="text-[10px] uppercase font-bold text-muted block">Partner Level</span>
-                <strong className="text-sm font-extrabold text-cyan font-mono">{profile.partnerLevel}</strong>
+              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
+                <span className="label-caps block">Partner Level</span>
+                <strong className="text-sm font-extrabold text-teal block">{profile.partnerLevel}</strong>
               </div>
 
-              <div className="p-3 bg-page border border-border rounded-[16px] text-center">
-                <span className="text-[10px] uppercase font-bold text-muted block">Average Rating</span>
-                <strong className="text-base font-extrabold text-amber-500 font-mono flex items-center justify-center gap-1">
-                  ⭐ {profile.averageRating} ({profile.totalReviewsCount})
+              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
+                <span className="label-caps block">Average Rating</span>
+                <strong className="text-base font-extrabold text-amber-600 flex items-center justify-center gap-1">
+                  ⭐ {profile.averageRating} <span className="text-xs text-muted font-normal">({profile.totalReviewsCount})</span>
                 </strong>
               </div>
 
-              <div className="p-3 bg-page border border-border rounded-[16px] text-center">
-                <span className="text-[10px] uppercase font-bold text-muted block">Response Rate</span>
-                <strong className="text-base font-extrabold text-emerald-600 font-mono">{profile.responseRate}%</strong>
+              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
+                <span className="label-caps block">Response Rate</span>
+                <strong className="text-base font-extrabold text-emerald-600 block">{profile.responseRate}%</strong>
               </div>
 
-              <div className="p-3 bg-page border border-border rounded-[16px] text-center">
-                <span className="text-[10px] uppercase font-bold text-muted block">Response SLA</span>
-                <strong className="text-xs font-extrabold text-navy">{profile.responseTimeSla}</strong>
+              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
+                <span className="label-caps block">Response SLA</span>
+                <strong className="text-sm font-bold text-navy block">{profile.responseTimeSla}</strong>
               </div>
 
-              <div className="p-3 bg-page border border-border rounded-[16px] text-center">
-                <span className="text-[10px] uppercase font-bold text-muted block">Trips Completed</span>
-                <strong className="text-base font-extrabold text-teal font-mono">{profile.tripsCompleted}</strong>
+              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
+                <span className="label-caps block">Trips Completed</span>
+                <strong className="text-base font-extrabold text-navy block">{profile.tripsCompleted}</strong>
               </div>
 
-              <div className="p-3 bg-page border border-border rounded-[16px] text-center">
-                <span className="text-[10px] uppercase font-bold text-muted block">Happy Travelers</span>
-                <strong className="text-base font-extrabold text-navy font-mono">{profile.happyTravelers.toLocaleString()}</strong>
+              <div className="p-3.5 bg-page border border-border rounded-[16px] text-center space-y-1">
+                <span className="label-caps block">Happy Travelers</span>
+                <strong className="text-base font-extrabold text-navy block">{profile.happyTravelers.toLocaleString()}</strong>
               </div>
             </div>
           </Card>

@@ -1,0 +1,49 @@
+/**
+ * Beacon Design System — Surface A: Traveler Site (Light Mode)
+ * User-Toggleable Light Theme for Traveler Exploration & Booking
+ * Brand Primitives: Navy (#002349), Teal (#0097a6), Cyan (#00cbe0), White (#ffffff)
+ */
+
+[data-surface="traveler"][data-theme="light"],
+.theme-traveler-light {
+  /* Semantic Canvas & Surface Tokens (Surface A Light) */
+  --color-bg-canvas: #fafbfc;
+  --color-bg-canvas-subtle: #f1f5f9;
+  --color-bg-surface: #ffffff;
+  --color-bg-surface-raised: #ffffff;
+  --color-bg-surface-overlay: rgba(255, 255, 255, 0.95);
+
+  /* Borders & Dividers */
+  --color-border-subtle: #f1f5f9;
+  --color-border-default: #e2e8f0;
+  --color-border-strong: #0097a6;
+
+  /* Typography Colors */
+  --color-text-primary: #0f172a; /* 16.2:1 contrast vs #FAFBFC */
+  --color-text-secondary: #334155; /* 9.5:1 contrast vs #FAFBFC */
+  --color-text-muted: #64748b; /* 4.8:1 contrast vs #FAFBFC */
+  --color-text-on-brand: #ffffff;
+  --color-link: #0097a6;
+  --color-link-hover: #002349;
+  --color-focus-ring: #0097a6;
+
+  /* Interactive Accent */
+  --color-accent-primary: #0097a6;
+  --color-accent-hover: #002349;
+  --color-accent-glow: rgba(0, 151, 166, 0.2);
+
+  /* Component Specific Tokens */
+  /* Recommended dark-nav-persists pattern for brand recognition */
+  --nav-bg: #002349;
+  --nav-border: rgba(255, 255, 255, 0.1);
+  --nav-text: #ffffff;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --card-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+  --button-primary-bg: #0097a6; /* Teal background for high white text contrast */
+  --button-primary-hover: #0c4684;
+  --button-primary-text: #ffffff;
+  --button-secondary-bg: #f8fafc;
+  --button-secondary-border: #cbd5e1;
+  --button-secondary-text: #0f172a;
+}

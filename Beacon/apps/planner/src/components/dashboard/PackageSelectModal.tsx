@@ -160,11 +160,11 @@ export function PackageSelectModal({
                     </div>
 
                     <div className="text-right shrink-0">
-                      <div className="font-mono text-sm font-bold text-teal">
+                      <div className="text-sm font-bold text-teal">
                         {formatCurrency(finalPrice)}
                       </div>
                       {pkg.discount > 0 && (
-                        <div className="font-mono text-[10px] text-muted line-through">
+                        <div className="text-[10px] text-muted line-through">
                           {formatCurrency(pkg.price)}
                         </div>
                       )}

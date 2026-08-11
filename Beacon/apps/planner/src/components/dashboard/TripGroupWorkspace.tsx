@@ -669,15 +669,15 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div className="bg-page border border-border p-3.5 rounded-[14px]">
-                  <span className="text-[10px] uppercase font-bold text-muted block">Bookings</span>
-                  <strong className="text-xl font-bold text-navy font-mono">{group.members}</strong>
+                  <span className="label-caps block">Bookings</span>
+                  <strong className="text-xl font-extrabold text-navy">{group.members}</strong>
                 </div>
                 <div className="bg-page border border-border p-3.5 rounded-[14px]">
-                  <span className="text-[10px] uppercase font-bold text-muted block">Total Seats</span>
-                  <strong className="text-xl font-bold text-teal font-mono">{totalTravelers}</strong>
+                  <span className="label-caps block">Total Seats</span>
+                  <strong className="text-xl font-extrabold text-teal">{totalTravelers}</strong>
                 </div>
                 <div className="bg-page border border-border p-3.5 rounded-[14px]">
-                  <span className="text-[10px] uppercase font-bold text-muted block">Departure Date</span>
+                  <span className="label-caps block">Departure Date</span>
                   <strong className="text-sm font-bold text-navy">{formatDate(group.departure)}</strong>
                 </div>
               </div>
@@ -1084,12 +1084,12 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
           <h3 className="text-lg font-bold text-navy">Shared Group Itinerary & Schedule</h3>
           <div className="space-y-4">
             <div className="p-4 bg-page border border-border rounded-[14px] space-y-1">
-              <span className="text-xs font-bold text-teal font-mono">Day 1 · Arrival & Sunset Reception</span>
+              <span className="text-xs font-bold text-teal">Day 1 · Arrival & Sunset Reception</span>
               <h4 className="font-bold text-navy text-sm">Resort Arrival & Maldives Sunset Dinner</h4>
               <p className="text-xs text-muted">Arrive at Malé Marina for speedboat transfer to Soneva Jani Resort. Welcome drink & evening dinner at beach.</p>
             </div>
             <div className="p-4 bg-page border border-border rounded-[14px] space-y-1">
-              <span className="text-xs font-bold text-teal font-mono">Day 2 · Coral Reef Snorkeling</span>
+              <span className="text-xs font-bold text-teal">Day 2 · Coral Reef Snorkeling</span>
               <h4 className="font-bold text-navy text-sm">Guided Atoll Snorkeling Excursion</h4>
               <p className="text-xs text-muted">Morning snorkeling tour with certified marine biologist. Afternoon free time at villa lagoon.</p>
             </div>

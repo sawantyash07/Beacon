@@ -74,7 +74,7 @@ export default function PaymentsPage() {
                 <Wallet className="w-5 h-5 text-cyan" />
                 <span className="text-white/80 text-xs font-bold uppercase tracking-wider">Total Direct Settled Earnings</span>
               </div>
-              <p className="text-4xl font-extrabold font-mono">{formatCurrency(balance)}</p>
+              <p className="text-4xl font-extrabold font-heading text-white">{formatCurrency(balance)}</p>
               <div className="flex items-center gap-2 mt-4 text-[11px] bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10 max-w-max">
                 <ShieldCheck className="w-4 h-4 text-cyan" />
                 <span>Direct Settlements Active: Funds are wired instantly to your planner bank account.</span>
@@ -102,7 +102,7 @@ export default function PaymentsPage() {
             </h2>
             <p className="text-xs text-muted mt-0.5">Cross-reference traveler payment submissions with your bank statements</p>
           </div>
-          <Badge className="bg-teal/10 text-teal border border-teal/20 font-bold font-mono">
+          <Badge className="bg-teal/10 text-teal border border-teal/20 font-semibold">
             {pendingVerifications.filter((v) => v.status === 'Pending').length} Pending Checks
           </Badge>
         </div>
@@ -129,7 +129,7 @@ export default function PaymentsPage() {
               </div>
               
               <div className="flex items-center justify-between sm:justify-end gap-4">
-                <span className="text-sm font-extrabold font-mono text-navy">{formatCurrency(txn.amount)}</span>
+                <span className="text-sm font-extrabold text-navy">{formatCurrency(txn.amount)}</span>
                 {txn.status === 'Verified' ? (
                   <span className="text-xs font-bold text-green-600 bg-green-50 border border-green-200 px-3 py-1.5 rounded-xl">
                     ✓ Verified
@@ -180,7 +180,7 @@ export default function PaymentsPage() {
                 <p className="text-xs text-muted mt-0.5">{reminder.package} · Due {formatDate(reminder.due)}</p>
               </div>
               <div className="flex items-center gap-3">
-                <span className="font-mono text-sm font-extrabold text-navy">{formatCurrency(reminder.amount)}</span>
+                <span className="text-sm font-extrabold text-navy">{formatCurrency(reminder.amount)}</span>
                 <Button 
                   size="sm" 
                   variant="outline" 
@@ -216,10 +216,10 @@ export default function PaymentsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-navy">{txn.description}</p>
-                  <p className="text-xs text-muted font-mono font-bold">{txn.id} · {formatDate(txn.date)}</p>
+                  <p className="text-xs text-muted font-mono">{txn.id} · {formatDate(txn.date)}</p>
                 </div>
               </div>
-              <span className="font-mono font-extrabold text-sm text-green-600">
+              <span className="font-extrabold text-sm text-emerald-600">
                 +{formatCurrency(txn.amount)}
               </span>
             </motion.div>

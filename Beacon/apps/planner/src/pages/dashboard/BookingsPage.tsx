@@ -311,53 +311,53 @@ export default function BookingsPage() {
 
           {/* Live Overall Statistics Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
-              <div className="flex items-center gap-2 text-muted text-xs font-semibold mb-1">
-                <Calendar className="w-3.5 h-3.5 text-teal" /> Total Bookings
-              </div>
-              <div className="text-xl font-bold text-navy font-mono">{overallStats.totalBookings}</div>
+            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm space-y-1">
+              <span className="label-caps flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-slate-500" /> Total Bookings
+              </span>
+              <div className="text-xl font-extrabold text-navy">{overallStats.totalBookings}</div>
             </div>
 
-            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
-              <div className="flex items-center gap-2 text-muted text-xs font-semibold mb-1">
-                <Package className="w-3.5 h-3.5 text-teal" /> Active Packages
-              </div>
-              <div className="text-xl font-bold text-navy font-mono">{overallStats.activePkgsCount}</div>
+            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm space-y-1">
+              <span className="label-caps flex items-center gap-1.5">
+                <Package className="w-3.5 h-3.5 text-slate-500" /> Active Packages
+              </span>
+              <div className="text-xl font-extrabold text-navy">{overallStats.activePkgsCount}</div>
             </div>
 
-            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
-              <div className="flex items-center gap-2 text-muted text-xs font-semibold mb-1">
-                <Users className="w-3.5 h-3.5 text-teal" /> Total Travelers
-              </div>
-              <div className="text-xl font-bold text-navy font-mono">{overallStats.totalTravelers}</div>
+            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm space-y-1">
+              <span className="label-caps flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-slate-500" /> Total Travelers
+              </span>
+              <div className="text-xl font-extrabold text-navy">{overallStats.totalTravelers}</div>
             </div>
 
-            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
-              <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold mb-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Confirmed
-              </div>
-              <div className="text-xl font-bold text-emerald-600 font-mono">{overallStats.confirmedCount}</div>
+            <div className="bg-surface border border-emerald-200/60 rounded-[16px] p-3.5 shadow-sm space-y-1 bg-emerald-50/30">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Confirmed
+              </span>
+              <div className="text-xl font-extrabold text-emerald-700">{overallStats.confirmedCount}</div>
             </div>
 
-            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
-              <div className="flex items-center gap-2 text-amber-600 text-xs font-semibold mb-1">
-                <Clock className="w-3.5 h-3.5 text-amber-500" /> Pending
-              </div>
-              <div className="text-xl font-bold text-amber-600 font-mono">{overallStats.pendingCount}</div>
+            <div className="bg-surface border border-amber-200/60 rounded-[16px] p-3.5 shadow-sm space-y-1 bg-amber-50/30">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-amber-600" /> Pending
+              </span>
+              <div className="text-xl font-extrabold text-amber-700">{overallStats.pendingCount}</div>
             </div>
 
-            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
-              <div className="flex items-center gap-2 text-rose-600 text-xs font-semibold mb-1">
-                <XCircle className="w-3.5 h-3.5 text-rose-500" /> Cancelled
-              </div>
-              <div className="text-xl font-bold text-rose-600 font-mono">{overallStats.cancelledCount}</div>
+            <div className="bg-surface border border-red-200/60 rounded-[16px] p-3.5 shadow-sm space-y-1 bg-red-50/30">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-red-700 flex items-center gap-1.5">
+                <XCircle className="w-3.5 h-3.5 text-red-600" /> Cancelled
+              </span>
+              <div className="text-xl font-extrabold text-red-700">{overallStats.cancelledCount}</div>
             </div>
 
-            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2 text-teal text-xs font-semibold mb-1">
-                <DollarSign className="w-3.5 h-3.5 text-teal" /> Total Revenue
-              </div>
-              <div className="text-xl font-bold text-teal font-mono">{formatCurrency(overallStats.totalRevenue)}</div>
+            <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm col-span-2 sm:col-span-1 space-y-1">
+              <span className="label-caps flex items-center gap-1.5">
+                <DollarSign className="w-3.5 h-3.5 text-slate-500" /> Total Revenue
+              </span>
+              <div className="text-xl font-extrabold text-navy">{formatCurrency(overallStats.totalRevenue)}</div>
             </div>
           </div>
 
