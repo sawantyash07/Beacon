@@ -24,6 +24,8 @@ export function FileUploader({
   helperText = 'Upload PDF, PNG, or JPG (max 10MB)',
 }: FileUploaderProps) {
   const safeCurrentUrl = currentFileUrl && !currentFileUrl.startsWith('blob:') ? currentFileUrl : null
+  const [dragActive, setDragActive] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [selectedFileName, setSelectedFileName] = useState<string | null>(currentFileName || null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(safeCurrentUrl)
   const [showPreviewModal, setShowPreviewModal] = useState(false)
