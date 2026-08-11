@@ -5,7 +5,7 @@ import {
   User, Award, Building2, CreditCard, ShieldCheck,
   Save, Sparkles, Lock, Globe, Mail,
   Shield, FileCheck, FileText, Phone, CheckCircle2, Check,
-  AlertCircle, ChevronRight, CheckCircle, Info, Eye, UploadCloud, Download, X, Trash2
+  AlertCircle, ChevronRight, CheckCircle, Info, Eye, UploadCloud, Download, X, Trash2, ExternalLink
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/Card'
