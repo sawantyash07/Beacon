@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -472,6 +472,41 @@ export default function BusinessProfilePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  // Focus next placeholder / input on Enter key press
+  const stepFormRef = useRef<HTMLDivElement>(null)
+
+  const handleFormKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter') {
+      const target = e.target as HTMLElement
+      // Do not capture enter if user is inside a multiline textarea or pressing an action button
+      if (target.tagName.toLowerCase() === 'textarea' || target.tagName.toLowerCase() === 'button') {
+        return
+      }
+
+      if (!stepFormRef.current) return
+
+      // Find all visible, non-disabled input / select fields in the active step card
+      const focusableElements = Array.from(
+        stepFormRef.current.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+          'input:not([type="hidden"]):not([disabled]):not([type="file"]):not([type="checkbox"]), select:not([disabled])'
+        )
+      )
+
+      const currentIndex = focusableElements.indexOf(target as any)
+      if (currentIndex !== -1 && currentIndex < focusableElements.length - 1) {
+        e.preventDefault()
+        const nextField = focusableElements[currentIndex + 1]
+        nextField.focus()
+        if (nextField instanceof HTMLInputElement && nextField.type === 'text') {
+          nextField.select?.()
+        }
+      } else if (currentIndex === focusableElements.length - 1) {
+        e.preventDefault()
+        handleNextStep()
+      }
+    }
+  }
+
   const handleDocumentSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!uploadTitle.trim() || !selectedUploadFile) {
@@ -781,7 +816,8 @@ export default function BusinessProfilePage() {
             </div>
 
             {/* ---------------- ACTIVE STEP FORM CARDS ---------------- */}
-            <AnimatePresence mode="wait">
+            <div ref={stepFormRef} onKeyDown={handleFormKeyDown} className="w-full">
+              <AnimatePresence mode="wait">
               {/* ---------------- STEP 1: FIRM & BRAND INFORMATION ---------------- */}
               {activeStep === 1 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
@@ -1432,6 +1468,7 @@ export default function BusinessProfilePage() {
                 </Card>
               )}
             </AnimatePresence>
+            </div>
 
             {/* ---------------- BOTTOM STEP NAVIGATION BAR ---------------- */}
             <div className="sticky bottom-4 z-30 bg-surface/95 backdrop-blur-md border border-border rounded-[20px] p-4 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
