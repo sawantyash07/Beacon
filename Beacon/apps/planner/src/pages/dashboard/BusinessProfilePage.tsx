@@ -938,7 +938,46 @@ export default function BusinessProfilePage() {
                         onChange={(e) => setProfile((prev) => ({ ...prev, state: e.target.value }))}
                         error={attemptedSteps[1] && !profile.state?.trim() ? 'Operating state is required.' : undefined}
                         required
+                        list="indian-states"
                       />
+                      <datalist id="indian-states">
+                        <option value="Andhra Pradesh" />
+                        <option value="Arunachal Pradesh" />
+                        <option value="Assam" />
+                        <option value="Bihar" />
+                        <option value="Chhattisgarh" />
+                        <option value="Delhi" />
+                        <option value="Goa" />
+                        <option value="Gujarat" />
+                        <option value="Haryana" />
+                        <option value="Himachal Pradesh" />
+                        <option value="Jharkhand" />
+                        <option value="Karnataka" />
+                        <option value="Kerala" />
+                        <option value="Madhya Pradesh" />
+                        <option value="Maharashtra" />
+                        <option value="Manipur" />
+                        <option value="Meghalaya" />
+                        <option value="Mizoram" />
+                        <option value="Nagaland" />
+                        <option value="Odisha" />
+                        <option value="Punjab" />
+                        <option value="Rajasthan" />
+                        <option value="Sikkim" />
+                        <option value="Tamil Nadu" />
+                        <option value="Telangana" />
+                        <option value="Tripura" />
+                        <option value="Uttar Pradesh" />
+                        <option value="Uttarakhand" />
+                        <option value="West Bengal" />
+                        <option value="Andaman and Nicobar Islands" />
+                        <option value="Chandigarh" />
+                        <option value="Dadra and Nagar Haveli and Daman and Diu" />
+                        <option value="Jammu and Kashmir" />
+                        <option value="Ladakh" />
+                        <option value="Lakshadweep" />
+                        <option value="Puducherry" />
+                      </datalist>
                       <Input
                         label="Country *"
                         value="India"
