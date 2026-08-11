@@ -354,33 +354,33 @@ export default function BusinessProfilePage() {
   const isStepComplete = (stepId: number): boolean => {
     switch (stepId) {
       case 1:
-        return Boolean(profile.displayName?.trim() && profile.email?.trim() && profile.phone?.trim() && profile.city?.trim());
+        return Boolean(profile.displayName?.trim() || profile.email?.trim() || profile.phone?.trim() || profile.city?.trim());
       case 2:
-        return (profile.specializations?.length || 0) > 0 && (profile.travelStyles?.length || 0) > 0;
+        return (profile.specializations?.length || 0) > 0 || (profile.languages?.length || 0) > 0 || Boolean(profile.whyChooseMe?.trim());
       case 3:
-        return (profile.operatingRegions?.length || 0) > 0 || (profile.popularDestinations?.length || 0) > 0;
+        return (profile.countriesServed?.length || 0) > 0 || (profile.popularDestinations?.length || 0) > 0 || (profile.operatingRegions?.length || 0) > 0;
       case 4:
         return profile.partnerType === 'COMPANY'
-          ? Boolean(profile.companyName?.trim() && profile.panNumber?.trim())
-          : Boolean(profile.occupation?.trim() && profile.govtIdNumber?.trim());
+          ? Boolean(profile.companyName?.trim() || profile.registrationNumber?.trim() || profile.gstNumber?.trim() || profile.panNumber?.trim())
+          : Boolean(profile.occupation?.trim() || profile.govtIdNumber?.trim() || profile.panNumber?.trim());
       case 5:
         return Boolean(
           profile.serviceFlights || profile.serviceHotels || profile.serviceMeals ||
-          profile.serviceLocalTransport || profile.serviceTourGuide || profile.serviceCustomizedItinerary
+          profile.serviceLocalTransport || profile.serviceTourGuide || profile.serviceCustomizedItinerary ||
+          profile.serviceTravelInsurance || profile.servicePhotography
         );
       case 6:
-        return (profile.workingDays?.length || 0) > 0;
+        return (profile.workingDays?.length || 0) > 0 || Boolean(profile.workingHoursStart && profile.workingHoursEnd);
       case 7:
         return Boolean(
-          (profile.bankAccountNumber?.trim() && profile.ifscOrSwiftCode?.trim()) ||
-          profile.upiOrPaypalId?.trim()
+          profile.bankAccountNumber?.trim() || profile.upiOrPaypalId?.trim() || profile.bankName?.trim()
         );
       case 8:
-        return Boolean(profile.socialInstagram?.trim() || profile.socialWebsite?.trim() || profile.socialWhatsApp?.trim());
+        return Boolean(profile.socialInstagram?.trim() || profile.socialWebsite?.trim() || profile.socialWhatsApp?.trim() || profile.socialFacebook?.trim());
       case 9:
-        return Boolean(profile.autoResponderMessage?.trim());
+        return Boolean(profile.autoResponderMessage?.trim() || profile.notifyEmail || profile.notifyWhatsApp);
       case 10:
-        return documents.length >= 2 || kycStatus === 'VERIFIED';
+        return documents.length > 0 || kycStatus === 'VERIFIED' || kycStatus === 'UNDER_REVIEW';
       default:
         return false;
     }
