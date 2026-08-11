@@ -861,10 +861,10 @@ export default function BusinessProfilePage() {
                       onChange={(e) => setProfile((prev) => ({ ...prev, yearsExperience: parseInt(e.target.value) || 1 }))}
                     />
                     <Input
-                      label="Preferred Group Sizes Handled"
-                      value={profile.groupSizes.join(', ')}
-                      placeholder="e.g. Solo, Couples, Small Groups (2-8), Corporate"
-                      onChange={(e) => setProfile((prev) => ({ ...prev, groupSizes: e.target.value.split(',').map(s => s.trim()) }))}
+                      label="Why Should Travelers Choose Me?"
+                      value={profile.whyChooseMe || (Array.isArray(profile.groupSizes) ? profile.groupSizes.join(', ') : '')}
+                      placeholder="e.g. 10+ years local expertise, 24/7 on-ground support, customized luxury plans"
+                      onChange={(e) => setProfile((prev) => ({ ...prev, whyChooseMe: e.target.value }))}
                     />
                   </div>
                 </Card>
