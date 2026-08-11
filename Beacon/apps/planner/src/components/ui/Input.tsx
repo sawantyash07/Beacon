@@ -29,7 +29,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               'w-full px-4 py-2.5 rounded-[12px] border border-border bg-surface text-navy placeholder:text-muted/60',
               'focus:outline-none focus:ring-2 focus:ring-cyan/40 focus:border-cyan transition-all duration-200',
               icon && 'pl-10',
-              error && 'border-red-400 focus:ring-red-200',
+              error && 'border-rose-500 ring-1 ring-rose-400 bg-rose-50/20 focus:ring-rose-400 focus:border-rose-500',
               className
             )}
             {...props}
@@ -40,7 +40,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && (
+          <p className="text-[11px] text-rose-600 font-semibold mt-1 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+            <span>{error}</span>
+          </p>
+        )}
       </div>
     )
   }

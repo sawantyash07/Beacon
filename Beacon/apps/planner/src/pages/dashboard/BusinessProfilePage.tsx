@@ -278,6 +278,7 @@ export default function BusinessProfilePage() {
   const [showVerificationPreviewModal, setShowVerificationPreviewModal] = useState(false)
   const [showSubmissionSuccessModal, setShowSubmissionSuccessModal] = useState(false)
   const [submittingToMaster, setSubmittingToMaster] = useState(false)
+  const [attemptedSteps, setAttemptedSteps] = useState<Record<number, boolean>>({})
 
   // Submit profile & documents to Beacon Master Admin
   const handleSendToMaster = async () => {
@@ -390,7 +391,8 @@ export default function BusinessProfilePage() {
         break
       }
       case 3: {
-        if (!profile.bankAccountName?.trim()) missing.push('Bank Account Beneficiary Name')
+        const effectiveBeneficiary = (profile.bankAccountName || profile.legalName || profile.personalName || profile.displayName)?.trim()
+        if (!effectiveBeneficiary) missing.push('Bank Account Beneficiary Name')
         if (!profile.bankAccountNumber?.trim() || !validateBankAccount(profile.bankAccountNumber).isValid) missing.push('Valid Bank Account Number')
         if (!profile.ifscOrSwiftCode?.trim() || !validateIFSC(profile.ifscOrSwiftCode).isValid) missing.push('Valid 11-Character IFSC Code')
         if (!profile.upiOrPaypalId?.trim() || !validateUPI(profile.upiOrPaypalId).isValid) missing.push('Valid UPI ID')
@@ -437,9 +439,14 @@ export default function BusinessProfilePage() {
   const mandatoryComplete = isStepComplete(1) && isStepComplete(2) && isStepComplete(3) && isStepComplete(4)
 
   const handleNextStep = () => {
+    setAttemptedSteps(prev => ({ ...prev, [activeStep]: true }))
     const missing = getStepMissingFields(activeStep)
     if (missing.length > 0) {
-      toast.error(`Please complete all required details in Step ${activeStep}: ${missing.slice(0, 2).join(', ')}${missing.length > 2 ? ` and ${missing.length - 2} more` : ''}`)
+      setTimeout(() => {
+        const firstInvalid = stepFormRef.current?.querySelector<HTMLInputElement | HTMLTextAreaElement>('.border-rose-500, input:invalid')
+        firstInvalid?.focus()
+        firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 50)
       return
     }
 
@@ -460,10 +467,16 @@ export default function BusinessProfilePage() {
     }
 
     // Gated check: cannot jump forward if current or intermediate steps are incomplete
+    setAttemptedSteps(prev => ({ ...prev, [activeStep]: true }))
     for (let s = 1; s < targetStep; s++) {
       const stepMissing = getStepMissingFields(s)
       if (stepMissing.length > 0) {
-        toast.error(`Please complete Step ${s} (${steps[s - 1]?.shortTitle}) first before moving ahead.`)
+        setAttemptedSteps(prev => ({ ...prev, [s]: true }))
+        setTimeout(() => {
+          const firstInvalid = stepFormRef.current?.querySelector<HTMLInputElement | HTMLTextAreaElement>('.border-rose-500, input:invalid')
+          firstInvalid?.focus()
+          firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }, 50)
         return
       }
     }
@@ -853,6 +866,7 @@ export default function BusinessProfilePage() {
                       placeholder="e.g. Beacon Luxury Expeditions or Alex Mountain Trails"
                       value={profile.displayName}
                       onChange={(e) => setProfile((prev) => ({ ...prev, displayName: e.target.value }))}
+                      error={attemptedSteps[1] && !profile.displayName?.trim() ? 'Public brand / display name is required.' : undefined}
                       required
                     />
 
@@ -862,6 +876,7 @@ export default function BusinessProfilePage() {
                         placeholder="e.g. Alex Kumar"
                         value={profile.personalName || ''}
                         onChange={(e) => setProfile((prev) => ({ ...prev, personalName: e.target.value }))}
+                        error={attemptedSteps[1] && !profile.personalName?.trim() ? "Planner's personal name is required." : undefined}
                         helperText="The human name travelers see when chatting or browsing your tours."
                         required
                       />
@@ -876,9 +891,10 @@ export default function BusinessProfilePage() {
                           placeholder="e.g. 9876543210"
                           value={profile.phone}
                           onChange={(e) => setProfile((prev) => ({ ...prev, phone: e.target.value }))}
+                          error={attemptedSteps[1] && (!profile.phone || !validateIndianMobile(profile.phone).isValid) ? (validateIndianMobile(profile.phone).message || 'Valid 10-digit mobile required.') : undefined}
                           required
                         />
-                        {profile.phone && !validateIndianMobile(profile.phone).isValid && (
+                        {profile.phone && !attemptedSteps[1] && !validateIndianMobile(profile.phone).isValid && (
                           <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                             <AlertCircle className="w-3 h-3" /> {validateIndianMobile(profile.phone).message}
                           </p>
@@ -891,6 +907,7 @@ export default function BusinessProfilePage() {
                         icon={<Mail className="w-4 h-4 text-teal" />}
                         value={profile.email}
                         onChange={(e) => setProfile((prev) => ({ ...prev, email: e.target.value }))}
+                        error={attemptedSteps[1] && !profile.email?.trim() ? 'Business email is required.' : undefined}
                         required
                       />
                     </div>
@@ -911,6 +928,7 @@ export default function BusinessProfilePage() {
                         placeholder="e.g. Mumbai, Manali, Bengaluru"
                         value={profile.city || ''}
                         onChange={(e) => setProfile((prev) => ({ ...prev, city: e.target.value }))}
+                        error={attemptedSteps[1] && !profile.city?.trim() ? 'Operating city is required.' : undefined}
                         required
                       />
                       <Input
@@ -918,6 +936,7 @@ export default function BusinessProfilePage() {
                         placeholder="e.g. Maharashtra, Himachal Pradesh"
                         value={profile.state || ''}
                         onChange={(e) => setProfile((prev) => ({ ...prev, state: e.target.value }))}
+                        error={attemptedSteps[1] && !profile.state?.trim() ? 'Operating state is required.' : undefined}
                         required
                       />
                       <Input
@@ -961,6 +980,7 @@ export default function BusinessProfilePage() {
                         placeholder="e.g. Beacon Travel International Pvt Ltd"
                         value={profile.companyName}
                         onChange={(e) => setProfile((prev) => ({ ...prev, companyName: e.target.value }))}
+                        error={attemptedSteps[2] && !profile.companyName?.trim() ? 'Registered company name is required.' : undefined}
                         helperText="Must match your Certificate of Incorporation."
                         required
                       />
@@ -972,9 +992,10 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. AABCB1234F"
                             value={profile.panNumber}
                             onChange={(e) => setProfile((prev) => ({ ...prev, panNumber: e.target.value.toUpperCase() }))}
+                            error={attemptedSteps[2] && (!profile.panNumber || !validatePAN(profile.panNumber, 'COMPANY').isValid) ? (validatePAN(profile.panNumber, 'COMPANY').message || 'Valid Company PAN required.') : undefined}
                             required
                           />
-                          {profile.panNumber && !validatePAN(profile.panNumber, 'COMPANY').isValid && (
+                          {profile.panNumber && !attemptedSteps[2] && !validatePAN(profile.panNumber, 'COMPANY').isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validatePAN(profile.panNumber, 'COMPANY').message}
                             </p>
@@ -987,9 +1008,10 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. U63040MH2020PTC345678 or AAA-1234"
                             value={profile.registrationNumber}
                             onChange={(e) => setProfile((prev) => ({ ...prev, registrationNumber: e.target.value.toUpperCase() }))}
+                            error={attemptedSteps[2] && (!profile.registrationNumber || !validateCINorLLPIN(profile.registrationNumber).isValid) ? (validateCINorLLPIN(profile.registrationNumber).message || 'Valid Registration / CIN required.') : undefined}
                             required
                           />
-                          {profile.registrationNumber && !validateCINorLLPIN(profile.registrationNumber).isValid && (
+                          {profile.registrationNumber && !attemptedSteps[2] && !validateCINorLLPIN(profile.registrationNumber).isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validateCINorLLPIN(profile.registrationNumber).message}
                             </p>
@@ -1020,6 +1042,7 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. Turnover below ₹20 Lakhs statutory threshold"
                             value={profile.gstExemptionReason || ''}
                             onChange={(e) => setProfile((prev) => ({ ...prev, gstExemptionReason: e.target.value }))}
+                            error={attemptedSteps[2] && !profile.gstExemptionReason?.trim() ? 'GST exemption reason is required.' : undefined}
                             required
                           />
                         ) : (
@@ -1028,10 +1051,11 @@ export default function BusinessProfilePage() {
                               placeholder="e.g. 27AABCB1234F1Z5"
                               value={profile.gstNumber}
                               onChange={(e) => setProfile((prev) => ({ ...prev, gstNumber: e.target.value.toUpperCase() }))}
+                              error={attemptedSteps[2] && (!profile.gstNumber || !validateGSTIN(profile.gstNumber, profile.panNumber).isValid) ? (validateGSTIN(profile.gstNumber, profile.panNumber).message || 'Valid GSTIN required.') : undefined}
                               helperText="Characters 3-12 must match entered PAN."
                               required
                             />
-                            {profile.gstNumber && !validateGSTIN(profile.gstNumber, profile.panNumber).isValid && (
+                            {profile.gstNumber && !attemptedSteps[2] && !validateGSTIN(profile.gstNumber, profile.panNumber).isValid && (
                               <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                                 <AlertCircle className="w-3 h-3" /> {validateGSTIN(profile.gstNumber, profile.panNumber).message}
                               </p>
@@ -1047,6 +1071,7 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. 4th Floor, Mittal Towers, Nariman Point, Mumbai"
                             value={profile.officeAddress}
                             onChange={(e) => setProfile((prev) => ({ ...prev, officeAddress: e.target.value }))}
+                            error={attemptedSteps[2] && !profile.officeAddress?.trim() ? 'Registered office address is required.' : undefined}
                             required
                           />
                         </div>
@@ -1060,9 +1085,10 @@ export default function BusinessProfilePage() {
                               const clean = e.target.value.replace(/\D/g, '').slice(0, 6)
                               setProfile((prev) => ({ ...prev, pinCode: clean }))
                             }}
+                            error={attemptedSteps[2] && (!profile.pinCode || !validatePINCode(profile.pinCode).isValid) ? (validatePINCode(profile.pinCode).message || '6-digit PIN code required.') : undefined}
                             required
                           />
-                          {profile.pinCode && !validatePINCode(profile.pinCode).isValid && (
+                          {profile.pinCode && !attemptedSteps[2] && !validatePINCode(profile.pinCode).isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validatePINCode(profile.pinCode).message}
                             </p>
@@ -1105,6 +1131,7 @@ export default function BusinessProfilePage() {
                         placeholder="e.g. Aditya Vijay Kumar"
                         value={profile.legalName || profile.personalName || profile.displayName || ''}
                         onChange={(e) => setProfile((prev) => ({ ...prev, legalName: e.target.value }))}
+                        error={attemptedSteps[2] && !(profile.legalName || profile.personalName || profile.displayName)?.trim() ? 'Full legal name is required.' : undefined}
                         required
                       />
 
@@ -1115,10 +1142,11 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. ABCPK1234F"
                             value={profile.panNumber}
                             onChange={(e) => setProfile((prev) => ({ ...prev, panNumber: e.target.value.toUpperCase() }))}
+                            error={attemptedSteps[2] && (!profile.panNumber || !validatePAN(profile.panNumber, 'INDIVIDUAL').isValid) ? (validatePAN(profile.panNumber, 'INDIVIDUAL').message || 'Valid Personal PAN required (4th letter P).') : undefined}
                             helperText="4th character must be 'P' for Individual."
                             required
                           />
-                          {profile.panNumber && !validatePAN(profile.panNumber, 'INDIVIDUAL').isValid && (
+                          {profile.panNumber && !attemptedSteps[2] && !validatePAN(profile.panNumber, 'INDIVIDUAL').isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validatePAN(profile.panNumber, 'INDIVIDUAL').message}
                             </p>
@@ -1131,10 +1159,11 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. 2345 6789 0123"
                             value={profile.aadhaarNumber || ''}
                             onChange={(e) => setProfile((prev) => ({ ...prev, aadhaarNumber: e.target.value }))}
+                            error={attemptedSteps[2] && (!profile.aadhaarNumber || !validateAadhaar(profile.aadhaarNumber).isValid) ? (validateAadhaar(profile.aadhaarNumber).message || 'Valid 12-digit Aadhaar with checksum required.') : undefined}
                             helperText="Encrypted & masked. Verified via UIDAI Verhoeff checksum."
                             required
                           />
-                          {profile.aadhaarNumber && !validateAadhaar(profile.aadhaarNumber).isValid && (
+                          {profile.aadhaarNumber && !attemptedSteps[2] && !validateAadhaar(profile.aadhaarNumber).isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validateAadhaar(profile.aadhaarNumber).message}
                             </p>
@@ -1154,10 +1183,11 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. ABC1234567"
                             value={profile.voterIdNumber || ''}
                             onChange={(e) => setProfile((prev) => ({ ...prev, voterIdNumber: e.target.value.toUpperCase() }))}
+                            error={attemptedSteps[2] && (!profile.voterIdNumber || !validateVoterID(profile.voterIdNumber).isValid) ? (validateVoterID(profile.voterIdNumber).message || 'Valid Voter ID (3 letters + 7 digits) required.') : undefined}
                             helperText="3 letters + 7 digits (confirms 18+ age eligibility)."
                             required
                           />
-                          {profile.voterIdNumber && !validateVoterID(profile.voterIdNumber).isValid && (
+                          {profile.voterIdNumber && !attemptedSteps[2] && !validateVoterID(profile.voterIdNumber).isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validateVoterID(profile.voterIdNumber).message}
                             </p>
@@ -1180,6 +1210,7 @@ export default function BusinessProfilePage() {
                             placeholder="e.g. Flat 402, Green Meadows, Bandra West, Mumbai"
                             value={profile.residentialAddress || ''}
                             onChange={(e) => setProfile((prev) => ({ ...prev, residentialAddress: e.target.value }))}
+                            error={attemptedSteps[2] && !profile.residentialAddress?.trim() ? 'Residential address is required.' : undefined}
                             required
                           />
                         </div>
@@ -1193,9 +1224,10 @@ export default function BusinessProfilePage() {
                               const clean = e.target.value.replace(/\D/g, '').slice(0, 6)
                               setProfile((prev) => ({ ...prev, pinCode: clean }))
                             }}
+                            error={attemptedSteps[2] && (!profile.pinCode || !validatePINCode(profile.pinCode).isValid) ? (validatePINCode(profile.pinCode).message || '6-digit PIN code required.') : undefined}
                             required
                           />
-                          {profile.pinCode && !validatePINCode(profile.pinCode).isValid && (
+                          {profile.pinCode && !attemptedSteps[2] && !validatePINCode(profile.pinCode).isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validatePINCode(profile.pinCode).message}
                             </p>
@@ -1225,8 +1257,9 @@ export default function BusinessProfilePage() {
                     <Input
                       label="Bank Account Beneficiary Name *"
                       placeholder="e.g. Beacon Travel International or Aditya Kumar"
-                      value={profile.bankAccountName}
+                      value={profile.bankAccountName || profile.legalName || profile.personalName || profile.displayName || ''}
                       onChange={(e) => setProfile((prev) => ({ ...prev, bankAccountName: e.target.value }))}
+                      error={attemptedSteps[3] && !(profile.bankAccountName || profile.legalName || profile.personalName || profile.displayName)?.trim() ? 'Beneficiary name is required.' : undefined}
                       helperText="Must match the legal name entered in Step 2."
                       required
                     />
@@ -1238,9 +1271,10 @@ export default function BusinessProfilePage() {
                           placeholder="e.g. 987654321098"
                           value={profile.bankAccountNumber}
                           onChange={(e) => setProfile((prev) => ({ ...prev, bankAccountNumber: e.target.value }))}
+                          error={attemptedSteps[3] && (!profile.bankAccountNumber || !validateBankAccount(profile.bankAccountNumber).isValid) ? (validateBankAccount(profile.bankAccountNumber).message || 'Valid bank account number required.') : undefined}
                           required
                         />
-                        {profile.bankAccountNumber && !validateBankAccount(profile.bankAccountNumber).isValid && (
+                        {profile.bankAccountNumber && !attemptedSteps[3] && !validateBankAccount(profile.bankAccountNumber).isValid && (
                           <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                             <AlertCircle className="w-3 h-3" /> {validateBankAccount(profile.bankAccountNumber).message}
                           </p>
@@ -1253,10 +1287,11 @@ export default function BusinessProfilePage() {
                           placeholder="e.g. HDFC0000123, SBIN0001234"
                           value={profile.ifscOrSwiftCode}
                           onChange={(e) => setProfile((prev) => ({ ...prev, ifscOrSwiftCode: e.target.value.toUpperCase() }))}
+                          error={attemptedSteps[3] && (!profile.ifscOrSwiftCode || !validateIFSC(profile.ifscOrSwiftCode).isValid) ? (validateIFSC(profile.ifscOrSwiftCode).message || 'Valid 11-char IFSC code required.') : undefined}
                           helperText="11 characters, 5th character is always 0."
                           required
                         />
-                        {profile.ifscOrSwiftCode && !validateIFSC(profile.ifscOrSwiftCode).isValid && (
+                        {profile.ifscOrSwiftCode && !attemptedSteps[3] && !validateIFSC(profile.ifscOrSwiftCode).isValid && (
                           <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                             <AlertCircle className="w-3 h-3" /> {validateIFSC(profile.ifscOrSwiftCode).message}
                           </p>
@@ -1271,10 +1306,11 @@ export default function BusinessProfilePage() {
                           placeholder="e.g. beaconplanner@okaxis or 9876543210@paytm"
                           value={profile.upiOrPaypalId}
                           onChange={(e) => setProfile((prev) => ({ ...prev, upiOrPaypalId: e.target.value.toLowerCase() }))}
+                          error={attemptedSteps[3] && (!profile.upiOrPaypalId || !validateUPI(profile.upiOrPaypalId).isValid) ? (validateUPI(profile.upiOrPaypalId).message || 'Valid UPI ID (e.g. name@bank) required.') : undefined}
                           helperText="Primary payout rail for instant settlement."
                           required
                         />
-                        {profile.upiOrPaypalId && !validateUPI(profile.upiOrPaypalId).isValid && (
+                        {profile.upiOrPaypalId && !attemptedSteps[3] && !validateUPI(profile.upiOrPaypalId).isValid && (
                           <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                             <AlertCircle className="w-3 h-3" /> {validateUPI(profile.upiOrPaypalId).message}
                           </p>
@@ -1332,6 +1368,7 @@ export default function BusinessProfilePage() {
                         d.title.toLowerCase() === req.title.toLowerCase() || 
                         d.documentType.toLowerCase() === req.category.toLowerCase()
                       )
+                      const isMissingMandatory = Boolean(attemptedSteps[4] && req.mandatory && !uploaded)
 
                       return (
                         <div
@@ -1339,6 +1376,8 @@ export default function BusinessProfilePage() {
                           className={`p-4 rounded-[18px] border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
                             uploaded
                               ? 'bg-white border-emerald-200/80 shadow-2xs'
+                              : isMissingMandatory
+                              ? 'bg-rose-50/40 border-rose-500 ring-1 ring-rose-400 shadow-xs'
                               : 'bg-page/60 border-border hover:border-cyan/40'
                           }`}
                         >
@@ -1347,21 +1386,33 @@ export default function BusinessProfilePage() {
                             <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${
                               uploaded
                                 ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                                : isMissingMandatory
+                                ? 'bg-rose-100 text-rose-600 border border-rose-300'
                                 : 'bg-slate-200/70 text-slate-500'
                             }`}>
-                              {uploaded ? <CheckCircle2 className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
+                              {uploaded ? <CheckCircle2 className="w-5 h-5" /> : isMissingMandatory ? <AlertCircle className="w-5 h-5 text-rose-600" /> : <FileText className="w-5 h-5" />}
                             </div>
 
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-2">
-                                <h5 className="text-sm font-bold text-navy truncate">{req.title}</h5>
+                                <h5 className={`text-sm font-bold truncate ${isMissingMandatory ? 'text-rose-900 font-extrabold' : 'text-navy'}`}>{req.title}</h5>
                                 {req.mandatory && (
-                                  <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
-                                    Mandatory
+                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                    isMissingMandatory
+                                      ? 'text-rose-700 bg-rose-100 border-rose-300 animate-pulse'
+                                      : 'text-rose-600 bg-rose-50 border-rose-200'
+                                  }`}>
+                                    {isMissingMandatory ? 'Upload Required *' : 'Mandatory'}
                                   </span>
                                 )}
                               </div>
                               <p className="text-xs text-muted mt-0.5">{req.desc}</p>
+                              {isMissingMandatory && (
+                                <p className="text-[11px] font-semibold text-rose-600 mt-1 flex items-center gap-1">
+                                  <AlertCircle className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                                  <span>Please upload this required document to proceed.</span>
+                                </p>
+                              )}
                               {uploaded && (
                                 <p className="text-[11px] font-semibold text-emerald-600 mt-1 flex items-center gap-1">
                                   <span>✓ {uploaded.fileName}</span>
