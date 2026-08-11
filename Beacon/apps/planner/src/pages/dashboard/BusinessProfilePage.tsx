@@ -379,7 +379,8 @@ export default function BusinessProfilePage() {
           if (!profile.officeAddress?.trim()) missing.push('Registered Office Address')
           if (!profile.pinCode?.trim() || !validatePINCode(profile.pinCode).isValid) missing.push('Valid 6-Digit PIN Code')
         } else {
-          if (!profile.legalName?.trim()) missing.push('Full Legal Name as per Govt ID')
+          const effectiveLegal = (profile.legalName || profile.personalName || profile.displayName)?.trim()
+          if (!effectiveLegal) missing.push('Full Legal Name as per Govt ID')
           if (!profile.panNumber?.trim() || !validatePAN(profile.panNumber, 'INDIVIDUAL').isValid) missing.push('Valid Personal PAN (4th letter P)')
           if (!profile.aadhaarNumber?.trim() || !validateAadhaar(profile.aadhaarNumber).isValid) missing.push('Valid 12-Digit Aadhaar (with Verhoeff Checksum)')
           if (!profile.voterIdNumber?.trim() || !validateVoterID(profile.voterIdNumber).isValid) missing.push('Valid Voter ID (EPIC Number)')
@@ -1051,15 +1052,24 @@ export default function BusinessProfilePage() {
                         </div>
                         <div>
                           <Input
-                            label="PIN Code *"
+                            label="PIN Code (6-Digit) *"
                             placeholder="e.g. 400001"
+                            maxLength={6}
                             value={profile.pinCode || ''}
-                            onChange={(e) => setProfile((prev) => ({ ...prev, pinCode: e.target.value }))}
+                            onChange={(e) => {
+                              const clean = e.target.value.replace(/\D/g, '').slice(0, 6)
+                              setProfile((prev) => ({ ...prev, pinCode: clean }))
+                            }}
                             required
                           />
                           {profile.pinCode && !validatePINCode(profile.pinCode).isValid && (
                             <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
                               <AlertCircle className="w-3 h-3" /> {validatePINCode(profile.pinCode).message}
+                            </p>
+                          )}
+                          {profile.pinCode && validatePINCode(profile.pinCode).isValid && (
+                            <p className="text-[11px] text-emerald-600 mt-1 flex items-center gap-1 font-semibold">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Valid 6-Digit PIN Code
                             </p>
                           )}
                         </div>
@@ -1093,7 +1103,7 @@ export default function BusinessProfilePage() {
                       <Input
                         label="Full Legal Name (as per Govt ID) *"
                         placeholder="e.g. Aditya Vijay Kumar"
-                        value={profile.legalName || profile.displayName}
+                        value={profile.legalName || profile.personalName || profile.displayName || ''}
                         onChange={(e) => setProfile((prev) => ({ ...prev, legalName: e.target.value }))}
                         required
                       />
@@ -1175,12 +1185,26 @@ export default function BusinessProfilePage() {
                         </div>
                         <div>
                           <Input
-                            label="PIN Code *"
+                            label="PIN Code (6-Digit) *"
                             placeholder="e.g. 400050"
+                            maxLength={6}
                             value={profile.pinCode || ''}
-                            onChange={(e) => setProfile((prev) => ({ ...prev, pinCode: e.target.value }))}
+                            onChange={(e) => {
+                              const clean = e.target.value.replace(/\D/g, '').slice(0, 6)
+                              setProfile((prev) => ({ ...prev, pinCode: clean }))
+                            }}
                             required
                           />
+                          {profile.pinCode && !validatePINCode(profile.pinCode).isValid && (
+                            <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                              <AlertCircle className="w-3 h-3" /> {validatePINCode(profile.pinCode).message}
+                            </p>
+                          )}
+                          {profile.pinCode && validatePINCode(profile.pinCode).isValid && (
+                            <p className="text-[11px] text-emerald-600 mt-1 flex items-center gap-1 font-semibold">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Valid 6-Digit PIN Code
+                            </p>
+                          )}
                         </div>
                       </div>
                     </div>
