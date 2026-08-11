@@ -49,6 +49,12 @@ export default function BusinessProfilePage() {
     return 1
   })
   const [autoSaving, setAutoSaving] = useState(false)
+  const [showWelcomeDocs, setShowWelcomeDocs] = useState<boolean>(() => {
+    const isDemo = user?.email === 'concierge@beaconplanner.com' || user?.email === 'demo@beaconplanner.com'
+    if (isDemo) return false
+    const seen = localStorage.getItem(`beacon_seen_docs_${user?.email || 'default'}`)
+    return !seen
+  })
 
   // Persist the current active step so the planner resumes exactly here on re-login
   useEffect(() => {
@@ -504,7 +510,17 @@ export default function BusinessProfilePage() {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => setShowWelcomeDocs(true)}
+            className="border-border text-navy hover:bg-slate-100 font-bold text-xs px-3.5 py-2 rounded-[12px] shadow-xs gap-1.5 cursor-pointer"
+          >
+            <FileCheck className="w-3.5 h-3.5 text-teal" />
+            <span className="hidden sm:inline">Required Documents</span> Guide
+          </Button>
+
           <Button
             size="sm"
             onClick={() => navigate('/dashboard')}
@@ -517,6 +533,174 @@ export default function BusinessProfilePage() {
 
       {/* ---------------- MAIN FULL-SCREEN CONTENT CONTAINER ---------------- */}
       <div className="max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 flex-1">
+        {showWelcomeDocs ? (
+          <Card className="p-6 sm:p-8 border border-border shadow-xl rounded-[24px] bg-white space-y-8 max-w-4xl mx-auto my-4 animate-in fade-in-50 duration-300">
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan/15 text-cyan border border-cyan/30 mb-1">
+                <Building2 className="w-7 h-7" />
+              </div>
+              <h2 className="text-2xl font-black text-navy">Welcome to Beacon Partner Setup</h2>
+              <p className="text-sm text-muted max-w-xl mx-auto">
+                Select your entity type below to view the required documents checklist before proceeding with your 10-step profile setup.
+              </p>
+            </div>
+
+            {/* Question 1: Are you a Firm or Freelancer? */}
+            <div className="space-y-3">
+              <label className="text-xs font-bold uppercase tracking-wider text-navy block text-center">
+                Select Your Organizer Entity Type:
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Option 1: Firm */}
+                <button
+                  type="button"
+                  onClick={() => setProfile(prev => ({ ...prev, partnerType: 'COMPANY' }))}
+                  className={`p-5 rounded-[20px] border-2 text-left transition-all cursor-pointer flex items-start gap-4 ${
+                    profile.partnerType === 'COMPANY'
+                      ? 'border-cyan bg-cyan/5 shadow-md ring-2 ring-cyan/20'
+                      : 'border-border bg-page hover:border-cyan/40'
+                  }`}
+                >
+                  <div className={`p-3 rounded-xl ${profile.partnerType === 'COMPANY' ? 'bg-cyan text-navy' : 'bg-slate-200 text-slate-700'}`}>
+                    <Building2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-navy text-sm flex items-center gap-2">
+                      Registered Travel Firm / Agency
+                      {profile.partnerType === 'COMPANY' && <CheckCircle2 className="w-4 h-4 text-cyan" />}
+                    </h4>
+                    <p className="text-xs text-muted mt-1 leading-relaxed">
+                      Pvt Ltd, LLP, Partnership, or MSME registered travel agency with multiple agents or commercial operations.
+                    </p>
+                  </div>
+                </button>
+
+                {/* Option 2: Freelancer */}
+                <button
+                  type="button"
+                  onClick={() => setProfile(prev => ({ ...prev, partnerType: 'FREELANCER' }))}
+                  className={`p-5 rounded-[20px] border-2 text-left transition-all cursor-pointer flex items-start gap-4 ${
+                    profile.partnerType === 'FREELANCER'
+                      ? 'border-cyan bg-cyan/5 shadow-md ring-2 ring-cyan/20'
+                      : 'border-border bg-page hover:border-cyan/40'
+                  }`}
+                >
+                  <div className={`p-3 rounded-xl ${profile.partnerType === 'FREELANCER' ? 'bg-cyan text-navy' : 'bg-slate-200 text-slate-700'}`}>
+                    <User className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-navy text-sm flex items-center gap-2">
+                      Individual Freelance Planner / Guide
+                      {profile.partnerType === 'FREELANCER' && <CheckCircle2 className="w-4 h-4 text-cyan" />}
+                    </h4>
+                    <p className="text-xs text-muted mt-1 leading-relaxed">
+                      Independent trek leader, solo travel curator, expedition guide, or custom itinerary designer.
+                    </p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Dynamic Required Documents Checklist */}
+            <div className="p-6 rounded-[20px] bg-slate-50 border border-border space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h4 className="text-sm font-bold text-navy flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-teal" />
+                  Required Documents Checklist for {profile.partnerType === 'COMPANY' ? 'Travel Companies & Agencies' : 'Freelance Organizers'}
+                </h4>
+                <span className="text-[11px] font-semibold text-muted bg-white px-2.5 py-1 rounded-full border border-border shrink-0">
+                  Keep handy for Step 10
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {profile.partnerType === 'COMPANY' ? (
+                  <>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">1. Company Registration Proof</strong>
+                        <span className="text-[11px] text-muted">Certificate of Incorporation, ROC, LLPIN or MSME Certificate</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">2. GST Registration Certificate</strong>
+                        <span className="text-[11px] text-muted">Official GSTIN document issued by government tax department</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">3. Company PAN Card</strong>
+                        <span className="text-[11px] text-muted">Permanent Account Number card in registered corporate name</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">4. Current Bank Account Proof</strong>
+                        <span className="text-[11px] text-muted">Cancelled cheque or bank statement showing account number & IFSC</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">1. Government Identity Card</strong>
+                        <span className="text-[11px] text-muted">Aadhaar Card, Passport, Voter ID or Driver's License (Front & Back)</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">2. Personal PAN Card</strong>
+                        <span className="text-[11px] text-muted">Personal tax identification for payout settlement & legal compliance</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">3. Savings Bank Account Proof</strong>
+                        <span className="text-[11px] text-muted">Cancelled cheque or bank passbook copy with IFSC & account holder name</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">4. Profile Photo / Headshot</strong>
+                        <span className="text-[11px] text-muted">Clear, professional photo to display on your public tour listings</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Proceed Action Button */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-border">
+              <p className="text-xs text-muted">
+                You can switch between Firm and Freelancer anytime from the top bar.
+              </p>
+              <Button
+                size="lg"
+                onClick={() => {
+                  setShowWelcomeDocs(false)
+                  localStorage.setItem(`beacon_seen_docs_${user?.email || 'default'}`, 'true')
+                  saveProfileLocally(profile)
+                  setActiveStep(1)
+                }}
+                className="w-full sm:w-auto bg-cyan hover:bg-cyan/90 text-navy font-black text-sm px-8 py-3.5 rounded-[14px] shadow-md gap-2 cursor-pointer"
+              >
+                Proceed to Profile Setup →
+              </Button>
+            </div>
+          </Card>
+        ) : (
+          <>
         {/* ---------------- HEADER & OVERALL PROGRESS BANNER ---------------- */}
         <Card className="p-6 border border-border shadow-xl rounded-[24px] bg-gradient-to-r from-navy via-slate-900 to-navy text-white relative overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -1580,6 +1764,8 @@ export default function BusinessProfilePage() {
             </Button>
           </div>
         </div>
+          </>
+        )}
       </div>
 
       {/* UPLOAD DOCUMENT MODAL FOR VERIFICATION VAULT */}
