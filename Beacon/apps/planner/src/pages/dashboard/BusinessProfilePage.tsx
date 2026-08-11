@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   User, Award, MapPin, Building2, Package, Clock, CreditCard, Share2, Settings, ShieldCheck,
@@ -36,6 +36,7 @@ const POPULAR_DESTINATIONS_OPTIONS = ['Baa Atoll', 'Kyoto', 'Swiss Alps', 'Bali'
 const PAYMENT_METHOD_OPTIONS = ['Credit / Debit Card', 'Bank Wire Transfer', 'UPI Payments', 'PayPal', 'Installment EMI', 'Cryptocurrency']
 
 export default function BusinessProfilePage() {
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user, kycStatus, updateKycStatus, clearBusinessProfileHighlight } = useAuth()
   const [loading, setLoading] = useState(true)
