@@ -385,16 +385,16 @@ export default function BusinessProfilePage() {
 
   // 10 Setup Steps Definition
   const steps = [
-    { id: 1, title: 'Basic Information', icon: User, key: 'basic' },
-    { id: 2, title: 'Travel Expertise', icon: Award, key: 'expertise' },
-    { id: 3, title: 'Operating Locations', icon: MapPin, key: 'locations' },
-    { id: 4, title: profile.partnerType === 'COMPANY' ? 'Company Details' : 'Freelancer Details', icon: Building2, key: 'company' },
-    { id: 5, title: 'Packages & Services', icon: Package, key: 'services' },
-    { id: 6, title: 'Operating Availability', icon: Clock, key: 'availability' },
-    { id: 7, title: 'Banking & Payments', icon: CreditCard, key: 'banking' },
-    { id: 8, title: 'Social & Brand Links', icon: Share2, key: 'social' },
-    { id: 9, title: 'Preferences', icon: Settings, key: 'preferences' },
-    { id: 10, title: 'Verification Vault', icon: ShieldCheck, key: 'verification' },
+    { id: 1, title: 'Basic Information', shortTitle: 'Basic Info', icon: User, key: 'basic' },
+    { id: 2, title: 'Travel Expertise', shortTitle: 'Expertise', icon: Award, key: 'expertise' },
+    { id: 3, title: 'Operating Locations', shortTitle: 'Locations', icon: MapPin, key: 'locations' },
+    { id: 4, title: profile.partnerType === 'COMPANY' ? 'Company Details' : 'Freelancer Details', shortTitle: 'Business', icon: Building2, key: 'company' },
+    { id: 5, title: 'Packages & Services', shortTitle: 'Services', icon: Package, key: 'services' },
+    { id: 6, title: 'Operating Availability', shortTitle: 'Availability', icon: Clock, key: 'availability' },
+    { id: 7, title: 'Banking & Payments', shortTitle: 'Banking', icon: CreditCard, key: 'banking' },
+    { id: 8, title: 'Social & Brand Links', shortTitle: 'Social', icon: Share2, key: 'social' },
+    { id: 9, title: 'Preferences', shortTitle: 'Preferences', icon: Settings, key: 'preferences' },
+    { id: 10, title: 'Verification Vault', shortTitle: 'Verification', icon: ShieldCheck, key: 'verification' },
   ]
 
   // Status helper for sidebar items
@@ -514,89 +514,121 @@ export default function BusinessProfilePage() {
         </div>
 
         {/* Dynamic Completion Percentage Bar */}
-        <div className="mt-6 pt-5 border-t border-white/10 space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-bold text-white flex items-center gap-1.5">
-              <span>Overall Profile Completion</span>
-              <span className="text-[10px] font-normal text-white/60">({completionPercentage === 100 ? '100% Ready for Verification' : `${completionPercentage}% Completed`})</span>
+        <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-white text-xs">Profile Completion:</span>
+            <span className="text-xs text-white/70">
+              {completionPercentage === 100 ? '100% Ready for Verification' : `${completionPercentage}% Completed`}
             </span>
-            <span className="font-extrabold text-cyan font-mono text-sm">{completionPercentage}%</span>
           </div>
-
-          <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden p-0.5">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${completionPercentage}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="h-full bg-gradient-to-r from-teal via-cyan to-emerald-400 rounded-full"
-            />
+          <div className="flex items-center gap-3 w-48 sm:w-64">
+            <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden p-0.5">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${completionPercentage}%` }}
+                transition={{ duration: 0.8, ease: 'easeOut' }}
+                className="h-full bg-gradient-to-r from-teal via-cyan to-emerald-400 rounded-full"
+              />
+            </div>
+            <span className="font-extrabold text-cyan text-xs shrink-0">{completionPercentage}%</span>
           </div>
         </div>
       </Card>
 
-      {/* ---------------- MAIN LAYOUT: SIDEBAR WIZARD + CONTENT ---------------- */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        {/* SIDEBAR STEP NAVIGATION WIZARD */}
-        <Card className="lg:col-span-1 p-3 border border-border shadow-md rounded-[20px] sticky top-20 bg-surface">
-          <div className="p-3 border-b border-border mb-2">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-navy">Profile Setup Wizard</h3>
-            <p className="text-[11px] text-muted mt-0.5">10 Steps to a 100% Verified Profile</p>
+      {/* ---------------- FULL-WIDTH HORIZONTAL STEP RAIL ---------------- */}
+      <div className="w-full bg-surface border border-border rounded-[24px] p-5 shadow-sm space-y-4">
+        {/* Top Rail Sub-header */}
+        <div className="flex items-center justify-between gap-4 border-b border-border/50 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-teal">
+              Step {activeStep} of 10
+            </span>
+            <span className="text-muted/40">•</span>
+            <span className="text-sm font-bold text-navy">
+              {steps[activeStep - 1]?.title}
+            </span>
           </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold text-muted hidden sm:inline">
+              Progress: <strong className="text-navy">{completionPercentage}%</strong>
+            </span>
+            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+              {steps.filter(s => isStepComplete(s.id)).length}/10 Complete
+            </span>
+          </div>
+        </div>
 
-          <nav className="space-y-1">
-            {steps.map((step) => {
-              const status = getStepStatus(step.id)
-              const Icon = step.icon
+        {/* Connected Step Markers Row */}
+        <div className="pt-2 pb-1 px-1">
+          <div className="flex items-center justify-between relative">
+            {steps.map((step, idx) => {
+              const isCompleted = isStepComplete(step.id)
+              const isActive = activeStep === step.id
+              const isUpcoming = !isActive && !isCompleted
 
               return (
-                <button
-                  key={step.id}
-                  type="button"
-                  onClick={() => setActiveStep(step.id)}
-                  className={`w-full text-left p-2.5 rounded-[14px] text-xs font-bold transition-all flex items-center justify-between gap-2 cursor-pointer ${
-                    activeStep === step.id
-                      ? 'bg-cyan/15 text-navy border-2 border-cyan shadow-xs'
-                      : status === 'completed'
-                      ? 'text-navy hover:bg-teal/10 font-semibold'
-                      : 'text-muted hover:bg-border/30 hover:text-navy font-medium'
-                  }`}
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span
-                      className={`w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0 ${
-                        activeStep === step.id
-                          ? 'bg-cyan text-navy shadow-xs'
-                          : status === 'completed'
-                          ? 'bg-emerald-500/15 text-emerald-600'
-                          : 'bg-border/50 text-muted'
+                <div key={step.id} className="flex-1 flex items-center group relative min-w-0">
+                  {/* Marker Button */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveStep(step.id)}
+                    className="flex flex-col items-center gap-1.5 focus:outline-none cursor-pointer group shrink-0"
+                    title={`${step.id}. ${step.title}`}
+                  >
+                    <div
+                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200 ${
+                        isActive
+                          ? 'bg-cyan text-navy font-extrabold shadow-md rail-pulse ring-2 ring-cyan/40 scale-110 z-20'
+                          : isCompleted
+                          ? 'bg-emerald-50 border border-emerald-500/40 text-emerald-600/80 hover:bg-emerald-100/60 z-10'
+                          : 'bg-white border border-border/80 text-muted/60 hover:border-border hover:text-muted z-10'
                       }`}
                     >
-                      <Icon className="w-4 h-4" />
-                    </span>
-                    <span className="truncate">{step.title}</span>
-                  </div>
+                      {isCompleted ? (
+                        <Check className="w-4 h-4 stroke-[2.5]" />
+                      ) : (
+                        <span>{step.id}</span>
+                      )}
+                    </div>
 
-                  {/* Status Indicator */}
-                  {status === 'completed' ? (
-                    <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
-                  ) : activeStep === step.id ? (
-                    <span className="w-2 h-2 rounded-full bg-cyan shrink-0 animate-ping" />
-                  ) : (
-                    <Circle className="w-4 h-4 text-muted/30 shrink-0" />
+                    {/* Label (Responsive: Abbreviated on medium/large) */}
+                    <span
+                      className={`text-[10px] text-center max-w-[72px] truncate hidden md:block transition-all duration-200 ${
+                        isActive
+                          ? 'font-extrabold text-navy scale-105'
+                          : isCompleted
+                          ? 'font-medium text-muted/60'
+                          : 'text-muted/40 font-normal'
+                      }`}
+                    >
+                      {step.shortTitle}
+                    </span>
+                  </button>
+
+                  {/* Connecting Line to Next Step */}
+                  {idx < steps.length - 1 && (
+                    <div className="flex-1 h-[2px] mx-1 sm:mx-2 rounded-full overflow-hidden transition-all duration-250">
+                      <div
+                        className={`h-full transition-all duration-250 ${
+                          isCompleted
+                            ? 'bg-emerald-300/40'
+                            : isActive
+                            ? 'bg-gradient-to-r from-cyan to-border'
+                            : 'bg-border/60'
+                        }`}
+                      />
+                    </div>
                   )}
-                </button>
+                </div>
               )
             })}
-          </nav>
-
-          <div className="p-3 mt-4 border-t border-border bg-page rounded-[14px] text-[11px] text-muted space-y-1">
-            <span className="font-bold text-navy block">🔒 Privacy Guarantee</span>
-            <p>Verification documents are stored in an encrypted vault and never shown to travelers.</p>
           </div>
-        </Card>
+        </div>
+      </div>
 
-        {/* STEP CONTENT CONTAINER */}
-        <div className="lg:col-span-3 space-y-6">
+      {/* ---------------- MAIN CONTENT AREA ---------------- */}
+      <div className="space-y-6">
+        <div>
           <AnimatePresence mode="wait">
             <motion.div
               key={activeStep}

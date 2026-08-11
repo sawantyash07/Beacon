@@ -158,16 +158,16 @@ export default function PlannerOnboardingPage() {
   const completionPercentage = calculateCompletion()
 
   const steps = [
-    { id: 1, title: 'Basic Information', icon: User, desc: 'Name, email, phone & city' },
-    { id: 2, title: 'Travel Expertise', icon: Award, desc: 'Specializations & travel styles' },
-    { id: 3, title: 'Operating Locations', icon: MapPin, desc: 'Destinations & regions served' },
-    { id: 4, title: profile.partnerType === 'COMPANY' ? 'Company Details' : 'Freelancer Details', icon: Building2, desc: 'Registration, GST & PAN details' },
-    { id: 5, title: 'Packages & Services', icon: Package, desc: 'Services & inclusions offered' },
-    { id: 6, title: 'Operating Availability', icon: Clock, desc: 'Business hours & working days' },
-    { id: 7, title: 'Banking & Payments', icon: CreditCard, desc: 'UPI ID, bank account & terms' },
-    { id: 8, title: 'Social & Brand Links', icon: Share2, desc: 'Instagram, website & WhatsApp' },
-    { id: 9, title: 'Preferences', icon: Settings, desc: 'Instant bookings & auto-replies' },
-    { id: 10, title: 'eKYC Document Vault', icon: ShieldCheck, desc: 'ID verification & compliance' },
+    { id: 1, title: 'Basic Information', shortTitle: 'Basic Info', icon: User, desc: 'Name, email, phone & city' },
+    { id: 2, title: 'Travel Expertise', shortTitle: 'Expertise', icon: Award, desc: 'Specializations & travel styles' },
+    { id: 3, title: 'Operating Locations', shortTitle: 'Locations', icon: MapPin, desc: 'Destinations & regions served' },
+    { id: 4, title: profile.partnerType === 'COMPANY' ? 'Company Details' : 'Freelancer Details', shortTitle: 'Business', icon: Building2, desc: 'Registration, GST & PAN details' },
+    { id: 5, title: 'Packages & Services', shortTitle: 'Services', icon: Package, desc: 'Services & inclusions offered' },
+    { id: 6, title: 'Operating Availability', shortTitle: 'Availability', icon: Clock, desc: 'Business hours & working days' },
+    { id: 7, title: 'Banking & Payments', shortTitle: 'Banking', icon: CreditCard, desc: 'UPI ID, bank account & terms' },
+    { id: 8, title: 'Social & Brand Links', shortTitle: 'Social', icon: Share2, desc: 'Instagram, website & WhatsApp' },
+    { id: 9, title: 'Preferences', shortTitle: 'Preferences', icon: Settings, desc: 'Instant bookings & auto-replies' },
+    { id: 10, title: 'eKYC Document Vault', shortTitle: 'Verification', icon: ShieldCheck, desc: 'ID verification & compliance' },
   ]
 
   const handleNextStep = () => {
@@ -241,7 +241,7 @@ export default function PlannerOnboardingPage() {
             <img src="/planner/beacon-logo.png" alt="Beacon" className="h-8 w-auto object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             <div className="flex flex-col">
               <span className="font-extrabold text-navy text-base leading-tight">Beacon Planner</span>
-              <span className="text-[10px] font-bold text-cyan tracking-wider uppercase">Organizer Onboarding</span>
+              <span className="text-[10px] font-bold text-cyan tracking-wider uppercase">Organizer Setup</span>
             </div>
           </Link>
           <div className="h-6 w-px bg-border hidden sm:block" />
@@ -250,8 +250,8 @@ export default function PlannerOnboardingPage() {
           </span>
         </div>
 
-        {/* Center Progress Bar */}
-        <div className="hidden md:flex items-center gap-3 w-72">
+        {/* Center Aggregate Completion Indicator */}
+        <div className="hidden md:flex items-center gap-3 w-64">
           <div className="flex-1 h-2 bg-page rounded-full overflow-hidden border border-border">
             <motion.div
               className="h-full bg-gradient-to-r from-teal to-cyan rounded-full"
@@ -260,7 +260,7 @@ export default function PlannerOnboardingPage() {
               transition={{ duration: 0.5 }}
             />
           </div>
-          <span className="text-xs font-mono font-bold text-navy shrink-0">{completionPercentage}%</span>
+          <span className="text-xs font-bold text-navy shrink-0">{completionPercentage}%</span>
         </div>
 
         {/* Right Actions */}
@@ -281,88 +281,101 @@ export default function PlannerOnboardingPage() {
       </header>
 
       {/* ---------------- MAIN ONBOARDING WORKSPACE ---------------- */}
-      <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         
-        {/* ---------------- LEFT SIDEBAR: STEP LIST ---------------- */}
-        <div className="lg:col-span-4 bg-white border border-border rounded-[24px] p-4 shadow-sm space-y-2 sticky top-20">
-          <div className="p-2 border-b border-border mb-2">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xs font-extrabold text-navy uppercase tracking-wider">Setup Checklist</h2>
-              <span className="text-[11px] font-bold text-teal bg-teal/10 px-2 py-0.5 rounded-full">
-                {steps.filter(s => isStepComplete(s.id)).length}/10 Filled
+        {/* ---------------- FULL-WIDTH HORIZONTAL STEP RAIL ---------------- */}
+        <div className="w-full bg-white border border-border rounded-[24px] p-5 shadow-sm space-y-4">
+          {/* Top Rail Sub-header */}
+          <div className="flex items-center justify-between gap-4 border-b border-border/50 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-extrabold uppercase tracking-wider text-teal">
+                Step {activeStep} of 10
+              </span>
+              <span className="text-muted/40">•</span>
+              <span className="text-sm font-bold text-navy">
+                {steps[activeStep - 1]?.title}
               </span>
             </div>
-            <p className="text-[11px] text-muted mt-1">
-              Sections automatically turn green as you fill in the details.
-            </p>
-          </div>
-
-          <div className="space-y-1.5">
-            {steps.map((step) => {
-              const isComplete = isStepComplete(step.id)
-              const isActive = activeStep === step.id
-              const Icon = step.icon
-
-              return (
-                <button
-                  key={step.id}
-                  type="button"
-                  onClick={() => setActiveStep(step.id)}
-                  className={`w-full text-left p-3 rounded-[16px] transition-all flex items-center justify-between gap-3 cursor-pointer ${
-                    isActive
-                      ? 'bg-cyan/15 border-2 border-cyan shadow-xs text-navy font-bold ring-2 ring-cyan/20'
-                      : isComplete
-                      ? 'bg-emerald-500/10 border border-emerald-500/30 text-navy font-semibold hover:bg-emerald-500/15'
-                      : 'border border-border/70 text-muted hover:bg-page hover:text-navy'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span
-                      className={`w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 transition-colors ${
-                        isActive
-                          ? 'bg-cyan text-navy font-bold shadow-xs'
-                          : isComplete
-                          ? 'bg-emerald-500 text-white'
-                          : 'bg-page border border-border text-muted'
-                      }`}
-                    >
-                      {isComplete ? <Check className="w-4 h-4 stroke-[3]" /> : <Icon className="w-4 h-4" />}
-                    </span>
-                    <div className="min-w-0">
-                      <p className={`text-xs truncate ${isActive ? 'font-extrabold text-navy' : isComplete ? 'font-bold text-navy' : 'font-medium text-muted'}`}>
-                        {step.id}. {step.title}
-                      </p>
-                      <p className="text-[10px] text-muted truncate">{step.desc}</p>
-                    </div>
-                  </div>
-
-                  {/* Right Status Badge */}
-                  {isComplete ? (
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> Done
-                    </span>
-                  ) : isActive ? (
-                    <span className="w-2 h-2 rounded-full bg-cyan shrink-0 animate-ping" />
-                  ) : (
-                    <span className="text-[10px] font-mono text-muted/60 shrink-0">#{step.id}</span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-
-          <div className="pt-3 border-t border-border mt-4">
-            <div className="p-3 rounded-[12px] bg-[#F0F7FF] border border-cyan/20 text-xs text-navy/80 space-y-1">
-              <span className="font-bold text-navy flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-cyan" /> Instant Auto-Save
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-semibold text-muted hidden sm:inline">
+                Completion: <strong className="text-navy">{completionPercentage}%</strong>
               </span>
-              <p className="text-[11px] text-muted">All inputs are safely stored as you type.</p>
+              <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                {steps.filter(s => isStepComplete(s.id)).length}/10 Done
+              </span>
+            </div>
+          </div>
+
+          {/* Connected Step Markers Row */}
+          <div className="pt-2 pb-1 px-1">
+            <div className="flex items-center justify-between relative">
+              {steps.map((step, idx) => {
+                const isCompleted = isStepComplete(step.id)
+                const isActive = activeStep === step.id
+                const isUpcoming = !isActive && !isCompleted
+
+                return (
+                  <div key={step.id} className="flex-1 flex items-center group relative min-w-0">
+                    {/* Marker Button */}
+                    <button
+                      type="button"
+                      onClick={() => setActiveStep(step.id)}
+                      className="flex flex-col items-center gap-1.5 focus:outline-none cursor-pointer group shrink-0"
+                      title={`${step.id}. ${step.title}`}
+                    >
+                      <div
+                        className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200 ${
+                          isActive
+                            ? 'bg-cyan text-navy font-extrabold shadow-md rail-pulse ring-2 ring-cyan/40 scale-110 z-20'
+                            : isCompleted
+                            ? 'bg-emerald-50 border border-emerald-500/40 text-emerald-600/80 hover:bg-emerald-100/60 z-10'
+                            : 'bg-white border border-border/80 text-muted/60 hover:border-border hover:text-muted z-10'
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="w-4 h-4 stroke-[2.5]" />
+                        ) : (
+                          <span>{step.id}</span>
+                        )}
+                      </div>
+
+                      {/* Label (Responsive: Abbreviated on medium/large, active step highlighted) */}
+                      <span
+                        className={`text-[10px] text-center max-w-[72px] truncate hidden md:block transition-all duration-200 ${
+                          isActive
+                            ? 'font-extrabold text-navy scale-105'
+                            : isCompleted
+                            ? 'font-medium text-muted/60'
+                            : 'text-muted/40 font-normal'
+                        }`}
+                      >
+                        {step.shortTitle}
+                      </span>
+                    </button>
+
+                    {/* Connecting Line to Next Step */}
+                    {idx < steps.length - 1 && (
+                      <div className="flex-1 h-[2px] mx-1 sm:mx-2 rounded-full overflow-hidden transition-all duration-250">
+                        <div
+                          className={`h-full transition-all duration-250 ${
+                            isCompleted
+                              ? 'bg-emerald-300/40'
+                              : isActive
+                              ? 'bg-gradient-to-r from-cyan to-border'
+                              : 'bg-border/60'
+                          }`}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
 
-        {/* ---------------- RIGHT CONTENT: ACTIVE SECTION FORM ---------------- */}
-        <div className="lg:col-span-8 space-y-6">
+        {/* ---------------- ACTIVE STEP FORM CARD ---------------- */}
+        <div className="space-y-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeStep}

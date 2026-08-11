@@ -173,6 +173,26 @@ h1, h2, h3, h4, h5, h6 {
 .animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 .animate-rotate-slow { animation: rotate-slow 20s linear infinite; }
 
+/* Horizontal Step Rail Ambient Pulse (Active Step Only) */
+@keyframes rail-active-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 203, 224, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(0, 203, 224, 0);
+  }
+}
+
+.rail-pulse {
+  animation: rail-active-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-pulse {
+    animation: none !important;
+  }
+}
+
 .skeleton {
   background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
   background-size: 200% 100%;
