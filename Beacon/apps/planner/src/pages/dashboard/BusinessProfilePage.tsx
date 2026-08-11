@@ -5,7 +5,7 @@ import {
   User, Award, Building2, CreditCard, ShieldCheck,
   Save, Sparkles, Lock, Globe, Mail,
   Shield, FileCheck, FileText, Phone, CheckCircle2, Check,
-  AlertCircle, ChevronRight, CheckCircle, Info
+  AlertCircle, ChevronRight, CheckCircle, Info, Eye, UploadCloud, Download, X, Trash2
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/Card'
@@ -231,6 +231,41 @@ export default function BusinessProfilePage() {
   const [uploadType, setUploadType] = useState('Company Registration / ROC')
   const [selectedUploadFile, setSelectedUploadFile] = useState<File | null>(null)
   const [selectedUploadDataUrl, setSelectedUploadDataUrl] = useState<string | null>(null)
+
+  // Document Preview Modal State
+  const [previewDoc, setPreviewDoc] = useState<{
+    id?: string
+    title: string
+    fileName: string
+    documentType?: string
+    uploadedAt?: string
+    fileDataUrl?: string
+  } | null>(null)
+
+  // Inline Document Upload Handler for Table Rows
+  const handleInlineFileUpload = (docKey: string, docTitle: string, docCategory: string, file: File) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      const newDoc = {
+        id: docKey,
+        title: docTitle,
+        documentType: docCategory,
+        fileName: file.name,
+        status: 'VERIFIED' as const,
+        uploadedAt: new Date().toISOString().split('T')[0],
+        fileDataUrl: dataUrl
+      }
+      setDocuments(prev => {
+        const filtered = prev.filter(d => d.id !== docKey && d.title.toLowerCase() !== docTitle.toLowerCase() && d.documentType.toLowerCase() !== docCategory.toLowerCase())
+        const updated = [newDoc, ...filtered]
+        localStorage.setItem(`beacon_docs_${user?.email || 'default'}`, JSON.stringify(updated))
+        return updated
+      })
+      toast.success(`✓ "${docTitle}" uploaded successfully!`)
+    }
+    reader.readAsDataURL(file)
+  }
 
   // Save changes locally
   const saveProfileLocally = (updated: typeof profile) => {
@@ -1191,96 +1226,122 @@ export default function BusinessProfilePage() {
                       onClick={() => setShowUploadModal(true)}
                       className="bg-navy hover:bg-navy/90 text-white text-xs font-bold gap-1.5 cursor-pointer shadow-xs"
                     >
-                      <Lock className="w-3.5 h-3.5 text-cyan" /> Upload New Document
+                      <Lock className="w-3.5 h-3.5 text-cyan" /> + Add Other Document
                     </Button>
                   </div>
 
-                  {/* Required Documents List Checklist */}
-                  <div className="p-4 bg-slate-50 border border-border rounded-[16px] space-y-3">
-                    <h5 className="text-xs font-bold text-navy">
-                      Mandatory Document Set for {profile.partnerType === 'COMPANY' ? 'Company Path' : 'Freelancer Path'}:
-                    </h5>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                      {profile.partnerType === 'COMPANY' ? (
-                        <>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Certificate of Incorporation / ROC (Mandatory)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> GST Certificate (Mandatory if GSTIN provided)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Company PAN Card Copy (Mandatory)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Cancelled Cheque / Statement (Mandatory)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Registered Office Address Proof (Mandatory)
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Personal PAN Card Copy (Mandatory)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Masked Aadhaar Card Proof (Mandatory)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Voter ID (EPIC) Front & Back (Mandatory)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Cancelled Cheque / Passbook Copy (Mandatory)
-                          </div>
-                          <div className="flex items-center gap-2 text-navy font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Residential Address Proof Document (Mandatory)
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Uploaded Documents Table */}
+                  {/* Dynamic Document Verification Rows */}
                   <div className="space-y-3">
-                    <h5 className="text-xs font-bold text-navy">Uploaded Documents Vault ({documents.length})</h5>
-                    {documents.length === 0 ? (
-                      <div className="p-8 text-center bg-page border border-dashed border-border rounded-[16px] space-y-2">
-                        <FileText className="w-8 h-8 text-muted mx-auto" />
-                        <p className="text-xs font-medium text-muted">No verification documents uploaded yet.</p>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setShowUploadModal(true)}
-                          className="text-xs text-navy font-bold mt-2"
+                    {(profile.partnerType === 'COMPANY' ? [
+                      { key: 'company_registration', title: 'Certificate of Incorporation / ROC / LLPIN', category: 'Company Registration', desc: 'Certificate of Incorporation, LLP Agreement, or Partnership Deed', mandatory: true },
+                      { key: 'company_pan', title: 'Company PAN Card Copy', category: 'Company PAN', desc: '10-character corporate PAN matching registered firm name', mandatory: true },
+                      { key: 'bank_proof', title: 'Current Bank Account Proof', category: 'Bank Account Proof', desc: 'Cancelled cheque or bank statement showing account number & IFSC', mandatory: true },
+                      { key: 'office_address_proof', title: 'Registered Office Address Proof', category: 'Address Proof', desc: 'Electricity bill, rent lease deed, or property tax receipt matching Step 2', mandatory: true },
+                      { key: 'gst_certificate', title: 'GST Registration Certificate', category: 'GST Certificate', desc: 'Official GSTIN document (required if GST registered)', mandatory: !profile.isGstExempt },
+                      { key: 'udyam_msme', title: 'MSME / Udyam Certificate', category: 'MSME Certificate', desc: 'Udyam registration document for MSME tourism benefits', mandatory: false },
+                      { key: 'tourism_accreditation', title: 'Tourism Trade Body Accreditation', category: 'Tourism Accreditation', desc: 'MOT Approved, IATO, TAAI, ADTOI, or ATOAI membership proof', mandatory: false }
+                    ] : [
+                      { key: 'personal_pan', title: 'Personal PAN Card Copy', category: 'Personal PAN', desc: 'Individual PAN card (4th letter P) for payout tax compliance', mandatory: true },
+                      { key: 'aadhaar_doc', title: 'Masked Aadhaar Card Proof', category: 'Aadhaar eKYC', desc: 'Masked Aadhaar copy / XML eKYC proof with Verhoeff checksum', mandatory: true },
+                      { key: 'voter_id_doc', title: 'Voter ID (EPIC) Front & Back', category: 'Voter ID', desc: '3 letters + 7 digits (confirms 18+ adult age eligibility)', mandatory: true },
+                      { key: 'bank_proof', title: 'Bank Account Proof / Cancelled Cheque', category: 'Bank Account Proof', desc: 'Cancelled cheque or passbook copy with account number & IFSC', mandatory: true },
+                      { key: 'address_proof', title: 'Residential Address Proof Document', category: 'Address Proof', desc: 'Utility bill, rent agreement, or bank statement matching Step 2 address', mandatory: true },
+                      { key: 'gst_certificate', title: 'GST Registration Certificate', category: 'GST Certificate', desc: 'Official GSTIN document (if GST registered)', mandatory: false },
+                      { key: 'guide_cert', title: 'Mountaineering / Tour Guide License', category: 'Guide License', desc: 'NIM, HMI, Wilderness First Responder, or State Guide License', mandatory: false }
+                    ]).map((req) => {
+                      const uploaded = documents.find(d => 
+                        d.id === req.key || 
+                        d.title.toLowerCase() === req.title.toLowerCase() || 
+                        d.documentType.toLowerCase() === req.category.toLowerCase()
+                      )
+
+                      return (
+                        <div
+                          key={req.key}
+                          className={`p-4 rounded-[18px] border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
+                            uploaded
+                              ? 'bg-white border-emerald-200/80 shadow-2xs'
+                              : 'bg-page/60 border-border hover:border-cyan/40'
+                          }`}
                         >
-                          + Upload First Document
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 gap-3">
-                        {documents.map((doc) => (
-                          <div key={doc.id} className="p-3.5 bg-page border border-border rounded-[16px] flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-10 h-10 rounded-[10px] bg-teal/10 text-teal flex items-center justify-center shrink-0">
-                                <FileCheck className="w-5 h-5" />
-                              </div>
-                              <div className="min-w-0">
-                                <h6 className="text-xs font-bold text-navy truncate">{doc.title}</h6>
-                                <p className="text-[11px] text-muted truncate">{doc.documentType} • {doc.fileName}</p>
-                              </div>
-                            </div>
-                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0 ${
-                              doc.status === 'VERIFIED'
-                                ? 'bg-emerald-100 text-emerald-700'
-                                : 'bg-amber-100 text-amber-700'
+                          {/* LEFT: Name of document & details */}
+                          <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                            <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${
+                              uploaded
+                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                                : 'bg-slate-200/70 text-slate-500'
                             }`}>
-                              {doc.status === 'VERIFIED' ? '✓ Verified' : '⏳ Under Review'}
-                            </span>
+                              {uploaded ? <CheckCircle2 className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
+                            </div>
+
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h5 className="text-sm font-bold text-navy truncate">{req.title}</h5>
+                                {req.mandatory && (
+                                  <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full">
+                                    Mandatory
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted mt-0.5">{req.desc}</p>
+                              {uploaded && (
+                                <p className="text-[11px] font-semibold text-emerald-600 mt-1 flex items-center gap-1">
+                                  <span>✓ {uploaded.fileName}</span>
+                                  <span className="text-muted/60">• Uploaded on {uploaded.uploadedAt}</span>
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        ))}
-                      </div>
-                    )}
+
+                          {/* RIGHT: Upload it to the right, and to its right View it */}
+                          <div className="flex items-center gap-2.5 shrink-0 self-end md:self-center">
+                            <input
+                              type="file"
+                              id={`file-input-${req.key}`}
+                              className="hidden"
+                              accept=".pdf,.png,.jpg,.jpeg"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0]
+                                if (file) handleInlineFileUpload(req.key, req.title, req.category, file)
+                              }}
+                            />
+
+                            {/* UPLOAD ACTION (TO THE RIGHT) */}
+                            <Button
+                              size="sm"
+                              variant={uploaded ? 'outline' : 'primary'}
+                              onClick={() => document.getElementById(`file-input-${req.key}`)?.click()}
+                              className={`font-bold text-xs px-4 py-2 rounded-[12px] gap-1.5 cursor-pointer shadow-xs ${
+                                uploaded
+                                  ? 'border-border text-navy hover:bg-slate-100'
+                                  : 'bg-gradient-to-r from-teal to-cyan text-white hover:opacity-95'
+                              }`}
+                            >
+                              <UploadCloud className="w-3.5 h-3.5" />
+                              <span>{uploaded ? 'Replace' : 'Upload File'}</span>
+                            </Button>
+
+                            {/* VIEW ACTION (TO ITS RIGHT) */}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={!uploaded}
+                              onClick={() => {
+                                if (uploaded) setPreviewDoc(uploaded)
+                              }}
+                              className={`font-bold text-xs px-4 py-2 rounded-[12px] gap-1.5 cursor-pointer shadow-xs ${
+                                uploaded
+                                  ? 'border-cyan/40 bg-cyan/10 text-navy hover:bg-cyan/20'
+                                  : 'border-border/60 bg-slate-100/50 text-muted/40 cursor-not-allowed'
+                              }`}
+                            >
+                              <Eye className="w-3.5 h-3.5 text-cyan" />
+                              <span>View Document</span>
+                            </Button>
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
                 </Card>
               )}
@@ -1495,6 +1556,95 @@ export default function BusinessProfilePage() {
                   </Button>
                 </div>
               </form>
+            </motion.div>
+          </div>
+        )}
+
+        {/* DOCUMENT PREVIEW MODAL */}
+        {previewDoc && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setPreviewDoc(null)}
+              className="absolute inset-0 bg-navy/80 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-2xl bg-surface border border-border rounded-[24px] p-6 shadow-2xl space-y-4 z-10 max-h-[90vh] flex flex-col"
+            >
+              <div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-cyan/10 text-cyan flex items-center justify-center font-bold">
+                    <FileCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-navy text-sm leading-tight">{previewDoc.title}</h3>
+                    <p className="text-[11px] text-muted">{previewDoc.fileName} {previewDoc.uploadedAt && `• Uploaded ${previewDoc.uploadedAt}`}</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setPreviewDoc(null)}
+                  className="text-muted hover:text-navy cursor-pointer p-1 rounded-lg hover:bg-slate-100 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Preview Content Area */}
+              <div className="flex-1 overflow-auto rounded-[16px] bg-slate-50 border border-border p-4 flex items-center justify-center min-h-[300px]">
+                {previewDoc.fileDataUrl && previewDoc.fileDataUrl.startsWith('data:image/') ? (
+                  <img
+                    src={previewDoc.fileDataUrl}
+                    alt={previewDoc.title}
+                    className="max-h-[60vh] w-auto object-contain rounded-lg shadow-md"
+                  />
+                ) : (
+                  <div className="text-center space-y-3 p-8">
+                    <div className="w-16 h-16 rounded-2xl bg-teal/10 text-teal flex items-center justify-center mx-auto shadow-inner">
+                      <FileText className="w-8 h-8" />
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-navy text-sm">{previewDoc.fileName}</h4>
+                      <p className="text-xs text-muted max-w-sm mx-auto">
+                        Official document securely stored in your confidential verification vault.
+                      </p>
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-100/70 border border-emerald-300 px-3 py-1 rounded-full">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      Status: Verified & Encrypted
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Modal Footer Actions */}
+              <div className="flex items-center justify-between pt-3 border-t border-border shrink-0">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPreviewDoc(null)}
+                  className="text-xs font-bold"
+                >
+                  Close Preview
+                </Button>
+
+                {previewDoc.fileDataUrl && (
+                  <a
+                    href={previewDoc.fileDataUrl}
+                    download={previewDoc.fileName || 'document.pdf'}
+                    className="inline-flex items-center gap-1.5 bg-navy hover:bg-navy/90 text-white text-xs font-bold px-4 py-2 rounded-[12px] shadow-sm transition-all"
+                  >
+                    <Download className="w-3.5 h-3.5 text-cyan" />
+                    Download File
+                  </a>
+                )}
+              </div>
             </motion.div>
           </div>
         )}
