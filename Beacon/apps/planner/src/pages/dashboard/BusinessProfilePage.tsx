@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   User, Award, MapPin, Building2, Package, Clock, CreditCard, Share2, Settings, ShieldCheck,
   CheckCircle, Circle, Save, Sparkles, Lock, Globe, Mail, Plane, Hotel, Utensils,
-  Car, Shield, FileCheck, FileText, RefreshCw, Phone, CheckCircle2
+  Car, Shield, FileCheck, FileText, RefreshCw, Phone, CheckCircle2, Check
 } from 'lucide-react'
 import { FaInstagram, FaFacebook, FaYoutube, FaLinkedin, FaTwitter } from 'react-icons/fa'
 import { toast } from 'sonner'
