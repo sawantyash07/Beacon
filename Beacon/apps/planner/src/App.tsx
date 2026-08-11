@@ -62,110 +62,80 @@ const FraudAuditLogPage = lazy(() => import('@/pages/master/FraudAuditLogPage'))
 const PlatformSettingsPage = lazy(() => import('@/pages/master/PlatformSettingsPage'))
 
 function PageLoader() {
-  return (
-    <div className="min-h-screen bg-page flex items-center justify-center">
-      <div className="space-y-4 w-64">
-        <Skeleton className="h-8 w-full" />
-        <Skeleton className="h-32 w-full" />
-        <Skeleton className="h-4 w-3/4" />
-      </div>
-    </div>
-  )
-}
-
-function PageTransition({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -15 }}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="min-h-screen flex flex-col"
-    >
-      {children}
-    </motion.div>
-  )
+  return null
 }
 
 function AnimatedRoutes() {
-  const location = useLocation()
-
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><LandingPage /></PageTransition>} />
-        <Route path="/login" element={<PageTransition><LoginPage /></PageTransition>} />
-        <Route path="/signup" element={<PageTransition><SignUpPage /></PageTransition>} />
-        <Route path="/forgot-password" element={<PageTransition><ForgotPasswordPage /></PageTransition>} />
-        
-        <Route path="/destinations" element={<PageTransition><DestinationsPage /></PageTransition>} />
-        <Route path="/destinations/:id" element={<PageTransition><DestinationDetailPage /></PageTransition>} />
-        <Route path="/packages" element={<PageTransition><PackagesExplorePage /></PageTransition>} />
-        <Route path="/packages/:id" element={<PageTransition><PackageDetailPage /></PageTransition>} />
-        <Route path="/blogs" element={<PageTransition><BlogsPage /></PageTransition>} />
-        <Route path="/blogs/:id" element={<PageTransition><BlogDetailPage /></PageTransition>} />
-        <Route path="/about" element={<PageTransition><AboutPage /></PageTransition>} />
-        <Route path="/contact" element={<PageTransition><ContactPage /></PageTransition>} />
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      
+      <Route path="/destinations" element={<DestinationsPage />} />
+      <Route path="/destinations/:id" element={<DestinationDetailPage />} />
+      <Route path="/packages" element={<PackagesExplorePage />} />
+      <Route path="/packages/:id" element={<PackageDetailPage />} />
+      <Route path="/blogs" element={<BlogsPage />} />
+      <Route path="/blogs/:id" element={<BlogDetailPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/contact" element={<ContactPage />} />
 
-        <Route path="/wishlist" element={<ProtectedRoute><PageTransition><WishlistPage /></PageTransition></ProtectedRoute>} />
-        <Route path="/booking/:packageId" element={<ProtectedRoute><PageTransition><BookingPage /></PageTransition></ProtectedRoute>} />
-        <Route path="/onboarding" element={<ProtectedRoute><PageTransition><PlannerOnboardingPage /></PageTransition></ProtectedRoute>} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <PageTransition>
-                <DashboardLayout />
-              </PageTransition>
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<OverviewPage />} />
-          <Route path="inquiries" element={<InquiriesPage />} />
-          <Route path="packages" element={<PackagesPage />} />
-          <Route path="packages/create" element={<PackageCreatePage />} />
-          <Route path="packages/edit/:id" element={<PackageEditPage />} />
-          <Route path="bookings" element={<BookingsPage />} />
-          <Route path="trip-operations" element={<TripGroupsPage />} />
-          <Route path="payments" element={<PaymentsPage />} />
-          <Route path="travellers" element={<TravellersPage />} />
-          <Route path="analytics" element={<AnalyticsPage />} />
-          <Route path="reviews" element={<ReviewsPage />} />
-          <Route path="marketing" element={<MarketingHubPage />} />
-          <Route path="business-profile" element={<BusinessProfilePage />} />
-          <Route path="team" element={<TeamManagementPage />} />
-          <Route path="support" element={<SupportCenterPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-        </Route>
+      <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
+      <Route path="/booking/:packageId" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
+      <Route path="/onboarding" element={<ProtectedRoute><PlannerOnboardingPage /></ProtectedRoute>} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<OverviewPage />} />
+        <Route path="inquiries" element={<InquiriesPage />} />
+        <Route path="packages" element={<PackagesPage />} />
+        <Route path="packages/create" element={<PackageCreatePage />} />
+        <Route path="packages/edit/:id" element={<PackageEditPage />} />
+        <Route path="bookings" element={<BookingsPage />} />
+        <Route path="trip-operations" element={<TripGroupsPage />} />
+        <Route path="payments" element={<PaymentsPage />} />
+        <Route path="travellers" element={<TravellersPage />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
+        <Route path="reviews" element={<ReviewsPage />} />
+        <Route path="marketing" element={<MarketingHubPage />} />
+        <Route path="business-profile" element={<BusinessProfilePage />} />
+        <Route path="team" element={<TeamManagementPage />} />
+        <Route path="support" element={<SupportCenterPage />} />
+        <Route path="settings" element={<SettingsPage />} />
+      </Route>
 
-        {/* Master Admin Portal Routing */}
-        <Route path="/master-login" element={<PageTransition><MasterLoginPage /></PageTransition>} />
-        <Route
-          path="/master-control"
-          element={
-            <PageTransition>
-              <MasterControlLayout />
-            </PageTransition>
-          }
-        >
-          <Route index element={<MissionControlOverviewPage />} />
-          <Route path="overview" element={<MissionControlOverviewPage />} />
-          <Route path="verifications" element={<VerificationCenterPage />} />
-          <Route path="users" element={<UserManagementPage />} />
-          <Route path="live-trips" element={<LiveTripOperationsPage />} />
-          <Route path="packages" element={<PackageManagementPage />} />
-          <Route path="bookings" element={<BookingManagementPage />} />
-          <Route path="payments" element={<PaymentCenterPage />} />
-          <Route path="customer-care" element={<CustomerCareCenterPage />} />
-          <Route path="disputes" element={<DisputesReportsPage />} />
-          <Route path="reviews" element={<ReviewModerationPage />} />
-          <Route path="marketing" element={<MarketingAnnouncementsPage />} />
-          <Route path="analytics" element={<PlatformAnalyticsPage />} />
-          <Route path="fraud-audit" element={<FraudAuditLogPage />} />
-          <Route path="settings" element={<PlatformSettingsPage />} />
-        </Route>
-      </Routes>
-    </AnimatePresence>
+      {/* Master Admin Portal Routing */}
+      <Route path="/master-login" element={<MasterLoginPage />} />
+      <Route
+        path="/master-control"
+        element={
+          <MasterControlLayout />
+        }
+      >
+        <Route index element={<MissionControlOverviewPage />} />
+        <Route path="overview" element={<MissionControlOverviewPage />} />
+        <Route path="verifications" element={<VerificationCenterPage />} />
+        <Route path="users" element={<UserManagementPage />} />
+        <Route path="live-trips" element={<LiveTripOperationsPage />} />
+        <Route path="packages" element={<PackageManagementPage />} />
+        <Route path="bookings" element={<BookingManagementPage />} />
+        <Route path="payments" element={<PaymentCenterPage />} />
+        <Route path="customer-care" element={<CustomerCareCenterPage />} />
+        <Route path="disputes" element={<DisputesReportsPage />} />
+        <Route path="reviews" element={<ReviewModerationPage />} />
+        <Route path="marketing" element={<MarketingAnnouncementsPage />} />
+        <Route path="analytics" element={<PlatformAnalyticsPage />} />
+        <Route path="fraud-audit" element={<FraudAuditLogPage />} />
+        <Route path="settings" element={<PlatformSettingsPage />} />
+      </Route>
+    </Routes>
   )
 }
 
