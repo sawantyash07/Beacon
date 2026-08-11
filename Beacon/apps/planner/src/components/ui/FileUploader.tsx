@@ -23,10 +23,9 @@ export function FileUploader({
   onRemove,
   helperText = 'Upload PDF, PNG, or JPG (max 10MB)',
 }: FileUploaderProps) {
-  const [dragActive, setDragActive] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const safeCurrentUrl = currentFileUrl && !currentFileUrl.startsWith('blob:') ? currentFileUrl : null
   const [selectedFileName, setSelectedFileName] = useState<string | null>(currentFileName || null)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(currentFileUrl || null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(safeCurrentUrl)
   const [showPreviewModal, setShowPreviewModal] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -87,28 +86,31 @@ export function FileUploader({
     if (onRemove) onRemove()
   }
 
+  const activeImg = previewUrl || safeCurrentUrl
+
   return (
     <div className="space-y-2">
       {label && <label className="text-xs font-bold text-navy block">{label}</label>}
 
-      {selectedFileName || previewUrl || currentFileUrl ? (
+      {selectedFileName || activeImg ? (
         <div className="p-3 bg-page border border-border rounded-[16px] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            {previewUrl || currentFileUrl ? (
+            {activeImg ? (
               <img
-                src={previewUrl || currentFileUrl || ''}
+                src={activeImg}
                 alt="Preview"
                 onClick={() => setShowPreviewModal(true)}
-                className="w-11 h-11 rounded-[10px] object-cover border border-border shrink-0 cursor-pointer hover:opacity-85 transition-opacity"
+                onError={() => setPreviewUrl(null)}
+                className="w-12 h-12 rounded-[12px] object-cover border border-border shrink-0 cursor-pointer hover:opacity-85 transition-opacity bg-white shadow-xs"
               />
             ) : (
-              <div className="w-11 h-11 rounded-[10px] bg-teal/10 text-teal flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-[12px] bg-teal/10 text-teal flex items-center justify-center shrink-0">
                 <FileText className="w-5 h-5" />
               </div>
             )}
             <div className="min-w-0">
               <h5 className="text-xs font-bold text-navy truncate">
-                {selectedFileName || currentFileName || 'Uploaded Photo'}
+                {selectedFileName || currentFileName || 'Firm Photo'}
               </h5>
               <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
                 <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Photo attached
@@ -117,7 +119,7 @@ export function FileUploader({
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            {(previewUrl || currentFileUrl) && (
+            {activeImg && (
               <button
                 type="button"
                 onClick={() => setShowPreviewModal(true)}

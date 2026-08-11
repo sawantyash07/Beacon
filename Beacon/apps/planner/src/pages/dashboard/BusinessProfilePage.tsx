@@ -56,7 +56,12 @@ export default function BusinessProfilePage() {
     const saved = localStorage.getItem(storageKey)
     if (saved) {
       try {
-        return JSON.parse(saved)
+        const parsed = JSON.parse(saved)
+        if (typeof parsed.avatarUrl === 'string' && parsed.avatarUrl.startsWith('blob:')) {
+          parsed.avatarUrl = ''
+        }
+        delete parsed.coverBannerUrl
+        return parsed
       } catch (e) {
         // fallback
       }
@@ -704,29 +709,22 @@ export default function BusinessProfilePage() {
                     </Button>
                   </div>
 
-                  {/* Brand Assets Upload Previews */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Brand Firm Photo / Logo Upload */}
+                  <div>
                     <FileUploader
-                      label="Brand Profile Photo / Logo"
+                      label="Brand Profile Photo / Firm Logo"
                       currentFileUrl={profile.avatarUrl}
                       onFileSelect={(_file, dataUrl) => {
                         if (dataUrl) {
                           setProfile((prev) => ({ ...prev, avatarUrl: dataUrl }))
-                          triggerAutoSave('Avatar Logo')
+                          triggerAutoSave('Firm Photo')
                         }
                       }}
-                      helperText="Square logo or profile picture (PNG/JPG)"
-                    />
-                    <FileUploader
-                      label="Cover Banner Image"
-                      currentFileUrl={profile.coverBannerUrl}
-                      onFileSelect={(_file, dataUrl) => {
-                        if (dataUrl) {
-                          setProfile((prev) => ({ ...prev, coverBannerUrl: dataUrl }))
-                          triggerAutoSave('Cover Banner')
-                        }
+                      onRemove={() => {
+                        setProfile((prev) => ({ ...prev, avatarUrl: '' }))
+                        triggerAutoSave('Firm Photo')
                       }}
-                      helperText="Landscape banner image (1200x400 recommended)"
+                      helperText="Square logo or profile picture (PNG, JPG, SVG up to 10MB)"
                     />
                   </div>
 
