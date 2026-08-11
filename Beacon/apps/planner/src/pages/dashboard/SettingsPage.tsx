@@ -1,14 +1,19 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Settings, Bell, Lock, Shield, Eye, Users, Languages, Key, RefreshCw, Save } from 'lucide-react'
+import { Settings, Bell, Lock, Shield, Eye, Users, Languages, Key, RefreshCw, Save, Keyboard, Search, Sparkles } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ToggleCard } from '@/components/ui/ToggleCard'
+import { Badge } from '@/components/ui/Badge'
 import { toast } from 'sonner'
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<'notifications' | 'security' | 'team'>('notifications')
+  const [activeTab, setActiveTab] = useState<'notifications' | 'security' | 'team' | 'shortcuts'>('notifications')
+  const [shortcutSearch, setShortcutSearch] = useState('')
+  
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0
+  const modKey = isMac ? '⌘' : 'Ctrl'
   
   // Notification configurations
   const [notifConfig, setNotifConfig] = useState({
@@ -30,11 +35,60 @@ export default function SettingsPage() {
     toast.success('Settings configuration updated successfully!')
   }
 
+  const shortcutCategories = [
+    {
+      name: '⚡ Essential Beacon Shortcuts',
+      shortcuts: [
+        { keys: [`${modKey}`, 'K'], desc: 'Open Command Palette & fast search' },
+        { keys: [`${modKey}`, 'N'], desc: 'Create a new trip / package' },
+        { keys: [`${modKey}`, 'S'], desc: 'Save current trip or settings' },
+        { keys: [`${modKey}`, 'Z'], desc: 'Undo last action' },
+        { keys: [`${modKey}`, 'Shift', 'Z'], desc: 'Redo previously undone change' },
+        { keys: ['Esc'], desc: 'Close open modal, palette, or menu' },
+        { keys: ['/'], desc: 'Focus global search input' },
+        { keys: [`${modKey}`, '/'], desc: 'Display shortcuts cheatsheet modal' },
+      ]
+    },
+    {
+      name: '✈️ Itinerary Fast Hotkeys',
+      shortcuts: [
+        { keys: ['A'], desc: 'Add new activity slot to day' },
+        { keys: ['H'], desc: 'Add hotel stay / resort details' },
+        { keys: ['T'], desc: 'Add transport / vehicle transfer' },
+        { keys: ['R'], desc: 'Add restaurant / meals schedule' },
+        { keys: ['D'], desc: 'Add destination pinpoint' },
+        { keys: ['N'], desc: 'Add planner tip or custom advisory note' },
+        { keys: ['Shift', 'D'], desc: 'Duplicate selected day itinerary' },
+        { keys: ['Delete'], desc: 'Delete selected itinerary slot' },
+      ]
+    },
+    {
+      name: '📅 Moving Itinerary Items',
+      shortcuts: [
+        { keys: ['↑', '↓'], desc: 'Move item slot up or down' },
+        { keys: ['Shift', '↑'], desc: 'Move item slot to previous day' },
+        { keys: ['Shift', '↓'], desc: 'Move item slot to next day' },
+        { keys: ['Shift', '←'], desc: 'Move schedule time earlier' },
+        { keys: ['Shift', '→'], desc: 'Move schedule time later' },
+      ]
+    },
+    {
+      name: '👥 Planner Productivity & Copilot',
+      shortcuts: [
+        { keys: [`${modKey}`, 'J'], desc: 'Ask Beacon AI Copilot (Natural language trip adjustments)' },
+        { keys: [`${modKey}`, 'P'], desc: 'Toggle itinerary preview mode' },
+        { keys: [`${modKey}`, 'E'], desc: 'Export / share PDF travel brochure' },
+        { keys: [`${modKey}`, 'Shift', 'N'], desc: 'Add traveler to group' },
+        { keys: [`${modKey}`, 'Shift', 'D'], desc: 'Duplicate entire trip package' },
+      ]
+    }
+  ]
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-navy">Settings</h1>
-        <p className="text-muted text-sm mt-1">Configure notification channels, workspace credentials, team roles, and system preferences</p>
+        <p className="text-muted text-sm mt-1">Configure notification channels, workspace credentials, team roles, and keyboard shortcuts</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -44,7 +98,8 @@ export default function SettingsPage() {
           {[
             { id: 'notifications', label: 'Notifications', icon: Bell },
             { id: 'security', label: 'Security & Login', icon: Lock },
-            { id: 'team', label: 'Team Members', icon: Users }
+            { id: 'team', label: 'Team Members', icon: Users },
+            { id: 'shortcuts', label: 'Keyboard Shortcuts', icon: Keyboard }
           ].map((tab) => {
             const Icon = tab.icon
             return (
@@ -53,7 +108,7 @@ export default function SettingsPage() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-[12px] text-xs font-semibold uppercase tracking-wider text-left transition-all ${
                   activeTab === tab.id
-                    ? 'bg-teal/10 text-teal border-l-2 border-teal'
+                    ? 'bg-teal/10 text-teal border-l-2 border-teal font-bold shadow-2xs'
                     : 'text-muted hover:bg-border/30 hover:text-navy'
                 }`}
               >
@@ -191,6 +246,77 @@ export default function SettingsPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </Card>
+            </motion.div>
+          )}
+
+          {/* TAB 4: KEYBOARD SHORTCUTS */}
+          {activeTab === 'shortcuts' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+              <Card className="p-6 border border-border space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="font-bold text-navy text-base flex items-center gap-2">
+                      <Keyboard className="w-5 h-5 text-teal" />
+                      Keyboard Shortcuts & Fast Keys
+                    </h3>
+                    <p className="text-xs text-muted mt-0.5">
+                      Boost your trip planning speed with power-user hotkeys and AI commands.
+                    </p>
+                  </div>
+
+                  <div className="relative w-full sm:w-64">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted" />
+                    <input
+                      type="text"
+                      value={shortcutSearch}
+                      onChange={(e) => setShortcutSearch(e.target.value)}
+                      placeholder="Search shortcuts..."
+                      className="w-full pl-8 pr-3 py-1.5 text-xs rounded-[10px] border border-border bg-page focus:outline-none focus:ring-1 focus:ring-cyan text-navy"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  {shortcutCategories.map((cat, idx) => {
+                    const filtered = cat.shortcuts.filter(
+                      s => s.desc.toLowerCase().includes(shortcutSearch.toLowerCase()) ||
+                           s.keys.join(' ').toLowerCase().includes(shortcutSearch.toLowerCase())
+                    )
+
+                    if (filtered.length === 0) return null
+
+                    return (
+                      <div key={idx} className="space-y-2.5">
+                        <h4 className="text-xs font-bold text-navy uppercase tracking-wider">
+                          {cat.name}
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {filtered.map((item, i) => (
+                            <div
+                              key={i}
+                              className="flex items-center justify-between p-3 rounded-[12px] border border-border/80 bg-white hover:border-cyan/40 transition-all shadow-2xs"
+                            >
+                              <span className="text-xs text-navy/90 font-medium pr-2">
+                                {item.desc}
+                              </span>
+                              <div className="flex items-center gap-1 shrink-0">
+                                {item.keys.map((k, ki) => (
+                                  <kbd
+                                    key={ki}
+                                    className="px-2 py-0.5 bg-page border border-border rounded-[6px] text-[11px] font-mono font-bold text-navy shadow-xs"
+                                  >
+                                    {k}
+                                  </kbd>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </Card>
             </motion.div>

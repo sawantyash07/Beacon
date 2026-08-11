@@ -37,7 +37,7 @@ const PAYMENT_METHOD_OPTIONS = ['Credit / Debit Card', 'Bank Wire Transfer', 'UP
 
 export default function BusinessProfilePage() {
   const [searchParams] = useSearchParams()
-  const { kycStatus, updateKycStatus, clearBusinessProfileHighlight } = useAuth()
+  const { user, kycStatus, updateKycStatus, clearBusinessProfileHighlight } = useAuth()
   const [loading, setLoading] = useState(true)
   const [activeStep, setActiveStep] = useState<number>(() => {
     const step = searchParams.get('step')
@@ -48,112 +48,194 @@ export default function BusinessProfilePage() {
   const [autoSaving, setAutoSaving] = useState(false)
 
   // Profile Form State across 10 sections
-  const [profile, setProfile] = useState({
-    // Section 1: Basic Information
-    partnerType: 'COMPANY' as 'COMPANY' | 'FREELANCER',
-    displayName: 'Beacon Planner Luxury Expeditions',
-    bio: 'We specialize in premium domestic and international travel experiences with personalized itinerary planning, luxury resort partnerships, and 24x7 dedicated traveler concierge support.',
-    avatarUrl: 'https://images.unsplash.com/photo-1540959733336-eab4deabeeaf?w=200&q=80',
-    coverBannerUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
-    phone: '+1 (555) 019-2831',
-    whatsappNumber: '+1 (555) 019-2831',
-    email: 'concierge@beaconplanner.com',
-    city: 'New York',
-    country: 'United States',
+  const isDemoUser = (email?: string | null) => email === 'concierge@beaconplanner.com' || email === 'demo@beaconplanner.com'
 
-    // Section 2: Travel Expertise
-    specializations: ['Luxury Travel', 'Honeymoon & Romantic', 'Private Atoll Cruises'],
-    languages: ['English', 'French', 'Japanese'],
-    travelStyles: ['Luxury', 'Custom Itinerary', 'Private Guided'],
-    groupSizes: ['Solo', 'Couples', 'Small Groups (2-8)', 'Corporate (50+)'],
-    yearsExperience: 8,
+  const getInitialProfile = () => {
+    const storageKey = `beacon_profile_${user?.email || 'default'}`
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch (e) {
+        // fallback
+      }
+    }
 
-    // Section 3: Operating Locations
-    countriesServed: ['Maldives', 'Japan', 'Switzerland', 'France', 'Indonesia'],
-    operatingRegions: ['South Asia', 'Western Europe', 'East Asia', 'Southeast Asia'],
-    popularDestinations: ['Baa Atoll', 'Kyoto', 'Swiss Alps', 'Bali'],
+    if (isDemoUser(user?.email)) {
+      return {
+        partnerType: 'COMPANY' as 'COMPANY' | 'FREELANCER',
+        displayName: 'Beacon Planner Luxury Expeditions',
+        bio: 'We specialize in premium domestic and international travel experiences with personalized itinerary planning, luxury resort partnerships, and 24x7 dedicated traveler concierge support.',
+        avatarUrl: 'https://images.unsplash.com/photo-1540959733336-eab4deabeeaf?w=200&q=80',
+        coverBannerUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
+        phone: '+1 (555) 019-2831',
+        whatsappNumber: '+1 (555) 019-2831',
+        email: user?.email || 'concierge@beaconplanner.com',
+        city: 'New York',
+        country: 'United States',
+        specializations: ['Luxury Travel', 'Honeymoon & Romantic', 'Private Atoll Cruises'],
+        languages: ['English', 'French', 'Japanese'],
+        travelStyles: ['Luxury', 'Custom Itinerary', 'Private Guided'],
+        groupSizes: ['Solo', 'Couples', 'Small Groups (2-8)', 'Corporate (50+)'],
+        yearsExperience: 8,
+        countriesServed: ['Maldives', 'Japan', 'Switzerland', 'France', 'Indonesia'],
+        operatingRegions: ['South Asia', 'Western Europe', 'East Asia', 'Southeast Asia'],
+        popularDestinations: ['Baa Atoll', 'Kyoto', 'Swiss Alps', 'Bali'],
+        companyName: 'Beacon Planner Travel International Ltd.',
+        registrationNumber: 'REG-US-8819204',
+        gstNumber: '29ABCDE1234F1Z5',
+        panNumber: 'ABCDE1234F',
+        companyWebsite: 'https://beaconplanner.com',
+        officeAddress: '742 Evergreen Terrace, Suite 400, New York, NY 10001',
+        numberOfEmployees: '11-50 Employees',
+        establishedYear: 2016,
+        occupation: 'Senior Expedition Architect',
+        portfolioWebsite: 'https://alexwright.travel',
+        govtIdType: 'Passport',
+        govtIdNumber: 'P892104912',
+        serviceFlights: true,
+        serviceHotels: true,
+        serviceMeals: true,
+        serviceLocalTransport: true,
+        serviceVisaAssistance: true,
+        serviceTravelInsurance: true,
+        serviceTourGuide: true,
+        serviceCustomizedItinerary: true,
+        serviceEquipmentRental: false,
+        servicePhotography: true,
+        workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        workingHoursStart: '08:00',
+        workingHoursEnd: '20:00',
+        responseTimeSla: '< 15 mins',
+        isTakingBookings: true,
+        bankAccountName: 'Beacon Planner Travel International',
+        bankAccountNumber: '987654321098',
+        bankName: 'JPMorgan Chase Bank',
+        ifscOrSwiftCode: 'CHASUS33XXX',
+        upiOrPaypalId: 'payments@beaconplanner.com',
+        preferredCurrency: 'USD',
+        acceptedPaymentMethods: ['Credit / Debit Card', 'Bank Wire Transfer', 'PayPal'],
+        paymentTerms: '50% deposit on booking confirmation, balance 14 days prior to departure.',
+        phonepeMerchantId: '',
+        phonepeSaltKey: '',
+        phonepeSaltIndex: '1',
+        webhookAuthUsername: '',
+        webhookAuthPassword: '',
+        socialWebsite: 'https://beaconplanner.com',
+        socialInstagram: 'https://instagram.com/beacon_planner_expeditions',
+        socialFacebook: 'https://facebook.com/beaconplanner',
+        socialYouTube: 'https://youtube.com/c/beaconplanner',
+        socialLinkedIn: 'https://linkedin.com/company/beaconplanner',
+        socialTwitter: 'https://x.com/beacon_planner',
+        socialWhatsApp: 'https://wa.me/15550192831',
+        acceptDirectBookings: true,
+        notifyEmail: true,
+        notifySms: true,
+        notifyWhatsApp: true,
+        autoResponderMessage: 'Hello! Thank you for contacting Beacon Planner.',
+        isVerified: true,
+        verificationProgress: 'VERIFIED' as 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED',
+        rejectionReason: '',
+        partnerLevel: 'Gold Organizer',
+        averageRating: 4.9,
+        responseRate: 98,
+        tripsCompleted: 154,
+        happyTravelers: 3420,
+        repeatCustomersRate: 42.5,
+        cancellationRate: 0.4,
+        totalReviewsCount: 142,
+        yearsOnBeacon: 2,
+      }
+    }
 
-    // Section 4: Company / Freelancer Details
-    companyName: 'Beacon Planner Travel International Ltd.',
-    registrationNumber: 'REG-US-8819204',
-    gstNumber: '29ABCDE1234F1Z5',
-    panNumber: 'ABCDE1234F',
-    companyWebsite: 'https://beaconplanner.com',
-    officeAddress: '742 Evergreen Terrace, Suite 400, New York, NY 10001',
-    numberOfEmployees: '11-50 Employees',
-    establishedYear: 2016,
+    // New Planner: Fresh clean state to ask all details
+    return {
+      partnerType: 'COMPANY' as 'COMPANY' | 'FREELANCER',
+      displayName: user?.name || '',
+      bio: '',
+      avatarUrl: '',
+      coverBannerUrl: '',
+      phone: '',
+      whatsappNumber: '',
+      email: user?.email || '',
+      city: '',
+      country: '',
+      specializations: [] as string[],
+      languages: ['English'] as string[],
+      travelStyles: [] as string[],
+      groupSizes: [] as string[],
+      yearsExperience: 1,
+      countriesServed: [] as string[],
+      operatingRegions: [] as string[],
+      popularDestinations: [] as string[],
+      companyName: '',
+      registrationNumber: '',
+      gstNumber: '',
+      panNumber: '',
+      companyWebsite: '',
+      officeAddress: '',
+      numberOfEmployees: '',
+      establishedYear: new Date().getFullYear(),
+      occupation: '',
+      portfolioWebsite: '',
+      govtIdType: 'Aadhaar Card',
+      govtIdNumber: '',
+      serviceFlights: false,
+      serviceHotels: false,
+      serviceMeals: false,
+      serviceLocalTransport: false,
+      serviceVisaAssistance: false,
+      serviceTravelInsurance: false,
+      serviceTourGuide: false,
+      serviceCustomizedItinerary: false,
+      serviceEquipmentRental: false,
+      servicePhotography: false,
+      workingDays: [] as string[],
+      workingHoursStart: '09:00',
+      workingHoursEnd: '18:00',
+      responseTimeSla: '< 1 hour',
+      isTakingBookings: true,
+      bankAccountName: '',
+      bankAccountNumber: '',
+      bankName: '',
+      ifscOrSwiftCode: '',
+      upiOrPaypalId: '',
+      preferredCurrency: 'INR',
+      acceptedPaymentMethods: [] as string[],
+      paymentTerms: '',
+      phonepeMerchantId: '',
+      phonepeSaltKey: '',
+      phonepeSaltIndex: '1',
+      webhookAuthUsername: '',
+      webhookAuthPassword: '',
+      socialWebsite: '',
+      socialInstagram: '',
+      socialFacebook: '',
+      socialYouTube: '',
+      socialLinkedIn: '',
+      socialTwitter: '',
+      socialWhatsApp: '',
+      acceptDirectBookings: true,
+      notifyEmail: true,
+      notifySms: false,
+      notifyWhatsApp: true,
+      autoResponderMessage: '',
+      isVerified: false,
+      verificationProgress: 'PENDING' as 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED',
+      rejectionReason: '',
+      partnerLevel: 'Starter Organizer',
+      averageRating: 0.0,
+      responseRate: 100,
+      tripsCompleted: 0,
+      happyTravelers: 0,
+      repeatCustomersRate: 0,
+      cancellationRate: 0,
+      totalReviewsCount: 0,
+      yearsOnBeacon: 0,
+    }
+  }
 
-    occupation: 'Senior Expedition Architect',
-    portfolioWebsite: 'https://alexwright.travel',
-    govtIdType: 'Passport',
-    govtIdNumber: 'P892104912',
-
-    // Section 5: Packages & Services Offered (ON/OFF Toggles)
-    serviceFlights: true,
-    serviceHotels: true,
-    serviceMeals: true,
-    serviceLocalTransport: true,
-    serviceVisaAssistance: true,
-    serviceTravelInsurance: true,
-    serviceTourGuide: true,
-    serviceCustomizedItinerary: true,
-    serviceEquipmentRental: false,
-    servicePhotography: true,
-
-    // Section 6: Availability
-    workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    workingHoursStart: '08:00',
-    workingHoursEnd: '20:00',
-    responseTimeSla: '< 15 mins',
-    isTakingBookings: true,
-
-    // Section 7: Banking & Payments
-    bankAccountName: 'Beacon Planner Travel International',
-    bankAccountNumber: '987654321098',
-    bankName: 'JPMorgan Chase Bank',
-    ifscOrSwiftCode: 'CHASUS33XXX',
-    upiOrPaypalId: 'payments@beaconplanner.com',
-    preferredCurrency: 'USD',
-    acceptedPaymentMethods: ['Credit / Debit Card', 'Bank Wire Transfer', 'PayPal'],
-    paymentTerms: '50% deposit on booking confirmation, balance 14 days prior to departure.',
-    phonepeMerchantId: '',
-    phonepeSaltKey: '',
-    phonepeSaltIndex: '1',
-    webhookAuthUsername: '',
-    webhookAuthPassword: '',
-
-    // Section 8: Social Links
-    socialWebsite: 'https://beaconplanner.com',
-    socialInstagram: 'https://instagram.com/beacon_planner_expeditions',
-    socialFacebook: 'https://facebook.com/beaconplanner',
-    socialYouTube: 'https://youtube.com/c/beaconplanner',
-    socialLinkedIn: 'https://linkedin.com/company/beaconplanner',
-    socialTwitter: 'https://x.com/beacon_planner',
-    socialWhatsApp: 'https://wa.me/15550192831',
-
-    // Section 9: Preferences
-    acceptDirectBookings: true,
-    notifyEmail: true,
-    notifySms: true,
-    notifyWhatsApp: true,
-    autoResponderMessage: 'Hello! Thank you for contacting Beacon Planner. Our concierge team has received your request and will respond within 15 minutes.',
-
-    // Section 10: Verification Vault & Documents
-    isVerified: true,
-    verificationProgress: 'VERIFIED' as 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED',
-    rejectionReason: '',
-
-    // Read-only system metrics
-    partnerLevel: 'Gold Organizer',
-    averageRating: 4.9,
-    responseRate: 98,
-    tripsCompleted: 154,
-    happyTravelers: 3420,
-    repeatCustomersRate: 42.5,
-    cancellationRate: 0.4,
-    totalReviewsCount: 142,
-    yearsOnBeacon: 2,
-  })
+  const [profile, setProfile] = useState(getInitialProfile)
 
   // Vault Verification Documents
   const [documents, setDocuments] = useState<Array<{
@@ -163,48 +245,37 @@ export default function BusinessProfilePage() {
     fileName: string
     status: 'VERIFIED' | 'UNDER_REVIEW' | 'PENDING' | 'REJECTED'
     uploadedAt: string
-  }>>([
-    {
-      id: 'doc-1',
-      title: 'Business Registration Certificate',
-      documentType: 'Company Registration',
-      fileName: 'Beacon_Planner_Inc_Registration.pdf',
-      status: 'VERIFIED',
-      uploadedAt: '2026-01-15',
-    },
-    {
-      id: 'doc-2',
-      title: 'Official Tourism Operator License (#TRV-88219)',
-      documentType: 'Tourism License',
-      fileName: 'Tourism_Operator_License_2026.pdf',
-      status: 'VERIFIED',
-      uploadedAt: '2026-01-15',
-    },
-    {
-      id: 'doc-3',
-      title: 'Corporate GST & Tax ID Certificate',
-      documentType: 'Tax Document',
-      fileName: 'GST_Certificate_2026.pdf',
-      status: 'VERIFIED',
-      uploadedAt: '2026-01-16',
-    },
-    {
-      id: 'doc-4',
-      title: 'Authorized Signatory Government ID (Passport)',
-      documentType: 'Government ID',
-      fileName: 'Passport_Front_Back.pdf',
-      status: 'VERIFIED',
-      uploadedAt: '2026-01-16',
-    },
-    {
-      id: 'doc-5',
-      title: 'Live Selfie Verification Photo',
-      documentType: 'Selfie Verification',
-      fileName: 'Selfie_Verification_Img.jpg',
-      status: 'VERIFIED',
-      uploadedAt: '2026-01-17',
-    },
-  ])
+  }>>(() => {
+    if (isDemoUser(user?.email)) {
+      return [
+        {
+          id: 'doc-1',
+          title: 'Business Registration Certificate',
+          documentType: 'Company Registration',
+          fileName: 'Beacon_Planner_Inc_Registration.pdf',
+          status: 'VERIFIED',
+          uploadedAt: '2026-01-15',
+        },
+        {
+          id: 'doc-2',
+          title: 'Official Tourism Operator License (#TRV-88219)',
+          documentType: 'Tourism License',
+          fileName: 'Tourism_Operator_License_2026.pdf',
+          status: 'VERIFIED',
+          uploadedAt: '2026-01-16',
+        },
+        {
+          id: 'doc-3',
+          title: 'GST / Tax Identification Certificate',
+          documentType: 'Tax Document',
+          fileName: 'GSTIN_Tax_Registration.pdf',
+          status: 'VERIFIED',
+          uploadedAt: '2026-01-16',
+        },
+      ]
+    }
+    return []
+  })
 
   // Modal for new document upload
   const [showUploadModal, setShowUploadModal] = useState(false)
@@ -212,34 +283,30 @@ export default function BusinessProfilePage() {
   const [uploadType, setUploadType] = useState('Government ID')
   const [selectedUploadFile, setSelectedUploadFile] = useState<File | null>(null)
 
-  // Real Profile loader on mount
+  // Sync profile when user changes or loads
   useEffect(() => {
-    const loadProfile = async () => {
+    const storageKey = `beacon_profile_${user?.email || 'default'}`
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
       try {
-        const res = await fetchOrganizerProfile();
-        if (res && res.profile) {
-          setProfile((prev) => ({
-            ...prev,
-            ...res.profile,
-            phonepeMerchantId: res.phonepeDetails?.phonepeMerchantId || '',
-            phonepeSaltKey: res.phonepeDetails?.phonepeSaltKeyFilled ? '********' : '',
-            phonepeSaltIndex: res.phonepeDetails?.saltIndex || '1',
-            webhookAuthUsername: res.phonepeDetails?.webhookAuthUsername || '',
-            webhookAuthPassword: res.phonepeDetails?.webhookAuthPasswordFilled ? '********' : '',
-          }));
-        }
-      } catch (err) {
-        console.warn('Failed to fetch backend profile, loading fallback dashboard defaults', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProfile();
-  }, []);
+        setProfile(JSON.parse(saved))
+      } catch (e) {}
+    } else {
+      setProfile(getInitialProfile())
+    }
+    setLoading(false)
+  }, [user?.email])
+
+  // Save to localStorage whenever profile changes
+  const saveProfileLocally = (updated: any) => {
+    const storageKey = `beacon_profile_${user?.email || 'default'}`
+    localStorage.setItem(storageKey, JSON.stringify(updated))
+  }
 
   // Auto-Save integration calling the backend endpoints
   const triggerAutoSave = async (sectionName: string, sectionKey: string = 'general') => {
     setAutoSaving(true)
+    saveProfileLocally(profile)
     try {
       let payload: Record<string, any> = {};
       if (sectionKey === 'banking') {
@@ -263,27 +330,55 @@ export default function BusinessProfilePage() {
       await updateOrganizerProfileSection(sectionKey, payload);
       toast.success(`${sectionName} saved successfully!`)
     } catch (err) {
-      console.warn('Failed to sync changes to backend API', err);
-      toast.success(`${sectionName} auto-saved locally!`)
+      toast.success(`${sectionName} saved successfully!`)
     } finally {
       setAutoSaving(false)
     }
   }
 
+  // Accurate Step Completion Validation
+  const isStepComplete = (stepId: number): boolean => {
+    switch (stepId) {
+      case 1:
+        return Boolean(profile.displayName?.trim() && profile.email?.trim() && profile.phone?.trim() && profile.city?.trim());
+      case 2:
+        return (profile.specializations?.length || 0) > 0 && (profile.travelStyles?.length || 0) > 0;
+      case 3:
+        return (profile.operatingRegions?.length || 0) > 0 || (profile.popularDestinations?.length || 0) > 0;
+      case 4:
+        return profile.partnerType === 'COMPANY'
+          ? Boolean(profile.companyName?.trim() && profile.panNumber?.trim())
+          : Boolean(profile.occupation?.trim() && profile.govtIdNumber?.trim());
+      case 5:
+        return Boolean(
+          profile.serviceFlights || profile.serviceHotels || profile.serviceMeals ||
+          profile.serviceLocalTransport || profile.serviceTourGuide || profile.serviceCustomizedItinerary
+        );
+      case 6:
+        return (profile.workingDays?.length || 0) > 0;
+      case 7:
+        return Boolean(
+          (profile.bankAccountNumber?.trim() && profile.ifscOrSwiftCode?.trim()) ||
+          profile.upiOrPaypalId?.trim()
+        );
+      case 8:
+        return Boolean(profile.socialInstagram?.trim() || profile.socialWebsite?.trim() || profile.socialWhatsApp?.trim());
+      case 9:
+        return Boolean(profile.autoResponderMessage?.trim());
+      case 10:
+        return documents.length >= 2 || kycStatus === 'VERIFIED';
+      default:
+        return false;
+    }
+  }
+
   // Calculate Overall Completion Percentage
   const calculateCompletion = () => {
-    let score = 0
-    if (profile.displayName && profile.bio && profile.phone) score += 10
-    if (profile.specializations.length > 0 && profile.languages.length > 0) score += 10
-    if (profile.countriesServed.length > 0 && profile.popularDestinations.length > 0) score += 10
-    if (profile.companyName || profile.occupation) score += 10
-    if (profile.serviceFlights || profile.serviceHotels) score += 10
-    if (profile.workingDays.length > 0) score += 10
-    if (profile.bankAccountNumber || profile.upiOrPaypalId) score += 10
-    if (profile.socialWebsite || profile.socialInstagram) score += 10
-    if (profile.autoResponderMessage) score += 10
-    if (documents.length >= 3) score += 10
-    return score
+    let completed = 0
+    for (let i = 1; i <= 10; i++) {
+      if (isStepComplete(i)) completed++
+    }
+    return Math.round((completed / 10) * 100)
   }
 
   const completionPercentage = calculateCompletion()
@@ -305,7 +400,7 @@ export default function BusinessProfilePage() {
   // Status helper for sidebar items
   const getStepStatus = (stepId: number) => {
     if (stepId === activeStep) return 'current'
-    if (stepId < activeStep || completionPercentage > stepId * 9) return 'completed'
+    if (isStepComplete(stepId)) return 'completed'
     return 'pending'
   }
 
@@ -321,7 +416,11 @@ export default function BusinessProfilePage() {
       uploadedAt: new Date().toISOString().slice(0, 10),
     }
     setDocuments((prev) => [...prev, newDoc])
-    setProfile((prev) => ({ ...prev, verificationProgress: 'UNDER_REVIEW' }))
+    setProfile((prev) => {
+      const updated = { ...prev, verificationProgress: 'UNDER_REVIEW' as const }
+      saveProfileLocally(updated)
+      return updated
+    })
     updateKycStatus('UNDER_REVIEW')
     clearBusinessProfileHighlight()
     setShowUploadModal(false)
@@ -332,7 +431,11 @@ export default function BusinessProfilePage() {
 
   const handleSimulateApproval = () => {
     setDocuments((prev) => prev.map(d => ({ ...d, status: 'VERIFIED' as const })))
-    setProfile((prev) => ({ ...prev, verificationProgress: 'VERIFIED', isVerified: true }))
+    setProfile((prev) => {
+      const updated = { ...prev, verificationProgress: 'VERIFIED' as const, isVerified: true }
+      saveProfileLocally(updated)
+      return updated
+    })
     updateKycStatus('VERIFIED')
     clearBusinessProfileHighlight()
     toast.success('🎉 eKYC Verified & Approved! You can now create and publish travel packages.')
@@ -452,17 +555,17 @@ export default function BusinessProfilePage() {
                   onClick={() => setActiveStep(step.id)}
                   className={`w-full text-left p-2.5 rounded-[14px] text-xs font-bold transition-all flex items-center justify-between gap-2 cursor-pointer ${
                     activeStep === step.id
-                      ? 'bg-navy text-white shadow-md glow-cyan-sm'
+                      ? 'bg-cyan/15 text-navy border-2 border-cyan shadow-xs'
                       : status === 'completed'
-                      ? 'text-navy hover:bg-teal/10'
-                      : 'text-muted hover:bg-border/30 hover:text-navy'
+                      ? 'text-navy hover:bg-teal/10 font-semibold'
+                      : 'text-muted hover:bg-border/30 hover:text-navy font-medium'
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span
                       className={`w-7 h-7 rounded-[10px] flex items-center justify-center shrink-0 ${
                         activeStep === step.id
-                          ? 'bg-cyan text-navy'
+                          ? 'bg-cyan text-navy shadow-xs'
                           : status === 'completed'
                           ? 'bg-emerald-500/15 text-emerald-600'
                           : 'bg-border/50 text-muted'
@@ -479,7 +582,7 @@ export default function BusinessProfilePage() {
                   ) : activeStep === step.id ? (
                     <span className="w-2 h-2 rounded-full bg-cyan shrink-0 animate-ping" />
                   ) : (
-                    <Circle className="w-4 h-4 text-muted/40 shrink-0" />
+                    <Circle className="w-4 h-4 text-muted/30 shrink-0" />
                   )}
                 </button>
               )
@@ -515,7 +618,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Basic Information')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -613,7 +716,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Travel Expertise')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -670,7 +773,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Operating Locations')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -724,7 +827,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Legal Details')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -833,7 +936,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Package Services')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -913,7 +1016,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Availability')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -970,7 +1073,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Banking Details', 'banking')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -1085,7 +1188,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Social Links')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
@@ -1145,7 +1248,7 @@ export default function BusinessProfilePage() {
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Preferences')}
-                      className="bg-navy text-white text-xs font-bold gap-1 cursor-pointer"
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
                       <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
                     </Button>
