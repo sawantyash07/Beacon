@@ -846,6 +846,9 @@ export default function BusinessProfilePage() {
                     <FileUploader
                       label="Brand Profile Photo / Firm Logo"
                       currentFileUrl={profile.avatarUrl}
+                      accept="image/*"
+                      maxSizeMb={1}
+                      helperText="Upload your brand logo (PNG, JPG, max 1MB)"
                       onFileSelect={(_file, dataUrl) => {
                         if (dataUrl) {
                           setProfile((prev) => ({ ...prev, avatarUrl: dataUrl }))
@@ -1739,11 +1742,13 @@ export default function BusinessProfilePage() {
 
                 <FileUploader
                   label="Attach Document File *"
+                  accept=".pdf"
+                  maxSizeMb={2}
                   onFileSelect={(file, dataUrl) => {
                     setSelectedUploadFile(file)
                     if (dataUrl) setSelectedUploadDataUrl(dataUrl)
                   }}
-                  helperText="Upload official document (PDF, PNG, JPG up to 10MB)"
+                  helperText="Upload official document (PDF only, max 2MB)"
                 />
 
                 <div className="flex justify-end gap-2 pt-2 border-t border-border">
