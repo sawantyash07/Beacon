@@ -1575,34 +1575,40 @@ export default function BusinessProfilePage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative w-full max-w-2xl bg-surface border border-border rounded-[24px] p-6 shadow-2xl space-y-4 z-10 max-h-[90vh] flex flex-col"
+              className="relative w-full max-w-4xl bg-surface border border-border rounded-[24px] p-6 shadow-2xl space-y-4 z-10 max-h-[92vh] flex flex-col"
             >
               <div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-cyan/10 text-cyan flex items-center justify-center font-bold">
-                    <FileCheck className="w-4 h-4" />
+                  <div className="w-9 h-9 rounded-xl bg-cyan/15 text-cyan flex items-center justify-center font-bold">
+                    <FileCheck className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-navy text-sm leading-tight">{previewDoc.title}</h3>
+                    <h3 className="font-bold text-navy text-sm sm:text-base leading-tight">{previewDoc.title}</h3>
                     <p className="text-[11px] text-muted">{previewDoc.fileName} {previewDoc.uploadedAt && `• Uploaded ${previewDoc.uploadedAt}`}</p>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setPreviewDoc(null)}
-                  className="text-muted hover:text-navy cursor-pointer p-1 rounded-lg hover:bg-slate-100 transition-colors"
+                  className="text-muted hover:text-navy cursor-pointer p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              {/* Preview Content Area */}
-              <div className="flex-1 overflow-auto rounded-[16px] bg-slate-50 border border-border p-4 flex items-center justify-center min-h-[300px]">
-                {previewDoc.fileDataUrl && previewDoc.fileDataUrl.startsWith('data:image/') ? (
+              {/* Preview Content Area with full PDF iframe & Image Support */}
+              <div className="flex-1 overflow-auto rounded-[16px] bg-slate-100/70 border border-border p-2 sm:p-4 flex items-center justify-center min-h-[420px]">
+                {previewDoc.fileDataUrl && (previewDoc.fileDataUrl.startsWith('data:image/') || /\.(png|jpg|jpeg|webp|svg)$/i.test(previewDoc.fileName)) ? (
                   <img
                     src={previewDoc.fileDataUrl}
                     alt={previewDoc.title}
-                    className="max-h-[60vh] w-auto object-contain rounded-lg shadow-md"
+                    className="max-h-[65vh] w-auto max-w-full object-contain rounded-lg shadow-md"
+                  />
+                ) : previewDoc.fileDataUrl && (previewDoc.fileDataUrl.startsWith('data:application/pdf') || /\.pdf$/i.test(previewDoc.fileName)) ? (
+                  <iframe
+                    src={previewDoc.fileDataUrl}
+                    title={previewDoc.title}
+                    className="w-full h-[65vh] rounded-lg border border-border bg-white shadow-xs"
                   />
                 ) : (
                   <div className="text-center space-y-3 p-8">
@@ -1612,7 +1618,7 @@ export default function BusinessProfilePage() {
                     <div className="space-y-1">
                       <h4 className="font-bold text-navy text-sm">{previewDoc.fileName}</h4>
                       <p className="text-xs text-muted max-w-sm mx-auto">
-                        Official document securely stored in your confidential verification vault.
+                        Official document securely encrypted in your verification vault.
                       </p>
                     </div>
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-100/70 border border-emerald-300 px-3 py-1 rounded-full">
@@ -1624,26 +1630,40 @@ export default function BusinessProfilePage() {
               </div>
 
               {/* Modal Footer Actions */}
-              <div className="flex items-center justify-between pt-3 border-t border-border shrink-0">
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-border shrink-0">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => setPreviewDoc(null)}
-                  className="text-xs font-bold"
+                  className="text-xs font-bold px-4 py-2"
                 >
                   Close Preview
                 </Button>
 
-                {previewDoc.fileDataUrl && (
-                  <a
-                    href={previewDoc.fileDataUrl}
-                    download={previewDoc.fileName || 'document.pdf'}
-                    className="inline-flex items-center gap-1.5 bg-navy hover:bg-navy/90 text-white text-xs font-bold px-4 py-2 rounded-[12px] shadow-sm transition-all"
-                  >
-                    <Download className="w-3.5 h-3.5 text-cyan" />
-                    Download File
-                  </a>
-                )}
+                <div className="flex items-center gap-2">
+                  {previewDoc.fileDataUrl && (
+                    <a
+                      href={previewDoc.fileDataUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-navy text-xs font-bold px-3.5 py-2 rounded-[12px] border border-border transition-all"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-teal" />
+                      Open in New Tab
+                    </a>
+                  )}
+
+                  {previewDoc.fileDataUrl && (
+                    <a
+                      href={previewDoc.fileDataUrl}
+                      download={previewDoc.fileName || 'document.pdf'}
+                      className="inline-flex items-center gap-1.5 bg-navy hover:bg-navy/90 text-white text-xs font-bold px-4 py-2 rounded-[12px] shadow-sm transition-all"
+                    >
+                      <Download className="w-3.5 h-3.5 text-cyan" />
+                      Download File
+                    </a>
+                  )}
+                </div>
               </div>
             </motion.div>
           </div>
