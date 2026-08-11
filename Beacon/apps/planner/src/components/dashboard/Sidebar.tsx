@@ -5,6 +5,7 @@ import { Compass, ChevronLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { navItems } from '@/data/mockData'
 import { cn } from '@/lib/utils'
+import { useAuth } from '@/context/AuthContext'
 
 interface SidebarProps {
   collapsed: boolean
@@ -14,6 +15,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
+  const { kycStatus, isKycVerified, highlightBusinessProfile, clearBusinessProfileHighlight } = useAuth()
   const content = (
     <div className="flex flex-col h-full">
       <div className={cn('flex items-center gap-3 p-4 border-b border-border', collapsed && 'justify-center')}>
@@ -36,26 +38,51 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
             return <hr key={`div-${idx}`} className="border-border/50 my-2 mx-1" />
           }
           const Icon = Icons[item.icon as keyof typeof Icons] as React.ComponentType<{ className?: string }>
+          const isBusinessProfile = item.path === '/dashboard/business-profile'
+          const shouldHighlight = isBusinessProfile && (!isKycVerified || highlightBusinessProfile)
+
           return (
             <NavLink
               key={item.path}
               to={item.path!}
               end={item.path === '/dashboard'}
-              onClick={onMobileClose}
+              onClick={() => {
+                if (isBusinessProfile) {
+                  clearBusinessProfileHighlight()
+                }
+                onMobileClose()
+              }}
               className={({ isActive }) =>
                 cn(
                   'group relative flex items-center gap-3 px-3 py-2.5 rounded-[12px] text-sm font-medium transition-all overflow-hidden',
                   isActive
                     ? 'bg-cyan/10 text-navy glow-cyan-sm after:content-[""] after:absolute after:left-0 after:top-0 after:bottom-0 after:w-[4px] after:bg-cyan'
                     : 'text-muted hover:bg-[#EAF8FD] hover:text-navy',
+                  shouldHighlight && !isActive && 'ring-2 ring-cyan/60 bg-cyan/10 text-navy shadow-lg shadow-cyan/10 animate-pulse',
                   collapsed && 'justify-center px-2'
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  {Icon && <Icon className={cn("w-5 h-5 shrink-0 transition-colors", isActive ? "text-cyan" : "text-muted group-hover:text-teal")} />}
-                  {!collapsed && <span>{item.label}</span>}
+                  {Icon && (
+                    <div className="relative">
+                      <Icon className={cn("w-5 h-5 shrink-0 transition-colors", isActive ? "text-cyan" : shouldHighlight ? "text-cyan" : "text-muted group-hover:text-teal")} />
+                      {shouldHighlight && (
+                        <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                      )}
+                    </div>
+                  )}
+                  {!collapsed && (
+                    <div className="flex items-center justify-between flex-1">
+                      <span>{item.label}</span>
+                      {shouldHighlight && (
+                        <span className="ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-600 border border-amber-500/30">
+                          {kycStatus === 'UNDER_REVIEW' ? 'Reviewing' : 'Verify'}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </>
               )}
             </NavLink>

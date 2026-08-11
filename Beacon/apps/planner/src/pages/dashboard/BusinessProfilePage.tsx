@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   User, Award, MapPin, Building2, Package, Clock, CreditCard, Share2, Settings, ShieldCheck,
   CheckCircle, Circle, Save, Sparkles, Lock, Globe, Mail, Plane, Hotel, Utensils,
-  Car, Shield, FileCheck, FileText, RefreshCw, Phone
+  Car, Shield, FileCheck, FileText, RefreshCw, Phone, CheckCircle2
 } from 'lucide-react'
 import { FaInstagram, FaFacebook, FaYoutube, FaLinkedin, FaTwitter } from 'react-icons/fa'
 import { toast } from 'sonner'
@@ -17,6 +18,7 @@ import { DayPicker } from '@/components/ui/DayPicker'
 import { FileUploader } from '@/components/ui/FileUploader'
 import { formatDate } from '@/lib/utils'
 import { fetchOrganizerProfile, updateOrganizerProfileSection } from '@/services/api'
+import { useAuth } from '@/context/AuthContext'
 
 // Data presets for multi-select components
 const SPECIALIZATION_OPTIONS = [
@@ -34,8 +36,15 @@ const POPULAR_DESTINATIONS_OPTIONS = ['Baa Atoll', 'Kyoto', 'Swiss Alps', 'Bali'
 const PAYMENT_METHOD_OPTIONS = ['Credit / Debit Card', 'Bank Wire Transfer', 'UPI Payments', 'PayPal', 'Installment EMI', 'Cryptocurrency']
 
 export default function BusinessProfilePage() {
+  const [searchParams] = useSearchParams()
+  const { kycStatus, updateKycStatus, clearBusinessProfileHighlight } = useAuth()
   const [loading, setLoading] = useState(true)
-  const [activeStep, setActiveStep] = useState<number>(1)
+  const [activeStep, setActiveStep] = useState<number>(() => {
+    const step = searchParams.get('step')
+    if (step && !isNaN(parseInt(step))) return parseInt(step)
+    if (searchParams.get('tab') === 'verification') return 10
+    return 1
+  })
   const [autoSaving, setAutoSaving] = useState(false)
 
   // Profile Form State across 10 sections
@@ -312,10 +321,21 @@ export default function BusinessProfilePage() {
       uploadedAt: new Date().toISOString().slice(0, 10),
     }
     setDocuments((prev) => [...prev, newDoc])
+    setProfile((prev) => ({ ...prev, verificationProgress: 'UNDER_REVIEW' }))
+    updateKycStatus('UNDER_REVIEW')
+    clearBusinessProfileHighlight()
     setShowUploadModal(false)
     setUploadTitle('')
     setSelectedUploadFile(null)
     toast.success('Verification document submitted. Vault status updated to Under Review.')
+  }
+
+  const handleSimulateApproval = () => {
+    setDocuments((prev) => prev.map(d => ({ ...d, status: 'VERIFIED' as const })))
+    setProfile((prev) => ({ ...prev, verificationProgress: 'VERIFIED', isVerified: true }))
+    updateKycStatus('VERIFIED')
+    clearBusinessProfileHighlight()
+    toast.success('🎉 eKYC Verified & Approved! You can now create and publish travel packages.')
   }
 
   if (loading) {
@@ -1252,14 +1272,43 @@ export default function BusinessProfilePage() {
                     </div>
 
                     {/* Status Alert Footer */}
-                    <div className="p-4 bg-cyan/10 border border-cyan/20 rounded-[16px] text-xs text-cyan flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="p-4 bg-navy-light/80 border border-border/80 rounded-[16px] text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
-                        <span className="font-bold block text-white">Vault Verification Status: 100% VERIFIED & APPROVED</span>
-                        <span className="text-[11px] text-slate-300">All required documents have been verified by Beacon Compliance Team.</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white">
+                            Vault Verification Status: {kycStatus === 'VERIFIED' ? '100% VERIFIED & APPROVED' : kycStatus === 'UNDER_REVIEW' ? 'UNDER REVIEW' : 'PENDING SUBMISSION'}
+                          </span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${
+                            kycStatus === 'VERIFIED'
+                              ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                              : kycStatus === 'UNDER_REVIEW'
+                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                              : 'bg-red-500/20 text-red-300 border-red-500/30'
+                          }`}>
+                            {kycStatus}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-slate-400 mt-1 block">
+                          {kycStatus === 'VERIFIED'
+                            ? 'All required documents have been verified by Beacon Compliance Team. You can create & publish packages.'
+                            : kycStatus === 'UNDER_REVIEW'
+                            ? 'Your documents have been submitted and are being reviewed by the compliance team.'
+                            : 'Upload required documents above to complete your eKYC and unlock package creation.'}
+                        </span>
                       </div>
-                      <span className="text-[10px] font-mono bg-cyan/20 text-cyan px-3 py-1 rounded-full uppercase shrink-0">
-                        Active Partner License
-                      </span>
+
+                      {kycStatus !== 'VERIFIED' && (
+                        <Button
+                          type="button"
+                          onClick={handleSimulateApproval}
+                          size="xs"
+                          glow
+                          className="bg-gradient-to-r from-teal to-cyan text-white font-bold text-[11px] py-1.5 px-3 shrink-0"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5 mr-1" />
+                          Approve eKYC (Demo Mode)
+                        </Button>
+                      )}
                     </div>
                   </Card>
                 </div>

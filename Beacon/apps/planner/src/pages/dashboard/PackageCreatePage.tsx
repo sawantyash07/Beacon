@@ -15,6 +15,7 @@ import { formatCurrency, cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { createPackage } from '@/services/api'
 import { addMockPackage } from '@/data/mockData'
+import { useAuth } from '@/context/AuthContext'
 
 // ----------------------------------------------------------------------
 // 1. PACKAGE EXPERIENCE TYPES CONFIGURATION
@@ -427,9 +428,93 @@ export default function PackageCreatePage() {
 
   const handleSaveDraft = () => {
     localStorage.setItem('beacon_package_draft', JSON.stringify(formData))
-    toast.success('Draft saved successfully to browser storage!')
+    toast.success('Draft saved successfully to browser storage! (Ctrl+S)')
     setDraftSavedAt(new Date().toLocaleTimeString())
   }
+
+  // Bind Itinerary Keyboard Shortcuts
+  useEffect(() => {
+    const handleSaveEvent = () => handleSaveDraft()
+    const handlePreviewToggle = () => {
+      setActiveTabPreview(prev => prev === 'editor' ? 'preview' : 'editor')
+      toast.info('Toggled Itinerary Preview mode (Ctrl+P)')
+    }
+    const handleAddActivity = () => {
+      const updated = [...formData.itineraryDays]
+      if (updated.length > 0) {
+        const last = updated[updated.length - 1]
+        last.activities = [...(last.activities || []), `Guided Sightseeing & Adventure Slot`]
+        setFormData(prev => ({ ...prev, itineraryDays: updated }))
+        toast.success(`Added Activity slot to Day ${last.day} (A)`)
+      }
+    }
+    const handleAddHotel = () => {
+      const updated = [...formData.itineraryDays]
+      if (updated.length > 0) {
+        const last = updated[updated.length - 1]
+        last.stay = '4-Star Premium Resort / Deluxe Camp Check-in'
+        setFormData(prev => ({ ...prev, itineraryDays: updated, accommodationIncluded: true }))
+        toast.success(`Added Hotel Stay to Day ${last.day} (H)`)
+      }
+    }
+    const handleAddTransport = () => {
+      const updated = [...formData.itineraryDays]
+      if (updated.length > 0) {
+        const last = updated[updated.length - 1]
+        last.activities = [...(last.activities || []), `Private AC Transit / Scenic Route Transfer`]
+        setFormData(prev => ({ ...prev, itineraryDays: updated }))
+        toast.success(`Added Transport slot to Day ${last.day} (T)`)
+      }
+    }
+    const handleAddRestaurant = () => {
+      const updated = [...formData.itineraryDays]
+      if (updated.length > 0) {
+        const last = updated[updated.length - 1]
+        last.meals = ['Breakfast', 'Lunch', 'Authentic Dinner Buffet']
+        setFormData(prev => ({ ...prev, itineraryDays: updated }))
+        toast.success(`Added Meals & Dining plan to Day ${last.day} (R)`)
+      }
+    }
+    const handleAddNote = () => {
+      const updated = [...formData.itineraryDays]
+      if (updated.length > 0) {
+        const last = updated[updated.length - 1]
+        last.description = (last.description ? last.description + ' ' : '') + '💡 Note: Wear comfortable hiking shoes and carry hydration pack.'
+        setFormData(prev => ({ ...prev, itineraryDays: updated }))
+        toast.success(`Added Planner Tip / Note to Day ${last.day} (N)`)
+      }
+    }
+    const handleDuplicateDay = () => {
+      const current = [...formData.itineraryDays]
+      if (current.length > 0) {
+        const last = current[current.length - 1]
+        const cloned = { ...last, day: current.length + 1, title: `${last.title} (Continuation)` }
+        const newDays = [...current, cloned]
+        setFormData(prev => ({ ...prev, days: newDays.length, itineraryDays: newDays }))
+        toast.success(`Duplicated Day ${last.day} to Day ${cloned.day} (Shift+D)`)
+      }
+    }
+
+    window.addEventListener('beacon:save', handleSaveEvent)
+    window.addEventListener('beacon:preview-itinerary', handlePreviewToggle)
+    window.addEventListener('beacon:add-activity', handleAddActivity)
+    window.addEventListener('beacon:add-hotel', handleAddHotel)
+    window.addEventListener('beacon:add-transport', handleAddTransport)
+    window.addEventListener('beacon:add-restaurant', handleAddRestaurant)
+    window.addEventListener('beacon:add-note', handleAddNote)
+    window.addEventListener('beacon:duplicate-selected', handleDuplicateDay)
+
+    return () => {
+      window.removeEventListener('beacon:save', handleSaveEvent)
+      window.removeEventListener('beacon:preview-itinerary', handlePreviewToggle)
+      window.removeEventListener('beacon:add-activity', handleAddActivity)
+      window.removeEventListener('beacon:add-hotel', handleAddHotel)
+      window.removeEventListener('beacon:add-transport', handleAddTransport)
+      window.removeEventListener('beacon:add-restaurant', handleAddRestaurant)
+      window.removeEventListener('beacon:add-note', handleAddNote)
+      window.removeEventListener('beacon:duplicate-selected', handleDuplicateDay)
+    }
+  }, [formData])
 
   const handleUpdateForm = (field: keyof PackageFormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -458,7 +543,15 @@ export default function PackageCreatePage() {
     toast.success(`Selected Experience Type: ${EXPERIENCE_TYPES.find(t => t.id === typeId)?.name}`)
   }
 
+  const { isKycVerified } = useAuth()
+
   const handleSubmitPackage = async (finalStatus: 'DRAFT' | 'SUBMITTED') => {
+    if (finalStatus === 'SUBMITTED' && !isKycVerified) {
+      toast.error('eKYC Verification Required! You must complete your Freelancer/Company verification before publishing packages.')
+      navigate('/dashboard/business-profile?step=10')
+      return
+    }
+
     if (readinessScore < 70 && finalStatus === 'SUBMITTED') {
       toast.error('Package is incomplete! Please complete all required sections before submitting.')
       return

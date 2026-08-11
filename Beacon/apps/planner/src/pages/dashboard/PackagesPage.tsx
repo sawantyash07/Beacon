@@ -19,10 +19,23 @@ import { formatCurrency } from '@/lib/utils'
 import { generatePackagePdf } from '@/utils/generatePackagePdf'
 import { generateBlankPackageTemplatePdf } from '@/utils/generateBlankPackageTemplatePdf'
 import { PackageImageGallery } from '@/components/dashboard/PackageImageGallery'
+import { useAuth } from '@/context/AuthContext'
+import { VerificationPromptModal } from '@/components/dashboard/VerificationPromptModal'
 
 export default function PackagesPage() {
   const navigate = useNavigate()
+  const { isKycVerified, kycStatus } = useAuth()
+  const [showVerificationModal, setShowVerificationModal] = useState(false)
   const [packageList, setPackageList] = useState(packages)
+
+  const handleCreateClick = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault()
+    if (!isKycVerified) {
+      setShowVerificationModal(true)
+    } else {
+      navigate('/dashboard/packages/create')
+    }
+  }
 
   // Package Management Center states
   const [activeManagementPkg, setActiveManagementPkg] = useState<typeof packages[0] | null>(null)
@@ -348,13 +361,36 @@ export default function PackagesPage() {
             <span>Download Blank PDF Template</span>
           </Button>
 
-          <Link to="/dashboard/packages/create">
-            <Button glow className="gap-2 font-semibold">
-              <Plus className="w-4 h-4" /> Create Package
+          <Button onClick={handleCreateClick} glow className="gap-2 font-semibold">
+            <Plus className="w-4 h-4" /> Create Package
+          </Button>
+        </div>
+      </div>
+
+      <VerificationPromptModal
+        isOpen={showVerificationModal}
+        onClose={() => setShowVerificationModal(false)}
+        reason="CREATE_PACKAGE_BLOCKED"
+      />
+
+      {!isKycVerified && (
+        <div className="p-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-cyan/10 border border-amber-500/30 rounded-[16px] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-xs font-bold text-navy">Package Creation Restricted (eKYC Verification Required)</h4>
+              <p className="text-[11px] text-muted mt-0.5">
+                To create and publish travel packages for travelers, submit your Freelancer or Company verification documents.
+              </p>
+            </div>
+          </div>
+          <Link to="/dashboard/business-profile?step=10">
+            <Button size="xs" className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 text-white font-bold text-[11px] py-2 px-4 shadow-sm">
+              Complete eKYC →
             </Button>
           </Link>
         </div>
-      </div>
+      )}
 
       {packageList.length === 0 ? (
         <EmptyState
@@ -362,7 +398,7 @@ export default function PackagesPage() {
           title="No packages found"
           description="Create your first travel package and start accepting bookings."
           actionLabel="Create Package"
-          onAction={() => navigate('/dashboard/packages/create')}
+          onAction={() => handleCreateClick()}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

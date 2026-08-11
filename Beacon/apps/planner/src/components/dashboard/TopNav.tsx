@@ -1,19 +1,29 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Bell, Menu, LogOut, User, Settings } from 'lucide-react'
+import { Search, Bell, Menu, LogOut, User, Settings, Bot, Keyboard, Sparkles } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 
 interface TopNavProps {
   onMenuClick: () => void
+  onOpenCommandPalette?: () => void
+  onOpenShortcuts?: () => void
+  onOpenAi?: () => void
 }
 
-export function TopNav({ onMenuClick }: TopNavProps) {
+export function TopNav({
+  onMenuClick,
+  onOpenCommandPalette,
+  onOpenShortcuts,
+  onOpenAi
+}: TopNavProps) {
   const [search, setSearch] = useState('')
   const [showNotifications, setShowNotifications] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0
 
   const notifications = [
     { id: 1, text: 'New inquiry from David Lee', time: '5m ago' },
@@ -33,18 +43,50 @@ export function TopNav({ onMenuClick }: TopNavProps) {
           <Menu className="w-5 h-5 text-navy" />
         </button>
 
-        <div className="flex-1 max-w-xl relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-          <input
-            type="search"
-            placeholder="Search packages, bookings, travelers..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-[12px] border border-border bg-page/50 text-sm focus:outline-none focus:ring-2 focus:ring-cyan/30 focus:border-cyan transition-all"
-          />
+        {/* Search & Command Palette Trigger */}
+        <div
+          onClick={onOpenCommandPalette}
+          className="flex-1 max-w-xl relative cursor-pointer group"
+        >
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted group-hover:text-cyan transition-colors" />
+          <div className="w-full pl-10 pr-24 py-2 rounded-[12px] border border-border bg-page/50 group-hover:bg-white text-sm text-muted flex items-center justify-between transition-all">
+            <span className="truncate">Search packages, bookings, travelers...</span>
+            <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white border border-border/80 text-[10px] font-mono text-muted shadow-2xs">
+              <kbd>{isMac ? '⌘' : 'Ctrl'}</kbd> + <kbd>K</kbd>
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Ask Beacon AI Quick Button */}
+          {onOpenAi && (
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={onOpenAi}
+              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[10px] bg-gradient-to-r from-teal/10 to-cyan/15 hover:from-teal/20 hover:to-cyan/25 border border-cyan/30 text-navy font-semibold text-xs transition-all shadow-xs"
+              title="Ask Beacon AI Copilot (Ctrl+J)"
+            >
+              <Bot className="w-4 h-4 text-cyan" />
+              <span>Ask AI</span>
+              <kbd className="hidden lg:inline-block px-1.5 py-0.2 bg-white/80 border border-cyan/30 rounded text-[9px] font-mono text-muted">
+                {isMac ? '⌘J' : 'Ctrl+J'}
+              </kbd>
+            </motion.button>
+          )}
+
+          {/* Keyboard Shortcuts Cheatsheet Button */}
+          {onOpenShortcuts && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              onClick={onOpenShortcuts}
+              className="p-2 rounded-[10px] hover:bg-border/50 text-navy/70 hover:text-navy"
+              title="Keyboard Shortcuts (Ctrl+/)"
+              aria-label="Keyboard Shortcuts"
+            >
+              <Keyboard className="w-5 h-5" />
+            </motion.button>
+          )}
           {/* Notifications */}
           <div className="relative">
             <motion.button

@@ -5,6 +5,7 @@ export interface User {
   email: string;
   name: string;
   role: string;
+  kycStatus?: 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED';
 }
 
 interface AuthResponse {

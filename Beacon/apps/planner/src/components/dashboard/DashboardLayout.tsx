@@ -5,6 +5,10 @@ import { Sidebar } from './Sidebar'
 import { TopNav } from './TopNav'
 import { X, ArrowRight } from 'lucide-react'
 import { toast } from 'sonner'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { KeyboardShortcutsModal } from './KeyboardShortcutsModal'
+import { CommandPaletteModal } from './CommandPaletteModal'
+import { BeaconAiModal } from './BeaconAiModal'
 
 interface PaymentAlarm {
   id: string
@@ -22,7 +26,23 @@ export function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [alarms, setAlarms] = useState<PaymentAlarm[]>([])
+  const [showShortcutsModal, setShowShortcutsModal] = useState(false)
+  const [showCommandPalette, setShowCommandPalette] = useState(false)
+  const [showAiModal, setShowAiModal] = useState(false)
   const navigate = useNavigate()
+
+  // Register Global Keyboard Shortcuts
+  useKeyboardShortcuts({
+    onOpenCommandPalette: () => setShowCommandPalette(true),
+    onOpenShortcutsModal: () => setShowShortcutsModal(true),
+    onOpenAiModal: () => setShowAiModal(true),
+    onNewTrip: () => navigate('/dashboard/packages/create'),
+    onClose: () => {
+      setShowCommandPalette(false)
+      setShowShortcutsModal(false)
+      setShowAiModal(false)
+    }
+  })
 
   useEffect(() => {
     // Expose window.triggerTestAlarm globally for easy demo verification in Planner console
@@ -129,7 +149,12 @@ export function DashboardLayout() {
         onMobileClose={() => setMobileOpen(false)}
       />
       <div className="flex-1 flex flex-col min-w-0">
-        <TopNav onMenuClick={() => setMobileOpen(true)} />
+        <TopNav
+          onMenuClick={() => setMobileOpen(true)}
+          onOpenCommandPalette={() => setShowCommandPalette(true)}
+          onOpenShortcuts={() => setShowShortcutsModal(true)}
+          onOpenAi={() => setShowAiModal(true)}
+        />
         <motion.main
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -139,6 +164,24 @@ export function DashboardLayout() {
           <Outlet />
         </motion.main>
       </div>
+
+      {/* Keyboard Modals */}
+      <CommandPaletteModal
+        isOpen={showCommandPalette}
+        onClose={() => setShowCommandPalette(false)}
+        onOpenShortcuts={() => setShowShortcutsModal(true)}
+        onOpenAi={() => setShowAiModal(true)}
+      />
+
+      <KeyboardShortcutsModal
+        isOpen={showShortcutsModal}
+        onClose={() => setShowShortcutsModal(false)}
+      />
+
+      <BeaconAiModal
+        isOpen={showAiModal}
+        onClose={() => setShowAiModal(false)}
+      />
 
       {/* Real-time B2B Payment Alarm Overlay Container */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-4 max-w-sm w-full pointer-events-none">

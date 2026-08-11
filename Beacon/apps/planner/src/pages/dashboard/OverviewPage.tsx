@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import * as Icons from 'lucide-react'
 import { 
   Home, Mail, Package, Calendar, CreditCard, Users, Plane, 
   BarChart3, Star, Share2, Building2, Settings, Sparkles, CheckSquare, 
   ArrowRight, ShieldCheck, MessageSquare, AlertCircle, PlusCircle, Check,
-  Bus
+  Bus, ShieldAlert
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -16,11 +16,15 @@ import { formatRelativeTime, formatCurrency } from '@/lib/utils'
 import { toast } from 'sonner'
 import { fetchStats, fetchOrganizerProfile } from '@/services/api'
 import { useAuth } from '@/context/AuthContext'
+import { VerificationPromptModal } from '@/components/dashboard/VerificationPromptModal'
 
 export default function OverviewPage() {
-  const { user } = useAuth()
+  const navigate = useNavigate()
+  const { user, kycStatus, isKycVerified } = useAuth()
   const [verifiedPayments, setVerifiedPayments] = useState<string[]>([])
   const [paymentActive, setPaymentActive] = useState<boolean>(true)
+  const [showVerificationModal, setShowVerificationModal] = useState<boolean>(false)
+  const [modalReason, setModalReason] = useState<'POST_LOGIN' | 'CREATE_PACKAGE_BLOCKED'>('POST_LOGIN')
   const [stats, setStats] = useState<any>({
     packages: 0,
     bookings: 0,
@@ -30,6 +34,19 @@ export default function OverviewPage() {
     monthlyEarnings: 0
   })
   const [loading, setLoading] = useState(true)
+
+  // Trigger post-login popup if eKYC is incomplete and not yet shown this session
+  useEffect(() => {
+    if (user && !isKycVerified) {
+      const storageKey = `beacon_modal_shown_${user.email || user.id}`
+      const hasBeenShown = sessionStorage.getItem(storageKey)
+      if (!hasBeenShown) {
+        setModalReason('POST_LOGIN')
+        setShowVerificationModal(true)
+        sessionStorage.setItem(storageKey, 'true')
+      }
+    }
+  }, [user, isKycVerified])
 
   useEffect(() => {
     const loadStats = async () => {
@@ -65,8 +82,24 @@ export default function OverviewPage() {
     toast.success(`Payment of ${amount} verified and approved successfully!`)
   }
 
+  const handleCreatePackageAction = (e: React.MouseEvent) => {
+    if (!isKycVerified) {
+      e.preventDefault()
+      setModalReason('CREATE_PACKAGE_BLOCKED')
+      setShowVerificationModal(true)
+    } else {
+      navigate('/dashboard/packages/create')
+    }
+  }
+
   return (
     <div className="space-y-6">
+      {/* Verification Prompt Modal */}
+      <VerificationPromptModal
+        isOpen={showVerificationModal}
+        onClose={() => setShowVerificationModal(false)}
+        reason={modalReason}
+      />
       
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -77,16 +110,45 @@ export default function OverviewPage() {
           <p className="text-muted text-sm mt-1">Welcome back! Here is your daily operational priority list.</p>
         </div>
         <div className="flex gap-2">
-          <Link to="/dashboard/packages/create">
-            <Button glow size="sm">
-              <PlusCircle className="w-4 h-4 mr-1.5" /> Create Package
-            </Button>
-          </Link>
+          <Button onClick={handleCreatePackageAction} glow size="sm">
+            <PlusCircle className="w-4 h-4 mr-1.5" /> Create Package
+          </Button>
         </div>
       </div>
 
+      {/* KYC Incomplete Banner */}
+      {!isKycVerified && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-cyan/10 border border-amber-500/30 rounded-[16px] flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm"
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-[10px] bg-amber-500/20 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+              <ShieldAlert className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-xs font-bold text-navy">eKYC & Document Verification Pending</h4>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-700 uppercase tracking-wider">
+                  {kycStatus === 'UNDER_REVIEW' ? 'Under Review' : 'Action Required'}
+                </span>
+              </div>
+              <p className="text-[11px] text-muted mt-0.5">
+                Complete your identity and business document verification to unlock package publishing, verified badge, and direct traveler payouts.
+              </p>
+            </div>
+          </div>
+          <Link to="/dashboard/business-profile?step=10">
+            <Button size="xs" className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-[11px] tracking-wide py-2 px-4 shadow-sm">
+              Complete eKYC Now →
+            </Button>
+          </Link>
+        </motion.div>
+      )}
+
       {/* Warning Alert Banner */}
-      {!paymentActive && (
+      {isKycVerified && !paymentActive && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -178,10 +240,14 @@ export default function OverviewPage() {
           <Card className="p-5 border border-border">
             <h3 className="font-bold text-navy text-sm mb-4">Quick Actions</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <Link to="/dashboard/packages/create" className="flex flex-col items-center justify-center p-3.5 rounded-[12px] border border-border hover:border-teal/30 hover:bg-teal/5 transition-all text-center group">
+              <button
+                type="button"
+                onClick={handleCreatePackageAction}
+                className="flex flex-col items-center justify-center p-3.5 rounded-[12px] border border-border hover:border-teal/30 hover:bg-teal/5 transition-all text-center group cursor-pointer"
+              >
                 <Package className="w-5 h-5 text-teal mb-2 group-hover:scale-105 transition-transform" />
                 <span className="text-xs font-semibold text-navy">New Package</span>
-              </Link>
+              </button>
               <Link to="/dashboard/inquiries" className="flex flex-col items-center justify-center p-3.5 rounded-[12px] border border-border hover:border-teal/30 hover:bg-teal/5 transition-all text-center group">
                 <Mail className="w-5 h-5 text-teal mb-2 group-hover:scale-105 transition-transform" />
                 <span className="text-xs font-semibold text-navy">View Enquiries</span>
