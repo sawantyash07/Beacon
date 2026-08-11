@@ -812,7 +812,17 @@ export function MasterAdminProvider({ children }: { children: ReactNode }) {
   const [kpiMetrics, setKpiMetrics] = useState<KpiMetrics>(initialKpiMetrics);
   const [activityStream, setActivityStream] = useState<ActivityEvent[]>(initialActivityStream);
   const [riskAlerts, setRiskAlerts] = useState<RiskAlert[]>(initialRiskAlerts);
-  const [planners, setPlanners] = useState<Planner[]>(initialPlanners);
+  const [planners, setPlanners] = useState<Planner[]>(() => {
+    const saved = localStorage.getItem('master_planners');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return initialPlanners;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('master_planners', JSON.stringify(planners));
+  }, [planners]);
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [packages, setPackages] = useState<Package[]>(initialPackages);
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
@@ -1241,6 +1251,80 @@ export function MasterAdminProvider({ children }: { children: ReactNode }) {
       {children}
     </MasterAdminContext.Provider>
   );
+}
+
+/**
+ * Directly submits or updates a planner's KYC profile application to Master Admin's Verification Center.
+ */
+export function submitPlannerApplicationToMaster(profile: any, documents: any[]) {
+  const storageKey = 'master_planners';
+  let currentList: Planner[] = initialPlanners;
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (raw) currentList = JSON.parse(raw);
+  } catch (e) {}
+
+  const plannerId = profile.id || `pl-${(profile.email || 'planner').replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+  const mappedDocs: VerificationDocument[] = (documents || []).map(d => ({
+    name: d.title || d.fileName,
+    type: (d.documentType?.includes('PAN') ? 'PAN' : d.documentType?.includes('GST') ? 'GST' : d.documentType?.includes('Aadhaar') ? 'Aadhaar' : d.documentType?.includes('Bank') ? 'Bank Passbook' : d.documentType?.includes('Address') ? 'Address Proof' : 'Tourism License') as any,
+    url: d.fileDataUrl || 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80',
+    status: 'PENDING'
+  }));
+
+  const newOrUpdatedPlanner: Planner = {
+    id: plannerId,
+    agencyName: profile.displayName || profile.companyName || 'Registered Agency',
+    ownerName: profile.personalName || profile.legalName || profile.displayName || 'Authorized Representative',
+    email: profile.email || 'planner@beacon.com',
+    phone: profile.phone || '+91 9876543210',
+    status: 'UNVERIFIED',
+    tier: profile.partnerLevel?.toUpperCase().includes('GOLD') ? 'GOLD' : 'STARTER',
+    revenue: 0,
+    bookings: 0,
+    rating: 5.0,
+    cancellationRate: 0,
+    refundRate: 0,
+    complaintsCount: 0,
+    riskScore: 5,
+    documents: mappedDocs.length > 0 ? mappedDocs : [
+      { name: 'PAN Card Copy', type: 'PAN', url: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80', status: 'PENDING' },
+      { name: 'Bank Passbook / Cheque', type: 'Bank Passbook', url: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80', status: 'PENDING' },
+      { name: 'Identity Proof', type: 'Aadhaar', url: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80', status: 'PENDING' }
+    ],
+    bankAccount: {
+      holder: profile.bankAccountName || profile.displayName || 'Authorized Account',
+      number: profile.bankAccountNumber || '987654321098',
+      ifsc: profile.ifscOrSwiftCode || 'HDFC0000123',
+      bankName: profile.bankName || 'HDFC Bank'
+    },
+    payoutsFrozen: false,
+    packagesHidden: false,
+    notes: `Submitted for Indian Verification by ${profile.displayName} on ${new Date().toLocaleDateString()}. Partner Type: ${profile.partnerType || 'COMPANY'}. Operating State: ${profile.state || 'India'}. UPI: ${profile.upiOrPaypalId || 'N/A'}`
+  };
+
+  const filtered = currentList.filter(p => p.id !== plannerId && p.email !== profile.email);
+  const updatedList = [newOrUpdatedPlanner, ...filtered];
+  localStorage.setItem(storageKey, JSON.stringify(updatedList));
+
+  // Log activity in Master Admin feed
+  try {
+    const rawEvents = localStorage.getItem('master_activity_stream');
+    const stream = rawEvents ? JSON.parse(rawEvents) : [];
+    stream.unshift({
+      id: `act-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      type: 'user',
+      title: 'New Verification Submitted',
+      description: `${profile.displayName} submitted KYC documents for Master Admin verification.`,
+      user: profile.displayName,
+      severity: 'medium'
+    });
+    localStorage.setItem('master_activity_stream', JSON.stringify(stream));
+  } catch (e) {}
+
+  return newOrUpdatedPlanner;
 }
 
 export function useMasterAdmin() {

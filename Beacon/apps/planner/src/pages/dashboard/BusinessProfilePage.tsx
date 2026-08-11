@@ -5,7 +5,7 @@ import {
   User, Award, Building2, CreditCard, ShieldCheck,
   Save, Sparkles, Lock, Globe, Mail,
   Shield, FileCheck, FileText, Phone, CheckCircle2, Check,
-  AlertCircle, ChevronRight, CheckCircle, Info, Eye, UploadCloud, Download, X, Trash2, ExternalLink
+  AlertCircle, ChevronRight, CheckCircle, Info, Eye, UploadCloud, Download, X, Trash2, ExternalLink, Send, ArrowRight, ArrowLeft
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/Card'
@@ -17,6 +17,7 @@ import { FileUploader } from '@/components/ui/FileUploader'
 import { formatDate } from '@/lib/utils'
 import { fetchOrganizerProfile, updateOrganizerProfileSection } from '@/services/api'
 import { useAuth } from '@/context/AuthContext'
+import { submitPlannerApplicationToMaster } from '@/data/masterAdminData'
 import {
   validateAadhaar,
   validatePAN,
@@ -273,6 +274,38 @@ export default function BusinessProfilePage() {
     localStorage.setItem(storageKey, JSON.stringify(updated))
   }
 
+  // Verification Review Preview Modal & Master Submission State
+  const [showVerificationPreviewModal, setShowVerificationPreviewModal] = useState(false)
+  const [submittingToMaster, setSubmittingToMaster] = useState(false)
+
+  // Submit profile & documents to Beacon Master Admin
+  const handleSendToMaster = async () => {
+    setSubmittingToMaster(true)
+    try {
+      // 1. Submit application into Master Admin Verification Queue
+      submitPlannerApplicationToMaster(profile, documents)
+
+      // 2. Update local profile state & storage
+      const updated = {
+        ...profile,
+        isVerified: false,
+        verificationProgress: 'UNDER_REVIEW' as const
+      }
+      setProfile(updated)
+      saveProfileLocally(updated)
+      updateKycStatus('UNDER_REVIEW')
+      localStorage.setItem(`beacon_kyc_status_${user?.email || 'default'}`, 'UNDER_REVIEW')
+
+      setShowVerificationPreviewModal(false)
+      toast.success('🚀 Application Sent to Master Admin! Your KYC profile and documents are now under review.')
+      navigate('/dashboard')
+    } catch (e) {
+      toast.error('Could not submit application. Please try again.')
+    } finally {
+      setSubmittingToMaster(false)
+    }
+  }
+
   // Auto-Save integration in background silently
   const triggerAutoSave = async (_sectionName: string, sectionKey: string = 'general') => {
     setAutoSaving(true)
@@ -385,8 +418,7 @@ export default function BusinessProfilePage() {
       setActiveStep(prev => prev + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
-      toast.success('🎉 Business Profile saved and updated successfully!')
-      navigate('/dashboard')
+      setShowVerificationPreviewModal(true)
     }
   }
 
@@ -1456,25 +1488,64 @@ export default function BusinessProfilePage() {
                 <span className="font-semibold text-teal">{steps[activeStep - 1]?.title}</span>
               </div>
 
-              <Button
-                type="button"
-                variant="primary"
-                size="md"
-                onClick={handleNextStep}
-                className="w-full sm:w-auto bg-gradient-to-r from-teal to-cyan text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                {activeStep < steps.length ? (
+              <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
+                {activeStep === 4 ? (
                   <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="md"
+                      onClick={() => {
+                        triggerAutoSave(steps[activeStep - 1]?.title)
+                        setActiveStep(5)
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      }}
+                      className="font-bold text-xs px-4 py-2.5 rounded-[12px] border-border text-navy hover:bg-slate-100 cursor-pointer shadow-xs"
+                    >
+                      <span>Skip to Profile Track</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="md"
+                      onClick={() => {
+                        triggerAutoSave(steps[activeStep - 1]?.title)
+                        setShowVerificationPreviewModal(true)
+                      }}
+                      className="bg-gradient-to-r from-teal to-cyan text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <ShieldCheck className="w-4 h-4" />
+                      <span>Save & Send for Verification</span>
+                    </Button>
+                  </>
+                ) : activeStep === 5 ? (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="md"
+                    onClick={() => {
+                      triggerAutoSave(steps[activeStep - 1]?.title)
+                      setShowVerificationPreviewModal(true)
+                    }}
+                    className="w-full sm:w-auto bg-gradient-to-r from-teal via-cyan to-navy text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Save & Send for Verification</span>
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="md"
+                    onClick={handleNextStep}
+                    className="w-full sm:w-auto bg-gradient-to-r from-teal to-cyan text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
                     <span>Save & Next Step</span>
                     <span className="text-sm font-bold">→</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Save & Return to Dashboard</span>
-                    <span>🎉</span>
-                  </>
+                  </Button>
                 )}
-              </Button>
+              </div>
             </div>
           </>
         )}
@@ -1664,6 +1735,282 @@ export default function BusinessProfilePage() {
                     </a>
                   )}
                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* WHOLE PROFILE PREVIEW & MASTER VERIFICATION SUBMISSION MODAL */}
+        {showVerificationPreviewModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowVerificationPreviewModal(false)}
+              className="fixed inset-0 bg-navy/80 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 20 }}
+              className="relative w-full max-w-4xl bg-surface border border-border rounded-[24px] p-6 sm:p-8 shadow-2xl space-y-6 z-10 max-h-[90vh] flex flex-col my-auto"
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between border-b border-border pb-4 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-teal/15 text-teal flex items-center justify-center font-bold">
+                    <ShieldCheck className="w-6 h-6 text-teal" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-extrabold text-navy text-base sm:text-lg">
+                        Application Verification Preview
+                      </h3>
+                      <span className="text-[10px] font-bold text-teal bg-teal/10 border border-teal/30 px-2.5 py-0.5 rounded-full">
+                        Ready for Master Review
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted mt-0.5">
+                      Review all your KYC details before sending to Beacon Master Admin for verification.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowVerificationPreviewModal(false)}
+                  className="text-muted hover:text-navy cursor-pointer p-1.5 rounded-xl hover:bg-slate-100 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Scrollable Preview Content */}
+              <div className="flex-1 overflow-y-auto space-y-5 pr-1">
+                
+                {/* 1. Entity & Brand Identity */}
+                <div className="bg-slate-50 border border-border rounded-[18px] p-4 sm:p-5 space-y-3">
+                  <div className="flex items-center justify-between border-b border-border/70 pb-2">
+                    <h4 className="text-xs font-extrabold text-navy uppercase tracking-wider flex items-center gap-2">
+                      <User className="w-4 h-4 text-teal" /> 1. Firm & Brand Information
+                    </h4>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-navy text-white">
+                      {profile.partnerType === 'COMPANY' ? 'Travel Company / Firm' : 'Individual Freelance Planner'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                    <div>
+                      <span className="text-muted block text-[11px]">Brand / Display Name</span>
+                      <strong className="text-navy font-bold">{profile.displayName || '—'}</strong>
+                    </div>
+                    {profile.partnerType === 'FREELANCER' && (
+                      <div>
+                        <span className="text-muted block text-[11px]">Planner Personal Name</span>
+                        <strong className="text-navy font-bold">{profile.personalName || '—'}</strong>
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-muted block text-[11px]">Primary Mobile</span>
+                      <strong className="text-navy font-bold">{profile.phone || '—'}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted block text-[11px]">Business Email</span>
+                      <strong className="text-navy font-bold">{profile.email || user?.email || '—'}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted block text-[11px]">Operating Location</span>
+                      <strong className="text-navy font-bold">{profile.city ? `${profile.city}, ${profile.state || 'India'}` : 'India'}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted block text-[11px]">WhatsApp Support</span>
+                      <strong className="text-navy font-bold">{profile.whatsapp || '—'}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Legal & Tax Identity Credentials */}
+                <div className="bg-slate-50 border border-border rounded-[18px] p-4 sm:p-5 space-y-3">
+                  <div className="flex items-center justify-between border-b border-border/70 pb-2">
+                    <h4 className="text-xs font-extrabold text-navy uppercase tracking-wider flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-teal" /> 2. Legal & Tax Credentials (KYC Gate)
+                    </h4>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      Validated Format
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                    <div>
+                      <span className="text-muted block text-[11px]">Legal Registered Name</span>
+                      <strong className="text-navy font-bold">{profile.legalName || profile.displayName || '—'}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted block text-[11px]">PAN Card Number</span>
+                      <strong className="text-navy font-mono font-bold tracking-wider">{profile.panNumber || '—'}</strong>
+                    </div>
+                    {profile.partnerType === 'COMPANY' ? (
+                      <>
+                        <div>
+                          <span className="text-muted block text-[11px]">CIN / LLPIN / Reg. Number</span>
+                          <strong className="text-navy font-mono font-bold">{profile.cinOrLlpin || '—'}</strong>
+                        </div>
+                        <div>
+                          <span className="text-muted block text-[11px]">GSTIN Status</span>
+                          <strong className="text-navy font-mono font-bold">
+                            {profile.isGstExempt ? 'Exempt (Turnover < ₹20L)' : profile.gstin || 'Not Provided'}
+                          </strong>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <span className="text-muted block text-[11px]">Aadhaar eKYC (Masked)</span>
+                          <strong className="text-navy font-mono font-bold">
+                            {profile.aadhaarNumber ? maskAadhaar(profile.aadhaarNumber) : '—'}
+                          </strong>
+                        </div>
+                        <div>
+                          <span className="text-muted block text-[11px]">Voter ID (EPIC) Number</span>
+                          <strong className="text-navy font-mono font-bold">{profile.voterIdNumber || '—'}</strong>
+                        </div>
+                      </>
+                    )}
+                    <div className="sm:col-span-2">
+                      <span className="text-muted block text-[11px]">Operating Address & PIN</span>
+                      <strong className="text-navy font-medium">
+                        {profile.registeredOfficeAddress || profile.address || '—'} {profile.pinCode ? `(PIN: ${profile.pinCode})` : ''}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Banking & Settlement Rail */}
+                <div className="bg-slate-50 border border-border rounded-[18px] p-4 sm:p-5 space-y-3">
+                  <div className="flex items-center justify-between border-b border-border/70 pb-2">
+                    <h4 className="text-xs font-extrabold text-navy uppercase tracking-wider flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-teal" /> 3. Banking & Payout Settlement
+                    </h4>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-cyan/10 text-navy border border-cyan/30">
+                      INR Rail (₹)
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                    <div>
+                      <span className="text-muted block text-[11px]">Beneficiary Name</span>
+                      <strong className="text-navy font-bold">{profile.bankAccountName || '—'}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted block text-[11px]">Account Number</span>
+                      <strong className="text-navy font-mono font-bold">
+                        {profile.bankAccountNumber ? `••••${profile.bankAccountNumber.slice(-4)}` : '—'}
+                      </strong>
+                    </div>
+                    <div>
+                      <span className="text-muted block text-[11px]">Bank IFSC Code</span>
+                      <strong className="text-navy font-mono font-bold">{profile.ifscOrSwiftCode || '—'}</strong>
+                    </div>
+                    <div>
+                      <span className="text-muted block text-[11px]">Primary UPI ID</span>
+                      <strong className="text-navy font-bold text-teal">{profile.upiOrPaypalId || '—'}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. Uploaded Verification Documents */}
+                <div className="bg-slate-50 border border-border rounded-[18px] p-4 sm:p-5 space-y-3">
+                  <div className="flex items-center justify-between border-b border-border/70 pb-2">
+                    <h4 className="text-xs font-extrabold text-navy uppercase tracking-wider flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-teal" /> 4. Attached Verification Documents ({documents.length})
+                    </h4>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      Encrypted Vault
+                    </span>
+                  </div>
+                  {documents.length === 0 ? (
+                    <p className="text-xs text-amber-700 font-medium">⚠️ No verification files attached yet. You can attach proofs in Step 4.</p>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {documents.map((doc) => (
+                        <div key={doc.id} className="p-2.5 bg-white border border-border rounded-[14px] flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <FileCheck className="w-4 h-4 text-teal shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold text-navy truncate">{doc.title}</p>
+                              <p className="text-[10px] text-muted truncate">{doc.fileName}</p>
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full shrink-0 border border-emerald-200">
+                            ✓ Attached
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* 5. Specializations & Bio Preview */}
+                {(profile.specializations?.length || profile.languages?.length || profile.whyChooseMe) && (
+                  <div className="bg-slate-50 border border-border rounded-[18px] p-4 sm:p-5 space-y-3">
+                    <h4 className="text-xs font-extrabold text-navy uppercase tracking-wider flex items-center gap-2 border-b border-border/70 pb-2">
+                      <Award className="w-4 h-4 text-teal" /> 5. Specializations & Public Profile
+                    </h4>
+                    <div className="space-y-2 text-xs">
+                      {profile.specializations?.length > 0 && (
+                        <div>
+                          <span className="text-muted block text-[11px] mb-1">Tour Specializations:</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {profile.specializations.map((s: string) => (
+                              <span key={s} className="px-2.5 py-0.5 bg-white border border-border rounded-full text-navy font-semibold text-[11px]">
+                                {s}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {profile.whyChooseMe && (
+                        <div className="pt-1">
+                          <span className="text-muted block text-[11px]">Why Travelers Choose Me:</span>
+                          <p className="text-navy font-medium italic mt-0.5 text-xs bg-white p-2.5 rounded-[12px] border border-border">
+                            "{profile.whyChooseMe}"
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* TWO BOTTOM OPTIONS: 1) Back & Edit  2) Send for Verification */}
+              <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-4 border-t border-border shrink-0">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="md"
+                  onClick={() => setShowVerificationPreviewModal(false)}
+                  className="w-full sm:w-auto font-bold text-xs px-6 py-2.5 rounded-[12px] border-border text-navy hover:bg-slate-100 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="w-4 h-4 text-muted" />
+                  <span>Back & Edit</span>
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="md"
+                  disabled={submittingToMaster}
+                  onClick={handleSendToMaster}
+                  className="w-full sm:w-auto bg-gradient-to-r from-teal via-cyan to-navy text-white font-extrabold text-xs px-7 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  {submittingToMaster ? (
+                    <span>Submitting to Master Admin...</span>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Send for Verification</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
+                </Button>
               </div>
             </motion.div>
           </div>
