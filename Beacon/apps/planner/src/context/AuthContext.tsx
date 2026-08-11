@@ -149,30 +149,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-ocean-gradient flex flex-col items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-[200vw] h-[200vw] sm:w-[100vw] sm:h-[100vw] rounded-[40%] bg-white/5 border border-white/10"
-              style={{ left: '-50%', top: '50%' }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 15 + i * 5, repeat: Infinity, ease: 'linear' }}
-            />
-          ))}
-        </div>
-        
-        <div className="relative z-10 flex flex-col items-center">
-          <motion.div animate={{ rotate: 360 }} transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}>
-            <Compass className="w-16 h-16 text-cyan glow-cyan-sm mb-6" />
-          </motion.div>
-          <motion.h2 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-xl font-bold text-white tracking-wider"
-          >
-            Preparing your journey...
-          </motion.h2>
+      <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-3">
+          <img src="/planner/beacon-logo.png" alt="Beacon" className="h-10 w-auto object-contain animate-pulse" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+          <div className="w-6 h-6 border-2 border-cyan/20 border-t-cyan rounded-full animate-spin" />
         </div>
       </div>
     )

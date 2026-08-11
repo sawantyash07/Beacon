@@ -112,8 +112,13 @@ export default function SignUpPage() {
         className="w-full max-w-lg relative z-10 my-8"
       >
         <div className="text-center mb-6">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <Compass className="w-10 h-10 text-cyan glow-cyan-sm" />
+          <Link to="/" className="inline-flex items-center gap-2 mb-4 group">
+            <img
+              src="/planner/beacon-logo.png"
+              alt="Beacon Logo"
+              className="h-10 w-auto object-contain drop-shadow-md group-hover:scale-105 transition-transform"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
           </Link>
           <h1 className="text-2xl font-extrabold text-white tracking-tight">Become a Beacon Partner</h1>
           <p className="text-white/70 text-sm mt-1">Quick 2-step account setup for travel organizers</p>

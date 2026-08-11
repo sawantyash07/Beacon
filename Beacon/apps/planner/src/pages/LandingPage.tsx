@@ -163,10 +163,13 @@ export default function LandingPage() {
           : 'bg-transparent py-6'
       }`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-full bg-cyan/15 flex items-center justify-center border border-cyan/20 group-hover:scale-105 transition-transform duration-300">
-              <Compass className="w-5 h-5 text-cyan animate-pulse-glow" />
-            </div>
+          <Link to="/" className="flex items-center gap-3 group">
+            <img
+              src="/planner/beacon-logo.png"
+              alt="Beacon Logo"
+              className="h-8 w-auto object-contain group-hover:scale-105 transition-transform"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
             <span className="text-lg font-bold tracking-tight text-white font-[family-name:var(--font-heading)]">
               Beacon <span className="text-cyan font-medium">Planner</span>
             </span>

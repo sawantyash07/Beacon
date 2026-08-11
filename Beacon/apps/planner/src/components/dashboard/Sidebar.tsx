@@ -19,8 +19,13 @@ export function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: Side
   const content = (
     <div className="flex flex-col h-full">
       <div className={cn('flex items-center gap-3 p-4 border-b border-border', collapsed && 'justify-center')}>
-        <Link to="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <Compass className="w-7 h-7 text-teal shrink-0" />
+        <Link to="/dashboard" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+          <img
+            src="/planner/beacon-logo.png"
+            alt="Beacon"
+            className="h-7 w-auto object-contain shrink-0"
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+          />
           {!collapsed && <span className="text-lg font-bold text-navy">Beacon Planner</span>}
         </Link>
         <button
