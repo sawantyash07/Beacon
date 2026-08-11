@@ -839,7 +839,7 @@ export default function BusinessProfilePage() {
                       setProfile((prev) => ({ ...prev, specializations: selected }))
                       triggerAutoSave('Specializations')
                     }}
-                    placeholder="Search or add specializations..."
+                    placeholder="Search or add specializations... (e.g. Trekking, Luxury Travel, Honeymoon)"
                   />
 
                   <MultiSelectChips
@@ -850,7 +850,7 @@ export default function BusinessProfilePage() {
                       setProfile((prev) => ({ ...prev, languages: selected }))
                       triggerAutoSave('Languages')
                     }}
-                    placeholder="Search languages..."
+                    placeholder="Search or add languages... (e.g. English, Hindi, Marathi)"
                   />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -863,6 +863,7 @@ export default function BusinessProfilePage() {
                     <Input
                       label="Preferred Group Sizes Handled"
                       value={profile.groupSizes.join(', ')}
+                      placeholder="e.g. Solo, Couples, Small Groups (2-8), Corporate"
                       onChange={(e) => setProfile((prev) => ({ ...prev, groupSizes: e.target.value.split(',').map(s => s.trim()) }))}
                     />
                   </div>
@@ -896,6 +897,7 @@ export default function BusinessProfilePage() {
                       setProfile((prev) => ({ ...prev, countriesServed: selected }))
                       triggerAutoSave('Countries')
                     }}
+                    placeholder="Search or add countries... (e.g. India, Japan, Maldives)"
                   />
 
                   <MultiSelectChips
@@ -906,6 +908,7 @@ export default function BusinessProfilePage() {
                       setProfile((prev) => ({ ...prev, popularDestinations: selected }))
                       triggerAutoSave('Destinations')
                     }}
+                    placeholder="Search or add destinations... (e.g. Manali, Bali, Goa)"
                   />
 
                   <Input
