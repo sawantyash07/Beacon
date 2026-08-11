@@ -110,6 +110,15 @@ export default function LoginPage() {
         </div>
 
         <div className="bg-[#0B1528]/90 border border-white/10 rounded-[20px] p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+          {/* Tabs */}
+          <div className="flex bg-[#020617] rounded-lg p-1 mb-8">
+            <Link to="/login" className="flex-1 text-center py-2 text-sm font-semibold rounded-md bg-white/10 text-white shadow">
+              Log in
+            </Link>
+            <Link to="/signup" className="flex-1 text-center py-2 text-sm font-semibold rounded-md text-white/50 hover:text-white transition-colors">
+              Sign up
+            </Link>
+          </div>
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
@@ -184,7 +193,7 @@ export default function LoginPage() {
           </Button>
 
           <p className="text-center text-xs text-white/60 mt-5">
-            Don't have an account?{' '}
+            New here?{' '}
             <Link to="/signup" className="text-cyan font-bold hover:underline transition-colors">
               Sign up
             </Link>
