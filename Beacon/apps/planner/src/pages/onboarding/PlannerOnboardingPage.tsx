@@ -14,8 +14,18 @@ import { toast } from 'sonner'
 export default function PlannerOnboardingPage() {
   const { user, kycStatus, updateKycStatus, logout } = useAuth()
   const navigate = useNavigate()
-  const [activeStep, setActiveStep] = useState(1)
+  const [activeStep, setActiveStep] = useState<number>(() => {
+    const savedStep = localStorage.getItem(`beacon_active_step_${user?.email || 'default'}`)
+    if (savedStep && !isNaN(parseInt(savedStep))) return parseInt(savedStep)
+    return 1
+  })
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (user?.email && activeStep >= 1 && activeStep <= 10) {
+      localStorage.setItem(`beacon_active_step_${user.email}`, activeStep.toString())
+    }
+  }, [activeStep, user?.email])
 
   const isDemo = user?.email === 'concierge@beaconplanner.com' || user?.email === 'demo@beaconplanner.com'
 

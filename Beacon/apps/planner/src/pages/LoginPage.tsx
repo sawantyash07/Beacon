@@ -40,12 +40,23 @@ export default function LoginPage() {
     }
   }, [user, navigate, from])
 
+  const getPlannerTarget = (email: string, kyc?: string) => {
+    if (email === 'concierge@beaconplanner.com' || kyc === 'VERIFIED') {
+      return '/dashboard'
+    }
+    const savedStep = localStorage.getItem(`beacon_active_step_${email}`)
+    if (savedStep && !isNaN(parseInt(savedStep))) {
+      return `/dashboard/business-profile?step=${savedStep}`
+    }
+    return '/onboarding'
+  }
+
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
     setError('')
     try {
       const res = await login({ email: data.identifier, password: data.password })
-      const target = (res as any)?.user?.kycStatus === 'VERIFIED' ? '/dashboard' : '/onboarding'
+      const target = getPlannerTarget(data.identifier, (res as any)?.user?.kycStatus)
       toast.success('Welcome back!')
       navigate(target, { replace: true })
     } catch (err) {
@@ -61,8 +72,8 @@ export default function LoginPage() {
     setLoading(true)
     setShowGoogleModal(false)
     try {
-      await login({ email, identifier: email, name, role: 'PLANNER' })
-      const target = email === 'concierge@beaconplanner.com' ? '/dashboard' : '/onboarding'
+      const res = await login({ email, identifier: email, name, role: 'PLANNER' })
+      const target = getPlannerTarget(email, (res as any)?.user?.kycStatus)
       toast.success(`Signed in as ${name} (${email})`)
       navigate(target, { replace: true })
     } catch (err) {

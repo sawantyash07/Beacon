@@ -44,9 +44,18 @@ export default function BusinessProfilePage() {
     const step = searchParams.get('step')
     if (step && !isNaN(parseInt(step))) return parseInt(step)
     if (searchParams.get('tab') === 'verification') return 10
+    const savedStep = localStorage.getItem(`beacon_active_step_${user?.email || 'default'}`)
+    if (savedStep && !isNaN(parseInt(savedStep))) return parseInt(savedStep)
     return 1
   })
   const [autoSaving, setAutoSaving] = useState(false)
+
+  // Persist the current active step so the planner resumes exactly here on re-login
+  useEffect(() => {
+    if (user?.email && activeStep >= 1 && activeStep <= 10) {
+      localStorage.setItem(`beacon_active_step_${user.email}`, activeStep.toString())
+    }
+  }, [activeStep, user?.email])
 
   // Profile Form State across 10 sections
   const isDemoUser = (email?: string | null) => email === 'concierge@beaconplanner.com' || email === 'demo@beaconplanner.com'
