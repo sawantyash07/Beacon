@@ -27,10 +27,11 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showGoogleModal, setShowGoogleModal] = useState(false)
   const [customGoogleEmail, setCustomGoogleEmail] = useState('adityakasod2005@gmail.com')
-  const { login, user } = useAuth()
+  const { login, user, isKycVerified } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard'
+  const defaultTarget = isKycVerified ? '/dashboard' : '/onboarding'
+  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || defaultTarget
 
   // Redirect if already logged in
   useEffect(() => {
@@ -43,9 +44,10 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
     try {
-      await login({ email: data.identifier, password: data.password })
+      const res = await login({ email: data.identifier, password: data.password })
+      const target = (res as any)?.user?.kycStatus === 'VERIFIED' ? '/dashboard' : '/onboarding'
       toast.success('Welcome back!')
-      navigate(from, { replace: true })
+      navigate(target, { replace: true })
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Login failed. Please try again.'
       setError(msg)
@@ -60,8 +62,9 @@ export default function LoginPage() {
     setShowGoogleModal(false)
     try {
       await login({ email, identifier: email, name, role: 'PLANNER' })
+      const target = email === 'concierge@beaconplanner.com' ? '/dashboard' : '/onboarding'
       toast.success(`Signed in as ${name} (${email})`)
-      navigate(from, { replace: true })
+      navigate(target, { replace: true })
     } catch (err) {
       toast.error('Google sign in failed')
     } finally {

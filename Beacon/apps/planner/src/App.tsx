@@ -23,6 +23,7 @@ const AboutPage = lazy(() => import('@/pages/about/AboutPage'))
 const ContactPage = lazy(() => import('@/pages/contact/ContactPage'))
 const WishlistPage = lazy(() => import('@/pages/wishlist/WishlistPage'))
 const BookingPage = lazy(() => import('@/pages/booking/BookingPage'))
+const PlannerOnboardingPage = lazy(() => import('@/pages/onboarding/PlannerOnboardingPage'))
 
 const OverviewPage = lazy(() => import('@/pages/dashboard/OverviewPage'))
 const InquiriesPage = lazy(() => import('@/pages/dashboard/InquiriesPage'))
@@ -108,6 +109,7 @@ function AnimatedRoutes() {
 
         <Route path="/wishlist" element={<ProtectedRoute><PageTransition><WishlistPage /></PageTransition></ProtectedRoute>} />
         <Route path="/booking/:packageId" element={<ProtectedRoute><PageTransition><BookingPage /></PageTransition></ProtectedRoute>} />
+        <Route path="/onboarding" element={<ProtectedRoute><PageTransition><PlannerOnboardingPage /></PageTransition></ProtectedRoute>} />
         <Route
           path="/dashboard"
           element={
