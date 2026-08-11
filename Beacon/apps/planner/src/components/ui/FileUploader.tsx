@@ -1,5 +1,6 @@
 import { useState, useRef, type ChangeEvent, type DragEvent } from 'react'
 import { UploadCloud, FileText, CheckCircle2, AlertCircle, X, Eye } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface FileUploaderProps {
   label?: string
@@ -7,7 +8,7 @@ interface FileUploaderProps {
   maxSizeMb?: number
   currentFileUrl?: string | null
   currentFileName?: string | null
-  onFileSelect: (file: File) => void
+  onFileSelect: (file: File, dataUrl?: string) => void
   onRemove?: () => void
   helperText?: string
 }
@@ -26,6 +27,7 @@ export function FileUploader({
   const [error, setError] = useState<string | null>(null)
   const [selectedFileName, setSelectedFileName] = useState<string | null>(currentFileName || null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentFileUrl || null)
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFile = (file: File) => {
@@ -36,15 +38,20 @@ export function FileUploader({
     }
 
     setSelectedFileName(file.name)
-    if (file.type.startsWith('image/')) {
-      const reader = new FileReader()
-      reader.onload = () => setPreviewUrl(reader.result as string)
-      reader.readAsDataURL(file)
-    } else {
-      setPreviewUrl(null)
+    const reader = new FileReader()
+    reader.onload = () => {
+      const dataUrl = reader.result as string
+      if (file.type.startsWith('image/')) {
+        setPreviewUrl(dataUrl)
+      } else {
+        setPreviewUrl(null)
+      }
+      onFileSelect(file, dataUrl)
     }
-
-    onFileSelect(file)
+    reader.onerror = () => {
+      onFileSelect(file)
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleDrag = (e: DragEvent<HTMLDivElement>) => {
@@ -84,41 +91,41 @@ export function FileUploader({
     <div className="space-y-2">
       {label && <label className="text-xs font-bold text-navy block">{label}</label>}
 
-      {selectedFileName || previewUrl ? (
+      {selectedFileName || previewUrl || currentFileUrl ? (
         <div className="p-3 bg-page border border-border rounded-[16px] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            {previewUrl ? (
+            {previewUrl || currentFileUrl ? (
               <img
-                src={previewUrl}
+                src={previewUrl || currentFileUrl || ''}
                 alt="Preview"
-                className="w-10 h-10 rounded-[10px] object-cover border border-border shrink-0"
+                onClick={() => setShowPreviewModal(true)}
+                className="w-11 h-11 rounded-[10px] object-cover border border-border shrink-0 cursor-pointer hover:opacity-85 transition-opacity"
               />
             ) : (
-              <div className="w-10 h-10 rounded-[10px] bg-teal/10 text-teal flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-[10px] bg-teal/10 text-teal flex items-center justify-center shrink-0">
                 <FileText className="w-5 h-5" />
               </div>
             )}
             <div className="min-w-0">
               <h5 className="text-xs font-bold text-navy truncate">
-                {selectedFileName || 'Uploaded Document'}
+                {selectedFileName || currentFileName || 'Uploaded Photo'}
               </h5>
               <span className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-emerald-500" /> File attached
+                <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Photo attached
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
-            {previewUrl && (
-              <a
-                href={previewUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="p-1.5 text-muted hover:text-navy rounded-[8px] hover:bg-border/50"
-                title="View preview"
+            {(previewUrl || currentFileUrl) && (
+              <button
+                type="button"
+                onClick={() => setShowPreviewModal(true)}
+                className="p-1.5 text-muted hover:text-navy rounded-[8px] hover:bg-border/50 cursor-pointer"
+                title="View full image"
               >
                 <Eye className="w-4 h-4" />
-              </a>
+              </button>
             )}
             <button
               type="button"
@@ -167,6 +174,40 @@ export function FileUploader({
           <AlertCircle className="w-3.5 h-3.5" /> {error}
         </p>
       )}
+
+      {/* Lightbox Modal Preview */}
+      <AnimatePresence>
+        {showPreviewModal && (previewUrl || currentFileUrl) && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative max-w-2xl w-full bg-white rounded-[24px] p-4 shadow-2xl space-y-3"
+            >
+              <div className="flex items-center justify-between border-b border-border pb-2 px-1">
+                <span className="text-xs font-bold text-navy truncate">
+                  {selectedFileName || currentFileName || 'Image Preview'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowPreviewModal(false)}
+                  className="w-7 h-7 rounded-full bg-page border border-border flex items-center justify-center text-muted hover:text-navy cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="max-h-[70vh] overflow-hidden rounded-[16px] flex items-center justify-center bg-page">
+                <img
+                  src={previewUrl || currentFileUrl || ''}
+                  alt="Full preview"
+                  className="max-h-[68vh] w-auto object-contain rounded-[16px]"
+                />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

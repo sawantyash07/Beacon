@@ -709,20 +709,22 @@ export default function BusinessProfilePage() {
                     <FileUploader
                       label="Brand Profile Photo / Logo"
                       currentFileUrl={profile.avatarUrl}
-                      onFileSelect={(file) => {
-                        const url = URL.createObjectURL(file)
-                        setProfile((prev) => ({ ...prev, avatarUrl: url }))
-                        triggerAutoSave('Avatar Logo')
+                      onFileSelect={(_file, dataUrl) => {
+                        if (dataUrl) {
+                          setProfile((prev) => ({ ...prev, avatarUrl: dataUrl }))
+                          triggerAutoSave('Avatar Logo')
+                        }
                       }}
                       helperText="Square logo or profile picture (PNG/JPG)"
                     />
                     <FileUploader
                       label="Cover Banner Image"
                       currentFileUrl={profile.coverBannerUrl}
-                      onFileSelect={(file) => {
-                        const url = URL.createObjectURL(file)
-                        setProfile((prev) => ({ ...prev, coverBannerUrl: url }))
-                        triggerAutoSave('Cover Banner')
+                      onFileSelect={(_file, dataUrl) => {
+                        if (dataUrl) {
+                          setProfile((prev) => ({ ...prev, coverBannerUrl: dataUrl }))
+                          triggerAutoSave('Cover Banner')
+                        }
                       }}
                       helperText="Landscape banner image (1200x400 recommended)"
                     />
