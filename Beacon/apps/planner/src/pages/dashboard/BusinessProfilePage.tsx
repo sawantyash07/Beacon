@@ -610,13 +610,9 @@ export default function BusinessProfilePage() {
                   <span className="text-sm font-bold text-navy">
                     {steps[activeStep - 1]?.title}
                   </span>
-                  {steps[activeStep - 1]?.isMandatory ? (
+                  {steps[activeStep - 1]?.isMandatory && (
                     <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full ml-1">
                       Mandatory KYC Gate
-                    </span>
-                  ) : (
-                    <span className="text-[10px] font-bold text-teal bg-teal/10 border border-teal/20 px-2 py-0.5 rounded-full ml-1">
-                      Optional Track
                     </span>
                   )}
                 </div>
@@ -716,7 +712,7 @@ export default function BusinessProfilePage() {
                   {/* Brand Firm Photo / Logo Upload */}
                   <div>
                     <FileUploader
-                      label="Brand Profile Photo / Firm Logo (Optional)"
+                      label="Brand Profile Photo / Firm Logo"
                       currentFileUrl={profile.avatarUrl}
                       onFileSelect={(_file, dataUrl) => {
                         if (dataUrl) {
@@ -781,7 +777,7 @@ export default function BusinessProfilePage() {
                     </div>
 
                     <Input
-                      label="WhatsApp Support Line (Optional)"
+                      label="WhatsApp Support Line"
                       type="tel"
                       icon={<Phone className="w-4 h-4 text-teal" />}
                       placeholder="e.g. 9876543210"
@@ -815,7 +811,7 @@ export default function BusinessProfilePage() {
 
                     <div>
                       <label className="text-xs font-bold text-navy block mb-1.5">
-                        Company Story / Professional Bio (Optional)
+                        Company Story / Professional Bio
                       </label>
                       <textarea
                         rows={3}
@@ -965,13 +961,13 @@ export default function BusinessProfilePage() {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <Input
-                          label="Year of Establishment (Optional)"
+                          label="Year of Establishment"
                           type="number"
                           value={profile.establishedYear?.toString() || ''}
                           onChange={(e) => setProfile((prev) => ({ ...prev, establishedYear: parseInt(e.target.value) || 2020 }))}
                         />
                         <div className="space-y-1">
-                          <label className="text-xs font-bold text-navy block">Company Team Size (Optional)</label>
+                          <label className="text-xs font-bold text-navy block">Company Team Size</label>
                           <select
                             value={profile.teamSize || '1-10 Employees'}
                             onChange={(e) => setProfile((prev) => ({ ...prev, teamSize: e.target.value }))}
@@ -1053,7 +1049,7 @@ export default function BusinessProfilePage() {
                         </div>
 
                         <Input
-                          label="Udyam (MSME) Registration (Optional)"
+                          label="Udyam (MSME) Registration"
                           placeholder="e.g. UDYAM-MH-01-0012345"
                           value={profile.udyamNumber || ''}
                           onChange={(e) => setProfile((prev) => ({ ...prev, udyamNumber: e.target.value.toUpperCase() }))}
@@ -1298,9 +1294,6 @@ export default function BusinessProfilePage() {
                         <h3 className="text-base font-bold text-navy flex items-center gap-2">
                           <Award className="w-5 h-5 text-teal" /> 5. Specializations & Public Profile
                         </h3>
-                        <span className="text-[10px] font-bold text-teal bg-teal/10 border border-teal/20 px-2 py-0.5 rounded-full">
-                          Optional Track
-                        </span>
                       </div>
                       <p className="text-xs text-muted mt-1">
                         Answers key traveler questions: where you operate, certifications, and what you are known for.
@@ -1317,7 +1310,7 @@ export default function BusinessProfilePage() {
 
                   <div className="space-y-5">
                     <MultiSelectChips
-                      label="Countries Served (Optional)"
+                      label="Countries Served"
                       options={COUNTRY_OPTIONS}
                       selected={profile.countriesServed}
                       onChange={(selected) => setProfile((prev) => ({ ...prev, countriesServed: selected }))}
@@ -1325,7 +1318,7 @@ export default function BusinessProfilePage() {
                     />
 
                     <MultiSelectChips
-                      label="Tour Specializations (Searchable Tags) (Optional)"
+                      label="Tour Specializations (Searchable Tags)"
                       options={SPECIALIZATION_OPTIONS}
                       selected={profile.specializations}
                       onChange={(selected) => setProfile((prev) => ({ ...prev, specializations: selected }))}
@@ -1333,7 +1326,7 @@ export default function BusinessProfilePage() {
                     />
 
                     <MultiSelectChips
-                      label="Languages Spoken (Optional)"
+                      label="Languages Spoken"
                       options={LANGUAGE_OPTIONS}
                       selected={profile.languages}
                       onChange={(selected) => setProfile((prev) => ({ ...prev, languages: selected }))}
@@ -1341,7 +1334,7 @@ export default function BusinessProfilePage() {
                     />
 
                     <MultiSelectChips
-                      label="Certifications & Safety Training (Optional — Increases Trust Score)"
+                      label="Certifications & Safety Training"
                       options={CERTIFICATION_OPTIONS}
                       selected={profile.certifications || []}
                       onChange={(selected) => setProfile((prev) => ({ ...prev, certifications: selected }))}
@@ -1349,7 +1342,7 @@ export default function BusinessProfilePage() {
                     />
 
                     <MultiSelectChips
-                      label="India Trade-Body Accreditations (Optional)"
+                      label="India Trade-Body Accreditations"
                       options={INDIA_ACCREDITATION_OPTIONS}
                       selected={profile.indiaAccreditations || []}
                       onChange={(selected) => setProfile((prev) => ({ ...prev, indiaAccreditations: selected }))}
