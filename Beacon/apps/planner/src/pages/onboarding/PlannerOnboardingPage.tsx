@@ -454,8 +454,8 @@ export default function PlannerOnboardingPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
-                      label="City / Base Location *"
-                      placeholder="e.g. Mumbai, Manali, Bengaluru"
+                      label="City & State *"
+                      placeholder="e.g. Jalna, Maharashtra"
                       value={profile.city}
                       onChange={(e) => setProfile(p => ({ ...p, city: e.target.value }))}
                     />

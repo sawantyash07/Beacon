@@ -729,27 +729,47 @@ export default function BusinessProfilePage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <Input
                       label="WhatsApp Line"
                       value={profile.whatsappNumber}
+                      placeholder="+91 98765 43210"
                       onChange={(e) => setProfile((prev) => ({ ...prev, whatsappNumber: e.target.value }))}
                     />
                     <Input
                       label="Business Email"
                       type="email"
                       value={profile.email}
+                      placeholder="planner@domain.com"
                       onChange={(e) => setProfile((prev) => ({ ...prev, email: e.target.value }))}
                       icon={<Mail className="w-4 h-4 text-teal" />}
                     />
                     <Input
-                      label="City & Country"
-                      value={`${profile.city}, ${profile.country}`}
+                      label="City & State"
+                      placeholder="e.g. Mumbai, Maharashtra"
+                      value={profile.city ? (profile.state ? `${profile.city}, ${profile.state}` : profile.city) : (profile.state || '')}
                       onChange={(e) => {
-                        const parts = e.target.value.split(',')
-                        setProfile((prev) => ({ ...prev, city: parts[0] || '', country: parts[1] || '' }))
+                        const val = e.target.value
+                        const parts = val.split(',')
+                        setProfile((prev) => ({
+                          ...prev,
+                          city: parts[0] ? parts[0].trim() : '',
+                          state: parts[1] ? parts[1].trim() : ''
+                        }))
+                        triggerAutoSave('City & State')
                       }}
                       icon={<MapPin className="w-4 h-4 text-teal" />}
+                    />
+                    <Input
+                      label="Country"
+                      placeholder="e.g. India"
+                      value={profile.country || ''}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setProfile((prev) => ({ ...prev, country: val }))
+                        triggerAutoSave('Country')
+                      }}
+                      icon={<Globe className="w-4 h-4 text-teal" />}
                     />
                   </div>
 
