@@ -85,6 +85,8 @@ function AnimatedRoutes() {
       <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
       <Route path="/booking/:packageId" element={<ProtectedRoute><BookingPage /></ProtectedRoute>} />
       <Route path="/onboarding" element={<ProtectedRoute><PlannerOnboardingPage /></ProtectedRoute>} />
+      <Route path="/dashboard/business-profile" element={<ProtectedRoute><BusinessProfilePage /></ProtectedRoute>} />
+      <Route path="/business-profile" element={<ProtectedRoute><BusinessProfilePage /></ProtectedRoute>} />
       <Route
         path="/dashboard"
         element={
@@ -105,7 +107,6 @@ function AnimatedRoutes() {
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="reviews" element={<ReviewsPage />} />
         <Route path="marketing" element={<MarketingHubPage />} />
-        <Route path="business-profile" element={<BusinessProfilePage />} />
         <Route path="team" element={<TeamManagementPage />} />
         <Route path="support" element={<SupportCenterPage />} />
         <Route path="settings" element={<SettingsPage />} />

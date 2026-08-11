@@ -454,13 +454,43 @@ export default function BusinessProfilePage() {
   }
 
   return (
-    <div className="space-y-6 pb-16">
-      {/* ---------------- HEADER & OVERALL PROGRESS BANNER ---------------- */}
-      <Card className="p-6 border border-border shadow-xl rounded-[24px] bg-gradient-to-r from-navy via-slate-900 to-navy text-white relative overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl font-extrabold text-white">Business Profile & Credentials Console</h1>
+    <div className="min-h-screen bg-[#F8FAFC] text-navy flex flex-col antialiased select-none pb-16">
+      {/* ---------------- FULL-SCREEN TOP HEADER BAR ---------------- */}
+      <header className="sticky top-0 z-40 bg-white border-b border-border shadow-xs px-6 py-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link to="/" className="flex items-center gap-2.5">
+            <img src="/planner/beacon-logo.png" alt="Beacon" className="h-8 w-auto object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            <div className="flex flex-col">
+              <span className="font-extrabold text-navy text-base leading-tight">Beacon Planner</span>
+              <span className="text-[10px] font-bold text-cyan tracking-wider uppercase">Business Profile</span>
+            </div>
+          </Link>
+          <div className="h-6 w-px bg-border hidden sm:block" />
+          <span className="text-xs text-muted font-medium hidden sm:inline-block">
+            Step {activeStep} of 10: <strong className="text-navy">{steps[activeStep - 1]?.title}</strong>
+          </span>
+        </div>
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-3">
+          <Button
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="bg-navy hover:bg-navy/90 text-white font-bold text-xs px-4 py-2 rounded-[12px] shadow-sm gap-1.5 cursor-pointer"
+          >
+            ← Back to Dashboard
+          </Button>
+        </div>
+      </header>
+
+      {/* ---------------- MAIN FULL-SCREEN CONTENT CONTAINER ---------------- */}
+      <div className="max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 flex-1">
+        {/* ---------------- HEADER & OVERALL PROGRESS BANNER ---------------- */}
+        <Card className="p-6 border border-border shadow-xl rounded-[24px] bg-gradient-to-r from-navy via-slate-900 to-navy text-white relative overflow-hidden">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-2xl font-extrabold text-white">Business Profile & Credentials Console</h1>
               <span className="bg-cyan/20 text-cyan border border-cyan/30 text-xs font-bold px-3 py-0.5 rounded-full flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" />
                 {profile.partnerLevel}
@@ -628,15 +658,14 @@ export default function BusinessProfilePage() {
 
       {/* ---------------- MAIN CONTENT AREA ---------------- */}
       <div className="space-y-6">
-        <div>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeStep}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.25 }}
-            >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeStep}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25 }}
+          >
               {/* ---------------- SECTION 1: BASIC INFORMATION ---------------- */}
               {activeStep === 1 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
