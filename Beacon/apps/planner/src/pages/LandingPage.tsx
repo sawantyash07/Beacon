@@ -330,8 +330,8 @@ export default function LandingPage() {
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                 <Button glow onClick={handleBecomePlanner} className="py-4 px-8 bg-cyan text-navy font-bold text-base rounded-[14px] flex items-center justify-center gap-2 group cursor-pointer shadow-[0_4px_20px_rgba(0,212,255,0.35)] hover:shadow-[0_4px_30px_rgba(0,212,255,0.5)] transition-all">
-                  Become a Planner
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  Sign Up
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <button onClick={() => scrollToSection(howItWorksRef)} className="py-4 px-8 border border-white/10 hover:border-white/20 text-white font-semibold text-base rounded-[14px] flex items-center justify-center gap-2 bg-white/5 backdrop-blur-sm transition-all hover:bg-white/10 cursor-pointer hover:shadow-lg">
                   <Play className="w-4 h-4 fill-white text-white" />
@@ -1246,7 +1246,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Button glow onClick={handleBecomePlanner} className="w-full sm:w-auto py-4 px-8 bg-cyan text-navy font-bold text-base rounded-[14px]">
-                Become a Planner
+                Sign Up
               </Button>
               <Link to="/contact" className="w-full sm:w-auto">
                 <Button variant="outline" className="w-full sm:w-auto py-4 px-8 border-white/20 text-white hover:bg-white/5 text-base font-semibold rounded-[14px]">
@@ -1288,7 +1288,7 @@ export default function LandingPage() {
                 <li><button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-cyan transition-colors">Overview</button></li>
                 <li><button onClick={() => scrollToSection(featuresRef)} className="hover:text-cyan transition-colors">Features</button></li>
                 <li><button onClick={() => scrollToSection(pricingRef)} className="hover:text-cyan transition-colors">Pricing</button></li>
-                <li><button onClick={handleBecomePlanner} className="hover:text-cyan transition-colors text-cyan">Become a Planner</button></li>
+                <li><button onClick={handleBecomePlanner} className="hover:text-cyan transition-colors text-cyan">Sign Up</button></li>
               </ul>
             </div>
 
