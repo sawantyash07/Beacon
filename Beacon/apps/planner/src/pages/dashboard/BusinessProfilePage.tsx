@@ -309,8 +309,8 @@ export default function BusinessProfilePage() {
     localStorage.setItem(storageKey, JSON.stringify(updated))
   }
 
-  // Auto-Save integration calling the backend endpoints
-  const triggerAutoSave = async (sectionName: string, sectionKey: string = 'general') => {
+  // Auto-Save integration calling the backend endpoints silently in background
+  const triggerAutoSave = async (_sectionName: string, sectionKey: string = 'general') => {
     setAutoSaving(true)
     saveProfileLocally(profile)
     try {
@@ -334,9 +334,8 @@ export default function BusinessProfilePage() {
         payload = { ...profile };
       }
       await updateOrganizerProfileSection(sectionKey, payload);
-      toast.success(`${sectionName} saved successfully!`)
     } catch (err) {
-      toast.success(`${sectionName} saved successfully!`)
+      // silently persist locally without popup interruption
     } finally {
       setAutoSaving(false)
     }
