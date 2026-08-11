@@ -276,6 +276,7 @@ export default function BusinessProfilePage() {
 
   // Verification Review Preview Modal & Master Submission State
   const [showVerificationPreviewModal, setShowVerificationPreviewModal] = useState(false)
+  const [showSubmissionSuccessModal, setShowSubmissionSuccessModal] = useState(false)
   const [submittingToMaster, setSubmittingToMaster] = useState(false)
 
   // Submit profile & documents to Beacon Master Admin
@@ -293,13 +294,17 @@ export default function BusinessProfilePage() {
       }
       setProfile(updated)
       saveProfileLocally(updated)
-      updateKycStatus('UNDER_REVIEW')
+      try {
+        if (typeof updateKycStatus === 'function') {
+          updateKycStatus('UNDER_REVIEW')
+        }
+      } catch (err) {}
       localStorage.setItem(`beacon_kyc_status_${user?.email || 'default'}`, 'UNDER_REVIEW')
 
       setShowVerificationPreviewModal(false)
-      toast.success('🚀 Application Sent to Master Admin! Your KYC profile and documents are now under review.')
-      navigate('/dashboard')
+      setShowSubmissionSuccessModal(true)
     } catch (e) {
+      console.error('Submission error:', e)
       toast.error('Could not submit application. Please try again.')
     } finally {
       setSubmittingToMaster(false)
@@ -1477,13 +1482,18 @@ export default function BusinessProfilePage() {
                       variant="primary"
                       size="md"
                       onClick={() => {
+                        const missing = getStepMissingFields(4)
+                        if (missing.length > 0) {
+                          toast.error(`Please complete all required details: ${missing.slice(0, 2).join(', ')}`)
+                          return
+                        }
                         triggerAutoSave(steps[activeStep - 1]?.title)
                         setShowVerificationPreviewModal(true)
                       }}
                       className="bg-gradient-to-r from-teal to-cyan text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
                     >
-                      <ShieldCheck className="w-4 h-4" />
-                      <span>Save & Send for Verification</span>
+                      <Eye className="w-4 h-4" />
+                      <span>Preview & Send for Verification</span>
                     </Button>
                   </>
                 ) : activeStep === 5 ? (
@@ -1497,8 +1507,8 @@ export default function BusinessProfilePage() {
                     }}
                     className="w-full sm:w-auto bg-gradient-to-r from-teal via-cyan to-navy text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <Send className="w-4 h-4" />
-                    <span>Save & Send for Verification</span>
+                    <Eye className="w-4 h-4" />
+                    <span>Preview & Send for Verification</span>
                   </Button>
                 ) : (
                   <Button
@@ -1979,6 +1989,64 @@ export default function BusinessProfilePage() {
                   )}
                 </Button>
               </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* SUBMISSION CONFIRMATION / HOURLY REFRESH POPUP MODAL */}
+        {showSubmissionSuccessModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-navy/80 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              className="relative w-full max-w-md bg-surface border border-border rounded-[28px] p-6 sm:p-8 shadow-2xl space-y-5 z-10 text-center"
+            >
+              {/* Celebration Icon */}
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-teal/20 to-cyan/20 border-2 border-teal/40 text-teal flex items-center justify-center mx-auto shadow-inner">
+                <ShieldCheck className="w-9 h-9 sm:w-11 sm:h-11 text-teal" />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-xl sm:text-2xl font-black text-navy leading-tight">
+                  Application Sent for Verification!
+                </h3>
+                <p className="text-xs sm:text-sm text-muted max-w-sm mx-auto leading-relaxed">
+                  Your KYC profile details and verification documents have been securely transmitted to <strong>Beacon Master Admin</strong>.
+                </p>
+              </div>
+
+              {/* Hourly Notification Reminder Box */}
+              <div className="p-4 rounded-[18px] bg-cyan/5 border border-cyan/30 text-left space-y-2">
+                <div className="flex items-center gap-2 text-navy font-bold text-xs sm:text-sm">
+                  <span className="text-base">⏱️</span>
+                  <span>Verification Status Updates</span>
+                </div>
+                <p className="text-xs text-navy/80 leading-relaxed">
+                  Our verification team reviews applications in live batches. <strong>Please check or refresh the site every hour</strong> to see your updated status!
+                </p>
+              </div>
+
+              <Button
+                type="button"
+                variant="primary"
+                size="lg"
+                onClick={() => {
+                  setShowSubmissionSuccessModal(false)
+                  navigate('/dashboard')
+                }}
+                className="w-full bg-gradient-to-r from-teal via-cyan to-navy text-white font-extrabold text-sm py-3.5 rounded-[14px] shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Return to Dashboard</span>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
             </motion.div>
           </div>
         )}

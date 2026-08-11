@@ -1267,9 +1267,9 @@ export function submitPlannerApplicationToMaster(profile: any, documents: any[])
   const plannerId = profile.id || `pl-${(profile.email || 'planner').replace(/[^a-zA-Z0-9]/g, '_')}`;
 
   const mappedDocs: VerificationDocument[] = (documents || []).map(d => ({
-    name: d.title || d.fileName,
+    name: d.title || d.fileName || 'Verification Proof',
     type: (d.documentType?.includes('PAN') ? 'PAN' : d.documentType?.includes('GST') ? 'GST' : d.documentType?.includes('Aadhaar') ? 'Aadhaar' : d.documentType?.includes('Bank') ? 'Bank Passbook' : d.documentType?.includes('Address') ? 'Address Proof' : 'Tourism License') as any,
-    url: d.fileDataUrl || 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80',
+    url: (d.fileDataUrl && d.fileDataUrl.length < 30000) ? d.fileDataUrl : 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&w=400&q=80',
     status: 'PENDING'
   }));
 
@@ -1304,9 +1304,13 @@ export function submitPlannerApplicationToMaster(profile: any, documents: any[])
     notes: `Submitted for Indian Verification by ${profile.displayName} on ${new Date().toLocaleDateString()}. Partner Type: ${profile.partnerType || 'COMPANY'}. Operating State: ${profile.state || 'India'}. UPI: ${profile.upiOrPaypalId || 'N/A'}`
   };
 
-  const filtered = currentList.filter(p => p.id !== plannerId && p.email !== profile.email);
-  const updatedList = [newOrUpdatedPlanner, ...filtered];
-  localStorage.setItem(storageKey, JSON.stringify(updatedList));
+  try {
+    const filtered = currentList.filter(p => p.id !== plannerId && p.email !== profile.email);
+    const updatedList = [newOrUpdatedPlanner, ...filtered];
+    localStorage.setItem(storageKey, JSON.stringify(updatedList));
+  } catch (e) {
+    console.warn('Storage quota warning when updating master_planners:', e);
+  }
 
   // Log activity in Master Admin feed
   try {
