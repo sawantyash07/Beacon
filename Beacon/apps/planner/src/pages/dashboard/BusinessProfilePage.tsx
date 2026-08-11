@@ -2,52 +2,63 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  User, Award, MapPin, Building2, Package, Clock, CreditCard, Share2, Settings, ShieldCheck,
-  CheckCircle, Circle, Save, Sparkles, Lock, Globe, Mail, Plane, Hotel, Utensils,
-  Car, Shield, FileCheck, FileText, RefreshCw, Phone, CheckCircle2, Check
+  User, Award, Building2, CreditCard, ShieldCheck,
+  Save, Sparkles, Lock, Globe, Mail,
+  Shield, FileCheck, FileText, Phone, CheckCircle2, Check,
+  AlertCircle, ChevronRight, CheckCircle, Info
 } from 'lucide-react'
-import { FaInstagram, FaFacebook, FaYoutube, FaLinkedin, FaTwitter } from 'react-icons/fa'
 import { toast } from 'sonner'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { MultiSelectChips } from '@/components/ui/MultiSelectChips'
-import { ToggleCard } from '@/components/ui/ToggleCard'
-import { DayPicker } from '@/components/ui/DayPicker'
 import { FileUploader } from '@/components/ui/FileUploader'
 import { formatDate } from '@/lib/utils'
 import { fetchOrganizerProfile, updateOrganizerProfileSection } from '@/services/api'
 import { useAuth } from '@/context/AuthContext'
+import {
+  validateAadhaar,
+  validatePAN,
+  validateGSTIN,
+  validateVoterID,
+  validateCINorLLPIN,
+  validateIFSC,
+  validateBankAccount,
+  validateUPI,
+  validateIndianMobile,
+  validatePINCode,
+  maskAadhaar
+} from '@/utils/indiaValidation'
 
-// Data presets for multi-select components
+// Specializations & Tag Presets
 const SPECIALIZATION_OPTIONS = [
-  'Luxury Travel', 'Adventure Expeditions', 'Honeymoon & Romantic', 'Cultural & Heritage',
-  'Eco Tourism', 'Private Atoll Cruises', 'Wildlife Safaris', 'Trekking & Mountaineering',
-  'Beach & Island Escapes', 'Corporate & MICE', 'Budget Backpacking', 'Family Holidays'
+  'Trekking & Mountaineering', 'Luxury & Private Expeditions', 'Honeymoon & Romantic Getaways',
+  'Wildlife & Jungle Safaris', 'Cultural & Heritage Tours', 'Beach & Island Escapes',
+  'Road Trips & Motorbike Expeditions', 'Spiritual & Pilgrimage Journeys', 'Corporate Offsites & MICE',
+  'Backpacking & Budget Treks', 'Photography & Birding Tours', 'Wellness & Ayurveda Retreats'
 ]
 
-const LANGUAGE_OPTIONS = ['English', 'Spanish', 'French', 'German', 'Japanese', 'Hindi', 'Mandarin', 'Arabic', 'Italian', 'Russian']
-
-const COUNTRY_OPTIONS = ['Maldives', 'India', 'Japan', 'Switzerland', 'France', 'Indonesia', 'Thailand', 'UAE', 'Italy', 'USA', 'Greece', 'Peru', 'Tanzania', 'Egypt']
-
-const POPULAR_DESTINATIONS_OPTIONS = ['Baa Atoll', 'Kyoto', 'Swiss Alps', 'Bali', 'Santorini', 'Serengeti', 'Machu Picchu', 'Dubai', 'Amalfi Coast', 'Phuket', 'Paris', 'Goa']
-
-const PAYMENT_METHOD_OPTIONS = ['Credit / Debit Card', 'Bank Wire Transfer', 'UPI Payments', 'PayPal', 'Installment EMI', 'Cryptocurrency']
+const LANGUAGE_OPTIONS = ['English', 'Hindi', 'Marathi', 'Gujarati', 'Bengali', 'Tamil', 'Telugu', 'Kannada', 'Malayalam', 'Punjabi', 'French', 'German', 'Spanish', 'Japanese']
+const COUNTRY_OPTIONS = ['India', 'Nepal', 'Bhutan', 'Sri Lanka', 'Maldives', 'Thailand', 'Vietnam', 'Indonesia (Bali)', 'Japan', 'Switzerland', 'UAE (Dubai)', 'Georgia']
+const CERTIFICATION_OPTIONS = ['NIM Basic Mountaineering (BMC)', 'HMI Advanced Mountaineering (AMC)', 'WFR Wilderness First Responder', 'First Aid & CPR Certified', 'Authorized State Tour Guide License', 'Leave No Trace (LNT) Master']
+const INDIA_ACCREDITATION_OPTIONS = ['Ministry of Tourism (MOT) Approved', 'IATO Member (Indian Association of Tour Operators)', 'TAAI Member (Travel Agents Association of India)', 'ADTOI Member (Association of Domestic Tour Operators of India)', 'ATOAI Member (Adventure Tour Operators Association of India)']
 
 export default function BusinessProfilePage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { user, kycStatus, updateKycStatus, clearBusinessProfileHighlight } = useAuth()
   const [loading, setLoading] = useState(true)
+
   const [activeStep, setActiveStep] = useState<number>(() => {
     const step = searchParams.get('step')
     if (step && !isNaN(parseInt(step))) return parseInt(step)
-    if (searchParams.get('tab') === 'verification') return 10
+    if (searchParams.get('tab') === 'verification') return 4
     const savedStep = localStorage.getItem(`beacon_active_step_${user?.email || 'default'}`)
-    if (savedStep && !isNaN(parseInt(savedStep))) return parseInt(savedStep)
+    if (savedStep && !isNaN(parseInt(savedStep))) return Math.min(5, parseInt(savedStep))
     return 1
   })
+
   const [autoSaving, setAutoSaving] = useState(false)
   const [showWelcomeDocs, setShowWelcomeDocs] = useState<boolean>(() => {
     const isDemo = user?.email === 'concierge@beaconplanner.com' || user?.email === 'demo@beaconplanner.com'
@@ -56,14 +67,13 @@ export default function BusinessProfilePage() {
     return !seen
   })
 
-  // Persist the current active step so the planner resumes exactly here on re-login
+  // Persist active step
   useEffect(() => {
-    if (user?.email && activeStep >= 1 && activeStep <= 10) {
+    if (user?.email && activeStep >= 1 && activeStep <= 5) {
       localStorage.setItem(`beacon_active_step_${user.email}`, activeStep.toString())
     }
   }, [activeStep, user?.email])
 
-  // Profile Form State across 10 sections
   const isDemoUser = (email?: string | null) => email === 'concierge@beaconplanner.com' || email === 'demo@beaconplanner.com'
 
   const getInitialProfile = () => {
@@ -77,222 +87,139 @@ export default function BusinessProfilePage() {
         }
         delete parsed.coverBannerUrl
         return parsed
-      } catch (e) {
-        // fallback
-      }
+      } catch (e) {}
     }
 
     if (isDemoUser(user?.email)) {
       return {
         partnerType: 'COMPANY' as 'COMPANY' | 'FREELANCER',
         displayName: 'Beacon Planner Luxury Expeditions',
-        bio: 'We specialize in premium domestic and international travel experiences with personalized itinerary planning, luxury resort partnerships, and 24x7 dedicated traveler concierge support.',
+        personalName: 'Aditya Kumar',
+        bio: 'We curate premium domestic and international travel experiences across the Himalayas, Western Ghats, and private atolls.',
         avatarUrl: 'https://images.unsplash.com/photo-1540959733336-eab4deabeeaf?w=200&q=80',
-        coverBannerUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
-        phone: '+1 (555) 019-2831',
-        whatsappNumber: '+1 (555) 019-2831',
+        phone: '9876682069',
+        whatsappNumber: '9876682069',
         email: user?.email || 'concierge@beaconplanner.com',
-        city: 'New York',
-        country: 'United States',
-        specializations: ['Luxury Travel', 'Honeymoon & Romantic', 'Private Atoll Cruises'],
-        languages: ['English', 'French', 'Japanese'],
-        travelStyles: ['Luxury', 'Custom Itinerary', 'Private Guided'],
-        groupSizes: ['Solo', 'Couples', 'Small Groups (2-8)', 'Corporate (50+)'],
-        yearsExperience: 8,
-        countriesServed: ['Maldives', 'Japan', 'Switzerland', 'France', 'Indonesia'],
-        operatingRegions: ['South Asia', 'Western Europe', 'East Asia', 'Southeast Asia'],
-        popularDestinations: ['Baa Atoll', 'Kyoto', 'Swiss Alps', 'Bali'],
-        companyName: 'Beacon Planner Travel International Ltd.',
-        registrationNumber: 'REG-US-8819204',
-        gstNumber: '29ABCDE1234F1Z5',
-        panNumber: 'ABCDE1234F',
-        companyWebsite: 'https://beaconplanner.com',
-        officeAddress: '742 Evergreen Terrace, Suite 400, New York, NY 10001',
-        numberOfEmployees: '11-50 Employees',
-        establishedYear: 2016,
-        occupation: 'Senior Expedition Architect',
-        portfolioWebsite: 'https://alexwright.travel',
-        govtIdType: 'Passport',
-        govtIdNumber: 'P892104912',
-        serviceFlights: true,
-        serviceHotels: true,
-        serviceMeals: true,
-        serviceLocalTransport: true,
-        serviceVisaAssistance: true,
-        serviceTravelInsurance: true,
-        serviceTourGuide: true,
-        serviceCustomizedItinerary: true,
-        serviceEquipmentRental: false,
-        servicePhotography: true,
-        workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        workingHoursStart: '08:00',
-        workingHoursEnd: '20:00',
-        responseTimeSla: '< 15 mins',
-        isTakingBookings: true,
-        bankAccountName: 'Beacon Planner Travel International',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        country: 'India',
+        pinCode: '400001',
+        // Company Legal
+        companyName: 'Beacon Planner Travel International Pvt Ltd',
+        panNumber: 'AABCB1234F',
+        registrationNumber: 'U63040MH2020PTC345678',
+        gstNumber: '27AABCB1234F1Z5',
+        isGstExempt: false,
+        gstExemptionReason: '',
+        officeAddress: 'Floor 4, Mittal Towers, Nariman Point, Mumbai',
+        establishedYear: 2020,
+        teamSize: '11-50 Employees',
+        // Freelancer Legal
+        legalName: 'Aditya Vijay Kumar',
+        aadhaarNumber: '234567890123',
+        voterIdNumber: 'ABC1234567',
+        residentialAddress: 'Flat 402, Green Meadows, Bandra West, Mumbai',
+        udyamNumber: 'UDYAM-MH-01-0012345',
+        occupation: 'Senior Expedition Architect & Mountain Guide',
+        portfolioUrl: 'https://adityatravels.in',
+        // Banking
+        bankAccountName: 'Beacon Planner Travel International Pvt Ltd',
         bankAccountNumber: '987654321098',
-        bankName: 'JPMorgan Chase Bank',
-        ifscOrSwiftCode: 'CHASUS33XXX',
-        upiOrPaypalId: 'payments@beaconplanner.com',
-        preferredCurrency: 'USD',
-        acceptedPaymentMethods: ['Credit / Debit Card', 'Bank Wire Transfer', 'PayPal'],
-        paymentTerms: '50% deposit on booking confirmation, balance 14 days prior to departure.',
-        phonepeMerchantId: '',
-        phonepeSaltKey: '',
-        phonepeSaltIndex: '1',
-        webhookAuthUsername: '',
-        webhookAuthPassword: '',
-        socialWebsite: 'https://beaconplanner.com',
-        socialInstagram: 'https://instagram.com/beacon_planner_expeditions',
-        socialFacebook: 'https://facebook.com/beaconplanner',
-        socialYouTube: 'https://youtube.com/c/beaconplanner',
-        socialLinkedIn: 'https://linkedin.com/company/beaconplanner',
-        socialTwitter: 'https://x.com/beacon_planner',
-        socialWhatsApp: 'https://wa.me/15550192831',
-        acceptDirectBookings: true,
-        notifyEmail: true,
-        notifySms: true,
-        notifyWhatsApp: true,
-        autoResponderMessage: 'Hello! Thank you for contacting Beacon Planner.',
+        bankName: 'HDFC Bank',
+        ifscOrSwiftCode: 'HDFC0000123',
+        upiOrPaypalId: 'beaconplanner@hdfcbank',
+        preferredCurrency: 'INR',
+        // Optional Track
+        countriesServed: ['India', 'Nepal', 'Bhutan', 'Sri Lanka'],
+        specializations: ['Trekking & Mountaineering', 'Luxury & Private Expeditions', 'Wildlife & Jungle Safaris'],
+        languages: ['English', 'Hindi', 'Marathi'],
+        yearsExperience: 8,
+        certifications: ['NIM Basic Mountaineering (BMC)', 'First Aid & CPR Certified'],
+        indiaAccreditations: ['Ministry of Tourism (MOT) Approved', 'ATOAI Member (Adventure Tour Operators Association of India)'],
+        whyChooseMe: '10+ years organizing Himalayan treks, 24/7 dedicated on-ground support team, and zero-compromise safety protocols.',
         isVerified: true,
         verificationProgress: 'VERIFIED' as 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED',
-        rejectionReason: '',
         partnerLevel: 'Gold Organizer',
-        averageRating: 4.9,
-        responseRate: 98,
-        tripsCompleted: 154,
-        happyTravelers: 3420,
-        repeatCustomersRate: 42.5,
-        cancellationRate: 0.4,
-        totalReviewsCount: 142,
-        yearsOnBeacon: 2,
       }
     }
 
-    // New Planner: Fresh clean state to ask all details
+    // Fresh clean state for Indian Onboarding
     return {
       partnerType: 'COMPANY' as 'COMPANY' | 'FREELANCER',
       displayName: user?.name || '',
+      personalName: '',
       bio: '',
       avatarUrl: '',
-      coverBannerUrl: '',
       phone: '',
       whatsappNumber: '',
       email: user?.email || '',
       city: '',
-      country: '',
-      specializations: [] as string[],
-      languages: ['English'] as string[],
-      travelStyles: [] as string[],
-      groupSizes: [] as string[],
-      yearsExperience: 1,
-      countriesServed: [] as string[],
-      operatingRegions: [] as string[],
-      popularDestinations: [] as string[],
+      state: '',
+      country: 'India',
+      pinCode: '',
+      // Company Legal
       companyName: '',
+      panNumber: '',
       registrationNumber: '',
       gstNumber: '',
-      panNumber: '',
-      companyWebsite: '',
+      isGstExempt: false,
+      gstExemptionReason: '',
       officeAddress: '',
-      numberOfEmployees: '',
       establishedYear: new Date().getFullYear(),
+      teamSize: '1-10 Employees',
+      // Freelancer Legal
+      legalName: '',
+      aadhaarNumber: '',
+      voterIdNumber: '',
+      residentialAddress: '',
+      udyamNumber: '',
       occupation: '',
-      portfolioWebsite: '',
-      govtIdType: 'Aadhaar Card',
-      govtIdNumber: '',
-      serviceFlights: false,
-      serviceHotels: false,
-      serviceMeals: false,
-      serviceLocalTransport: false,
-      serviceVisaAssistance: false,
-      serviceTravelInsurance: false,
-      serviceTourGuide: false,
-      serviceCustomizedItinerary: false,
-      serviceEquipmentRental: false,
-      servicePhotography: false,
-      workingDays: [] as string[],
-      workingHoursStart: '09:00',
-      workingHoursEnd: '18:00',
-      responseTimeSla: '< 1 hour',
-      isTakingBookings: true,
+      portfolioUrl: '',
+      // Banking
       bankAccountName: '',
       bankAccountNumber: '',
       bankName: '',
       ifscOrSwiftCode: '',
       upiOrPaypalId: '',
       preferredCurrency: 'INR',
-      acceptedPaymentMethods: [] as string[],
-      paymentTerms: '',
-      phonepeMerchantId: '',
-      phonepeSaltKey: '',
-      phonepeSaltIndex: '1',
-      webhookAuthUsername: '',
-      webhookAuthPassword: '',
-      socialWebsite: '',
-      socialInstagram: '',
-      socialFacebook: '',
-      socialYouTube: '',
-      socialLinkedIn: '',
-      socialTwitter: '',
-      socialWhatsApp: '',
-      acceptDirectBookings: true,
-      notifyEmail: true,
-      notifySms: false,
-      notifyWhatsApp: true,
-      autoResponderMessage: '',
+      // Optional Track
+      countriesServed: ['India'] as string[],
+      specializations: [] as string[],
+      languages: ['English', 'Hindi'] as string[],
+      yearsExperience: 2,
+      certifications: [] as string[],
+      indiaAccreditations: [] as string[],
+      whyChooseMe: '',
       isVerified: false,
       verificationProgress: 'PENDING' as 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED',
-      rejectionReason: '',
       partnerLevel: 'Starter Organizer',
-      averageRating: 0.0,
-      responseRate: 100,
-      tripsCompleted: 0,
-      happyTravelers: 0,
-      repeatCustomersRate: 0,
-      cancellationRate: 0,
-      totalReviewsCount: 0,
-      yearsOnBeacon: 0,
     }
   }
 
   const [profile, setProfile] = useState(getInitialProfile)
 
-  // Vault Verification Documents
+  // Document Vault State
   const [documents, setDocuments] = useState<Array<{
     id: string
     title: string
     documentType: string
     fileName: string
-    status: 'VERIFIED' | 'UNDER_REVIEW' | 'PENDING' | 'REJECTED'
+    status: 'VERIFIED' | 'UNDER_REVIEW' | 'PENDING'
     uploadedAt: string
+    fileDataUrl?: string
   }>>(() => {
+    const storageKey = `beacon_docs_${user?.email || 'default'}`
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      try { return JSON.parse(saved) } catch (e) {}
+    }
     if (isDemoUser(user?.email)) {
       return [
-        {
-          id: 'doc-1',
-          title: 'Business Registration Certificate',
-          documentType: 'Company Registration',
-          fileName: 'Beacon_Planner_Inc_Registration.pdf',
-          status: 'VERIFIED',
-          uploadedAt: '2026-01-15',
-        },
-        {
-          id: 'doc-2',
-          title: 'Official Tourism Operator License (#TRV-88219)',
-          documentType: 'Tourism License',
-          fileName: 'Tourism_Operator_License_2026.pdf',
-          status: 'VERIFIED',
-          uploadedAt: '2026-01-16',
-        },
-        {
-          id: 'doc-3',
-          title: 'GST / Tax Identification Certificate',
-          documentType: 'Tax Document',
-          fileName: 'GSTIN_Tax_Registration.pdf',
-          status: 'VERIFIED',
-          uploadedAt: '2026-01-16',
-        },
+        { id: '1', title: 'Certificate of Incorporation (ROC)', documentType: 'Company Registration', fileName: 'ROC_Certificate_2020.pdf', status: 'VERIFIED', uploadedAt: '2026-01-15' },
+        { id: '2', title: 'GSTIN Registration Certificate', documentType: 'GST Certificate', fileName: 'GST_27AABCB1234F1Z5.pdf', status: 'VERIFIED', uploadedAt: '2026-01-15' },
+        { id: '3', title: 'Company PAN Card', documentType: 'Company PAN', fileName: 'PAN_Corporate_AABCB.pdf', status: 'VERIFIED', uploadedAt: '2026-01-15' },
+        { id: '4', title: 'Cancelled Cheque - HDFC Bank', documentType: 'Bank Account Proof', fileName: 'Cancelled_Cheque_HDFC.jpg', status: 'VERIFIED', uploadedAt: '2026-01-15' },
+        { id: '5', title: 'Office Lease & Electricity Bill', documentType: 'Address Proof', fileName: 'Office_Address_Proof.pdf', status: 'VERIFIED', uploadedAt: '2026-01-15' }
       ]
     }
     return []
@@ -301,157 +228,125 @@ export default function BusinessProfilePage() {
   // Modal for new document upload
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [uploadTitle, setUploadTitle] = useState('')
-  const [uploadType, setUploadType] = useState('Government ID')
+  const [uploadType, setUploadType] = useState('Company Registration / ROC')
   const [selectedUploadFile, setSelectedUploadFile] = useState<File | null>(null)
+  const [selectedUploadDataUrl, setSelectedUploadDataUrl] = useState<string | null>(null)
 
-  // Sync profile when user changes or loads
-  useEffect(() => {
-    const storageKey = `beacon_profile_${user?.email || 'default'}`
-    const saved = localStorage.getItem(storageKey)
-    if (saved) {
-      try {
-        setProfile(JSON.parse(saved))
-      } catch (e) {}
-    } else {
-      setProfile(getInitialProfile())
-    }
-    setLoading(false)
-  }, [user?.email])
-
-  // Save to localStorage whenever profile changes
-  const saveProfileLocally = (updated: any) => {
+  // Save changes locally
+  const saveProfileLocally = (updated: typeof profile) => {
     const storageKey = `beacon_profile_${user?.email || 'default'}`
     localStorage.setItem(storageKey, JSON.stringify(updated))
   }
 
-  // Auto-Save integration calling the backend endpoints silently in background
+  // Auto-Save integration in background silently
   const triggerAutoSave = async (_sectionName: string, sectionKey: string = 'general') => {
     setAutoSaving(true)
     saveProfileLocally(profile)
     try {
-      let payload: Record<string, any> = {};
-      if (sectionKey === 'banking') {
-        payload = {
-          bankAccountName: profile.bankAccountName,
-          bankAccountNumber: profile.bankAccountNumber,
-          bankName: profile.bankName,
-          ifscOrSwiftCode: profile.ifscOrSwiftCode,
-          upiOrPaypalId: profile.upiOrPaypalId,
-          acceptedPaymentMethods: profile.acceptedPaymentMethods,
-          paymentTerms: profile.paymentTerms,
-          phonepeMerchantId: profile.phonepeMerchantId,
-          phonepeSaltKey: profile.phonepeSaltKey !== '********' ? profile.phonepeSaltKey : undefined,
-          phonepeSaltIndex: profile.phonepeSaltIndex,
-          webhookAuthUsername: profile.webhookAuthUsername,
-          webhookAuthPassword: profile.webhookAuthPassword !== '********' ? profile.webhookAuthPassword : undefined,
-        };
-      } else {
-        payload = { ...profile };
-      }
-      await updateOrganizerProfileSection(sectionKey, payload);
+      await updateOrganizerProfileSection(sectionKey, profile)
     } catch (err) {
-      // silently persist locally without popup interruption
+      // silently persist locally
     } finally {
       setAutoSaving(false)
     }
   }
 
-  // Accurate Step Completion Validation
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true)
+        const profileData = await fetchOrganizerProfile()
+        if (profileData && Object.keys(profileData).length > 0) {
+          setProfile(prev => {
+            const merged = { ...prev, ...profileData }
+            if (typeof merged.avatarUrl === 'string' && merged.avatarUrl.startsWith('blob:')) {
+              merged.avatarUrl = ''
+            }
+            return merged
+          })
+        }
+      } catch (err) {
+        // use local
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [])
+
+  // 4 Mandatory Steps + 1 Optional Profile Completion Track
+  const steps = [
+    { id: 1, title: 'Firm & Brand Information', shortTitle: 'Brand Info', icon: User, isMandatory: true },
+    { id: 2, title: profile.partnerType === 'COMPANY' ? 'Company Legal & Tax Identity' : 'Freelancer Identity & Legal', shortTitle: 'Legal & Tax', icon: Building2, isMandatory: true },
+    { id: 3, title: 'Banking & Payout Credentials', shortTitle: 'Banking', icon: CreditCard, isMandatory: true },
+    { id: 4, title: 'Document Vault & eKYC Verification', shortTitle: 'eKYC Vault', icon: ShieldCheck, isMandatory: true },
+    { id: 5, title: 'Specializations & Public Profile', shortTitle: 'Specializations', icon: Award, isMandatory: false },
+  ]
+
+  // Step Completion Validation Rules
   const isStepComplete = (stepId: number): boolean => {
     switch (stepId) {
-      case 1:
-        return Boolean(profile.displayName?.trim() || profile.email?.trim() || profile.phone?.trim() || profile.city?.trim());
-      case 2:
-        return (profile.specializations?.length || 0) > 0 || (profile.languages?.length || 0) > 0 || Boolean(profile.whyChooseMe?.trim());
-      case 3:
-        return (profile.countriesServed?.length || 0) > 0 || (profile.popularDestinations?.length || 0) > 0 || (profile.operatingRegions?.length || 0) > 0;
-      case 4:
-        return profile.partnerType === 'COMPANY'
-          ? Boolean(profile.companyName?.trim() || profile.registrationNumber?.trim() || profile.gstNumber?.trim() || profile.panNumber?.trim())
-          : Boolean(profile.occupation?.trim() || profile.govtIdNumber?.trim() || profile.panNumber?.trim());
-      case 5:
-        return Boolean(
-          profile.serviceFlights || profile.serviceHotels || profile.serviceMeals ||
-          profile.serviceLocalTransport || profile.serviceTourGuide || profile.serviceCustomizedItinerary ||
-          profile.serviceTravelInsurance || profile.servicePhotography
-        );
-      case 6:
-        return (profile.workingDays?.length || 0) > 0 || Boolean(profile.workingHoursStart && profile.workingHoursEnd);
-      case 7:
-        return Boolean(
-          profile.bankAccountNumber?.trim() || profile.upiOrPaypalId?.trim() || profile.bankName?.trim()
-        );
-      case 8:
-        return Boolean(profile.socialInstagram?.trim() || profile.socialWebsite?.trim() || profile.socialWhatsApp?.trim() || profile.socialFacebook?.trim());
-      case 9:
-        return Boolean(profile.autoResponderMessage?.trim() || profile.notifyEmail || profile.notifyWhatsApp);
-      case 10:
-        return documents.length > 0 || kycStatus === 'VERIFIED' || kycStatus === 'UNDER_REVIEW';
+      case 1: {
+        const hasBrand = Boolean(profile.displayName?.trim())
+        const hasPersonalName = profile.partnerType === 'FREELANCER' ? Boolean(profile.personalName?.trim()) : true
+        const hasPhone = validateIndianMobile(profile.phone).isValid
+        const hasEmail = Boolean(profile.email?.trim())
+        const hasLocation = Boolean(profile.city?.trim() && profile.state?.trim() && profile.country?.trim())
+        return hasBrand && hasPersonalName && hasPhone && hasEmail && hasLocation
+      }
+      case 2: {
+        if (profile.partnerType === 'COMPANY') {
+          const hasName = Boolean(profile.companyName?.trim())
+          const hasPan = validatePAN(profile.panNumber, 'COMPANY').isValid
+          const hasReg = validateCINorLLPIN(profile.registrationNumber).isValid
+          const hasGst = profile.isGstExempt ? Boolean(profile.gstExemptionReason?.trim()) : validateGSTIN(profile.gstNumber, profile.panNumber).isValid
+          const hasAddress = Boolean(profile.officeAddress?.trim())
+          return hasName && hasPan && hasReg && hasGst && hasAddress
+        } else {
+          const hasName = Boolean(profile.legalName?.trim())
+          const hasPan = validatePAN(profile.panNumber, 'INDIVIDUAL').isValid
+          const hasAadhaar = validateAadhaar(profile.aadhaarNumber).isValid
+          const hasVoter = validateVoterID(profile.voterIdNumber).isValid
+          const hasAddress = Boolean(profile.residentialAddress?.trim())
+          return hasName && hasPan && hasAadhaar && hasVoter && hasAddress
+        }
+      }
+      case 3: {
+        const hasName = Boolean(profile.bankAccountName?.trim())
+        const hasAccount = validateBankAccount(profile.bankAccountNumber).isValid
+        const hasIfsc = validateIFSC(profile.ifscOrSwiftCode).isValid
+        const hasUpi = validateUPI(profile.upiOrPaypalId).isValid
+        return hasName && hasAccount && hasIfsc && hasUpi
+      }
+      case 4: {
+        const requiredDocsCount = 4
+        return documents.length >= requiredDocsCount || kycStatus === 'VERIFIED' || profile.isVerified
+      }
+      case 5: {
+        return (profile.specializations?.length || 0) > 0 || Boolean(profile.whyChooseMe?.trim())
+      }
       default:
-        return false;
+        return false
     }
   }
 
-  // Calculate Overall Completion Percentage
+  // Calculate Overall Completion Percentage (Mandatory 4 count for 80%, Step 5 gives remaining 20%)
   const calculateCompletion = () => {
-    let completed = 0
-    for (let i = 1; i <= 10; i++) {
-      if (isStepComplete(i)) completed++
-    }
-    return Math.round((completed / 10) * 100)
+    let completedCount = 0
+    if (isStepComplete(1)) completedCount += 20
+    if (isStepComplete(2)) completedCount += 25
+    if (isStepComplete(3)) completedCount += 20
+    if (isStepComplete(4)) completedCount += 25
+    if (isStepComplete(5)) completedCount += 10
+    return Math.min(100, completedCount)
   }
 
   const completionPercentage = calculateCompletion()
-
-  // 10 Setup Steps Definition
-  const steps = [
-    { id: 1, title: 'Basic Information', shortTitle: 'Basic Info', icon: User, key: 'basic' },
-    { id: 2, title: 'Travel Expertise', shortTitle: 'Expertise', icon: Award, key: 'expertise' },
-    { id: 3, title: 'Operating Locations', shortTitle: 'Locations', icon: MapPin, key: 'locations' },
-    { id: 4, title: profile.partnerType === 'COMPANY' ? 'Company Details' : 'Freelancer Details', shortTitle: 'Business', icon: Building2, key: 'company' },
-    { id: 5, title: 'Packages & Services', shortTitle: 'Services', icon: Package, key: 'services' },
-    { id: 6, title: 'Operating Availability', shortTitle: 'Availability', icon: Clock, key: 'availability' },
-    { id: 7, title: 'Banking & Payments', shortTitle: 'Banking', icon: CreditCard, key: 'banking' },
-    { id: 8, title: 'Social & Brand Links', shortTitle: 'Social', icon: Share2, key: 'social' },
-    { id: 9, title: 'Preferences', shortTitle: 'Preferences', icon: Settings, key: 'preferences' },
-    { id: 10, title: 'Verification Vault', shortTitle: 'Verification', icon: ShieldCheck, key: 'verification' },
-  ]
-
-  // Status helper for sidebar items
-  const getStepStatus = (stepId: number) => {
-    if (stepId === activeStep) return 'current'
-    if (isStepComplete(stepId)) return 'completed'
-    return 'pending'
-  }
-
-  const handleDocumentSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!uploadTitle.trim()) return
-    const newDoc = {
-      id: `doc-${Date.now()}`,
-      title: uploadTitle.trim(),
-      documentType: uploadType,
-      fileName: selectedUploadFile?.name || `${uploadTitle.replace(/\s+/g, '_')}.pdf`,
-      status: 'UNDER_REVIEW' as const,
-      uploadedAt: new Date().toISOString().slice(0, 10),
-    }
-    setDocuments((prev) => [...prev, newDoc])
-    setProfile((prev) => {
-      const updated = { ...prev, verificationProgress: 'UNDER_REVIEW' as const }
-      saveProfileLocally(updated)
-      return updated
-    })
-    updateKycStatus('UNDER_REVIEW')
-    clearBusinessProfileHighlight()
-    setShowUploadModal(false)
-    setUploadTitle('')
-    setSelectedUploadFile(null)
-    toast.success('Verification document submitted. Vault status updated to Under Review.')
-  }
+  const mandatoryComplete = isStepComplete(1) && isStepComplete(2) && isStepComplete(3) && isStepComplete(4)
 
   const handleNextStep = () => {
-    triggerAutoSave(steps[activeStep - 1]?.title || `Section ${activeStep}`)
-    if (activeStep < 10) {
+    triggerAutoSave(steps[activeStep - 1]?.title)
+    if (activeStep < steps.length) {
       setActiveStep(prev => prev + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
@@ -460,33 +355,38 @@ export default function BusinessProfilePage() {
     }
   }
 
-  const handlePrevStep = () => {
-    if (activeStep > 1) {
-      setActiveStep(prev => prev - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+  const handleDocumentSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!uploadTitle.trim() || !selectedUploadFile) {
+      toast.error('Please attach an official file and document title.')
+      return
     }
-  }
 
-  const handleSimulateApproval = () => {
-    setDocuments((prev) => prev.map(d => ({ ...d, status: 'VERIFIED' as const })))
-    setProfile((prev) => {
-      const updated = { ...prev, verificationProgress: 'VERIFIED' as const, isVerified: true }
-      saveProfileLocally(updated)
-      return updated
-    })
-    updateKycStatus('VERIFIED')
-    clearBusinessProfileHighlight()
-    toast.success('🎉 eKYC Verified & Approved! You can now create and publish travel packages.')
+    const newDoc = {
+      id: Date.now().toString(),
+      title: uploadTitle,
+      documentType: uploadType,
+      fileName: selectedUploadFile.name,
+      status: 'UNDER_REVIEW' as const,
+      uploadedAt: new Date().toISOString().split('T')[0],
+      fileDataUrl: selectedUploadDataUrl || undefined
+    }
+
+    const updated = [newDoc, ...documents]
+    setDocuments(updated)
+    localStorage.setItem(`beacon_docs_${user?.email || 'default'}`, JSON.stringify(updated))
+    setUploadTitle('')
+    setSelectedUploadFile(null)
+    setSelectedUploadDataUrl(null)
+    setShowUploadModal(false)
+    toast.success('Document uploaded to Vault. Verification status set to Under Review.')
   }
 
   if (loading) {
     return (
-      <div className="space-y-6 pb-12">
-        <Skeleton className="h-28 w-full rounded-[24px]" />
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <Skeleton className="h-[500px] lg:col-span-1 rounded-[24px]" />
-          <Skeleton className="h-[500px] lg:col-span-3 rounded-[24px]" />
-        </div>
+      <div className="space-y-6 pb-12 max-w-5xl mx-auto p-6">
+        <Skeleton className="h-16 w-full rounded-[24px]" />
+        <Skeleton className="h-[450px] w-full rounded-[24px]" />
       </div>
     )
   }
@@ -500,12 +400,12 @@ export default function BusinessProfilePage() {
             <img src="/planner/beacon-logo.png" alt="Beacon" className="h-8 w-auto object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             <div className="flex flex-col">
               <span className="font-extrabold text-navy text-base leading-tight">Beacon Planner</span>
-              <span className="text-[10px] font-bold text-cyan tracking-wider uppercase">Business Profile</span>
+              <span className="text-[10px] font-bold text-cyan tracking-wider uppercase">KYC & Business Profile</span>
             </div>
           </Link>
           <div className="h-6 w-px bg-border hidden sm:block" />
           <span className="text-xs text-muted font-medium hidden sm:inline-block">
-            Step {activeStep} of 10: <strong className="text-navy">{steps[activeStep - 1]?.title}</strong>
+            Step {activeStep} of {steps.length}: <strong className="text-navy">{steps[activeStep - 1]?.title}</strong>
           </span>
         </div>
 
@@ -532,24 +432,22 @@ export default function BusinessProfilePage() {
       </header>
 
       {/* ---------------- MAIN FULL-SCREEN CONTENT CONTAINER ---------------- */}
-      <div className="max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 flex-1">
+      <div className="max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6 flex-1">
         {showWelcomeDocs ? (
+          /* PRE-FLIGHT ENTITY BRANCH & DOCUMENTS CHECKLIST */
           <Card className="p-6 sm:p-8 border border-border shadow-xl rounded-[24px] bg-white space-y-8 max-w-4xl mx-auto my-4 animate-in fade-in-50 duration-300">
             <div className="text-center space-y-2">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan/15 text-cyan border border-cyan/30 mb-1">
                 <Building2 className="w-7 h-7" />
               </div>
-              <h2 className="text-2xl font-black text-navy">Welcome to Beacon Partner Setup</h2>
+              <h2 className="text-2xl font-black text-navy">Select Your Entity Type</h2>
               <p className="text-sm text-muted max-w-xl mx-auto">
-                Select your entity type below to view the required documents checklist before proceeding with your 10-step profile setup.
+                India has two distinct KYC paths. Please select your operating structure to view your required verification documents.
               </p>
             </div>
 
-            {/* Question 1: Are you a Firm or Freelancer? */}
+            {/* Question 0: Are you a Company or Freelancer? */}
             <div className="space-y-3">
-              <label className="text-xs font-bold uppercase tracking-wider text-navy block text-center">
-                Select Your Organizer Entity Type:
-              </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Option 1: Firm */}
                 <button
@@ -566,11 +464,11 @@ export default function BusinessProfilePage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-navy text-sm flex items-center gap-2">
-                      Registered Travel Firm / Agency
+                      Registered Company / Firm
                       {profile.partnerType === 'COMPANY' && <CheckCircle2 className="w-4 h-4 text-cyan" />}
                     </h4>
                     <p className="text-xs text-muted mt-1 leading-relaxed">
-                      Pvt Ltd, LLP, Partnership, or MSME registered travel agency with multiple agents or commercial operations.
+                      Pvt Ltd, LLP, Partnership firm, or MSME entity with CIN/LLPIN/GSTIN and commercial operations.
                     </p>
                   </div>
                 </button>
@@ -590,11 +488,11 @@ export default function BusinessProfilePage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-navy text-sm flex items-center gap-2">
-                      Individual Freelance Planner / Guide
+                      Individual Freelance Planner
                       {profile.partnerType === 'FREELANCER' && <CheckCircle2 className="w-4 h-4 text-cyan" />}
                     </h4>
                     <p className="text-xs text-muted mt-1 leading-relaxed">
-                      Independent trek leader, solo travel curator, expedition guide, or custom itinerary designer.
+                      Solo guide, trek leader, independent itinerary curator, or outdoor expert operating under personal PAN.
                     </p>
                   </div>
                 </button>
@@ -606,10 +504,10 @@ export default function BusinessProfilePage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <h4 className="text-sm font-bold text-navy flex items-center gap-2">
                   <ShieldCheck className="w-5 h-5 text-teal" />
-                  Required Documents Checklist for {profile.partnerType === 'COMPANY' ? 'Travel Companies & Agencies' : 'Freelance Organizers'}
+                  Required Indian KYC Documents for {profile.partnerType === 'COMPANY' ? 'Travel Companies & Firms' : 'Freelance Planners'}
                 </h4>
-                <span className="text-[11px] font-semibold text-muted bg-white px-2.5 py-1 rounded-full border border-border shrink-0">
-                  Keep handy for Step 10
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/60 px-2.5 py-1 rounded-full border border-emerald-300 shrink-0">
+                  Mandatory for Step 4
                 </span>
               </div>
 
@@ -620,28 +518,28 @@ export default function BusinessProfilePage() {
                       <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
                       <div>
                         <strong className="text-xs text-navy block font-bold">1. Company Registration Proof</strong>
-                        <span className="text-[11px] text-muted">Certificate of Incorporation, ROC, LLPIN or MSME Certificate</span>
+                        <span className="text-[11px] text-muted">Certificate of Incorporation, ROC, LLPIN or Partnership Deed</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
                       <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-xs text-navy block font-bold">2. GST Registration Certificate</strong>
-                        <span className="text-[11px] text-muted">Official GSTIN document issued by government tax department</span>
+                        <strong className="text-xs text-navy block font-bold">2. Company PAN Card</strong>
+                        <span className="text-[11px] text-muted">10-digit PAN in corporate name (4th letter C/F/L)</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
                       <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-xs text-navy block font-bold">3. Company PAN Card</strong>
-                        <span className="text-[11px] text-muted">Permanent Account Number card in registered corporate name</span>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
-                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
-                      <div>
-                        <strong className="text-xs text-navy block font-bold">4. Current Bank Account Proof</strong>
+                        <strong className="text-xs text-navy block font-bold">3. Current Bank Account Proof</strong>
                         <span className="text-[11px] text-muted">Cancelled cheque or bank statement showing account number & IFSC</span>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
+                      <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-xs text-navy block font-bold">4. Registered Office Address Proof</strong>
+                        <span className="text-[11px] text-muted">Utility bill, lease agreement, or property tax receipt matching Step 2</span>
                       </div>
                     </div>
                   </>
@@ -650,29 +548,29 @@ export default function BusinessProfilePage() {
                     <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
                       <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-xs text-navy block font-bold">1. Government Identity Card</strong>
-                        <span className="text-[11px] text-muted">Aadhaar Card, Passport, Voter ID or Driver's License (Front & Back)</span>
+                        <strong className="text-xs text-navy block font-bold">1. Personal PAN Card</strong>
+                        <span className="text-[11px] text-muted">Individual PAN (4th letter P) for payout tax compliance</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
                       <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-xs text-navy block font-bold">2. Personal PAN Card</strong>
-                        <span className="text-[11px] text-muted">Personal tax identification for payout settlement & legal compliance</span>
+                        <strong className="text-xs text-navy block font-bold">2. Aadhaar eKYC Document</strong>
+                        <span className="text-[11px] text-muted">Masked Aadhaar copy / XML pass with Verhoeff checksum</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
                       <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-xs text-navy block font-bold">3. Savings Bank Account Proof</strong>
-                        <span className="text-[11px] text-muted">Cancelled cheque or bank passbook copy with IFSC & account holder name</span>
+                        <strong className="text-xs text-navy block font-bold">3. Voter ID (EPIC) Card</strong>
+                        <span className="text-[11px] text-muted">3 letters + 7 digits (confirms 18+ age eligibility)</span>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 p-3.5 bg-white rounded-[14px] border border-border/80 shadow-2xs">
                       <FileCheck className="w-4 h-4 text-cyan shrink-0 mt-0.5" />
                       <div>
-                        <strong className="text-xs text-navy block font-bold">4. Profile Photo / Headshot</strong>
-                        <span className="text-[11px] text-muted">Clear, professional photo to display on your public tour listings</span>
+                        <strong className="text-xs text-navy block font-bold">4. Bank Account & Address Proof</strong>
+                        <span className="text-[11px] text-muted">Cancelled cheque/passbook + address proof (or auto-satisfied via Aadhaar)</span>
                       </div>
                     </div>
                   </>
@@ -683,7 +581,7 @@ export default function BusinessProfilePage() {
             {/* Proceed Action Button */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-border">
               <p className="text-xs text-muted">
-                You can switch between Firm and Freelancer anytime from the top bar.
+                You can switch between Company and Freelancer anytime from the top bar.
               </p>
               <Button
                 size="lg"
@@ -695,136 +593,130 @@ export default function BusinessProfilePage() {
                 }}
                 className="w-full sm:w-auto bg-cyan hover:bg-cyan/90 text-navy font-black text-sm px-8 py-3.5 rounded-[14px] shadow-md gap-2 cursor-pointer"
               >
-                Proceed to Profile Setup →
+                Proceed to Step 1: Brand Info →
               </Button>
             </div>
           </Card>
         ) : (
           <>
-      {/* ---------------- FULL-WIDTH HORIZONTAL STEP RAIL ---------------- */}
-      <div className="w-full bg-surface border border-border rounded-[24px] p-5 shadow-sm space-y-4">
-        {/* Top Rail Sub-header */}
-        <div className="flex items-center justify-between gap-4 border-b border-border/50 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-teal">
-              Step {activeStep} of 10
-            </span>
-            <span className="text-muted/40">•</span>
-            <span className="text-sm font-bold text-navy">
-              {steps[activeStep - 1]?.title}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold text-muted hidden sm:inline">
-              Progress: <strong className="text-navy">{completionPercentage}%</strong>
-            </span>
-            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-              {steps.filter(s => isStepComplete(s.id)).length}/10 Complete
-            </span>
-          </div>
-        </div>
-
-        {/* Connected Step Markers Row */}
-        <div className="pt-2 pb-1 px-1">
-          <div className="flex items-center justify-between relative">
-            {steps.map((step, idx) => {
-              const isCompleted = isStepComplete(step.id)
-              const isActive = activeStep === step.id
-              const isUpcoming = !isActive && !isCompleted
-
-              return (
-                <div key={step.id} className="flex-1 flex items-center group relative min-w-0">
-                  {/* Marker Button */}
-                  <button
-                    type="button"
-                    onClick={() => setActiveStep(step.id)}
-                    className="flex flex-col items-center gap-1.5 focus:outline-none cursor-pointer group shrink-0"
-                    title={`${step.id}. ${step.title}`}
-                  >
-                    <div
-                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200 ${
-                        isActive
-                          ? 'bg-cyan text-navy font-extrabold shadow-md rail-pulse ring-2 ring-cyan/40 scale-110 z-20'
-                          : isCompleted
-                          ? 'bg-emerald-50 border border-emerald-500/40 text-emerald-600/80 hover:bg-emerald-100/60 z-10'
-                          : 'bg-white border border-border/80 text-muted/60 hover:border-border hover:text-muted z-10'
-                      }`}
-                    >
-                      {isCompleted ? (
-                        <Check className="w-4 h-4 stroke-[2.5]" />
-                      ) : (
-                        <span>{step.id}</span>
-                      )}
-                    </div>
-
-                    {/* Label (Responsive: Abbreviated on medium/large) */}
-                    <span
-                      className={`text-[10px] text-center max-w-[72px] truncate hidden md:block transition-all duration-200 ${
-                        isActive
-                          ? 'font-extrabold text-navy scale-105'
-                          : isCompleted
-                          ? 'font-medium text-muted/60'
-                          : 'text-muted/40 font-normal'
-                      }`}
-                    >
-                      {step.shortTitle}
+            {/* ---------------- FULL-WIDTH HORIZONTAL STEP RAIL ---------------- */}
+            <div className="w-full bg-surface border border-border rounded-[24px] p-5 shadow-sm space-y-4">
+              <div className="flex items-center justify-between gap-4 border-b border-border/50 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-teal">
+                    Step {activeStep} of {steps.length}
+                  </span>
+                  <span className="text-muted/40">•</span>
+                  <span className="text-sm font-bold text-navy">
+                    {steps[activeStep - 1]?.title}
+                  </span>
+                  {steps[activeStep - 1]?.isMandatory ? (
+                    <span className="text-[10px] font-bold text-rose-600 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full ml-1">
+                      Mandatory KYC Gate
                     </span>
-                  </button>
-
-                  {/* Connecting Line to Next Step */}
-                  {idx < steps.length - 1 && (
-                    <div className="flex-1 h-[2px] mx-1 sm:mx-2 rounded-full overflow-hidden transition-all duration-250">
-                      <div
-                        className={`h-full transition-all duration-250 ${
-                          isCompleted
-                            ? 'bg-emerald-300/40'
-                            : isActive
-                            ? 'bg-gradient-to-r from-cyan to-border'
-                            : 'bg-border/60'
-                        }`}
-                      />
-                    </div>
+                  ) : (
+                    <span className="text-[10px] font-bold text-teal bg-teal/10 border border-teal/20 px-2 py-0.5 rounded-full ml-1">
+                      Optional Track
+                    </span>
                   )}
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-semibold text-muted hidden sm:inline">
+                    Score: <strong className="text-navy">{completionPercentage}%</strong>
+                  </span>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                    {steps.filter(s => isStepComplete(s.id)).length}/{steps.length} Completed
+                  </span>
+                </div>
+              </div>
 
-      {/* ---------------- MAIN CONTENT AREA ---------------- */}
-      <div className="space-y-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeStep}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.25 }}
-          >
-              {/* ---------------- SECTION 1: BASIC INFORMATION ---------------- */}
+              {/* Connected Step Markers Row */}
+              <div className="pt-2 pb-1 px-1">
+                <div className="flex items-center justify-between relative">
+                  {steps.map((step, idx) => {
+                    const isCompleted = isStepComplete(step.id)
+                    const isActive = activeStep === step.id
+                    const isUpcoming = !isActive && !isCompleted
+
+                    return (
+                      <div key={step.id} className="flex-1 flex items-center group relative min-w-0">
+                        {/* Marker Button */}
+                        <button
+                          type="button"
+                          onClick={() => setActiveStep(step.id)}
+                          className="flex flex-col items-center gap-1.5 focus:outline-none cursor-pointer group shrink-0"
+                          title={`${step.id}. ${step.title}`}
+                        >
+                          <div
+                            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200 ${
+                              isActive
+                                ? 'bg-cyan text-navy font-extrabold shadow-md rail-pulse ring-2 ring-cyan/40 scale-110 z-20'
+                                : isCompleted
+                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-400 font-semibold z-10'
+                                : 'bg-page border border-border text-muted/60 font-medium'
+                            }`}
+                          >
+                            {isCompleted ? (
+                              <Check className="w-4 h-4 stroke-[2.5]" />
+                            ) : (
+                              <span>{step.id}</span>
+                            )}
+                          </div>
+                          <span
+                            className={`text-[11px] tracking-tight truncate max-w-[80px] sm:max-w-[100px] text-center transition-colors ${
+                              isActive
+                                ? 'text-navy font-black'
+                                : isCompleted
+                                ? 'text-navy/80 font-medium'
+                                : 'text-muted/60 font-normal'
+                            }`}
+                          >
+                            {step.shortTitle}
+                          </span>
+                        </button>
+
+                        {/* Connector Line between markers */}
+                        {idx < steps.length - 1 && (
+                          <div className="flex-1 mx-2 h-0.5 self-center mb-5 rounded-full overflow-hidden bg-slate-200">
+                            <div
+                              className={`h-full transition-all duration-300 ${
+                                isCompleted ? 'bg-emerald-400' : 'bg-transparent'
+                              }`}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* ---------------- ACTIVE STEP FORM CARDS ---------------- */}
+            <AnimatePresence mode="wait">
+              {/* ---------------- STEP 1: FIRM & BRAND INFORMATION ---------------- */}
               {activeStep === 1 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
                   <div className="flex items-center justify-between pb-4 border-b border-border">
                     <div>
                       <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <User className="w-5 h-5 text-teal" /> 1. Basic Account & Brand Information
+                        <User className="w-5 h-5 text-teal" /> 1. Firm & Brand Information
                       </h3>
-                      <p className="text-xs text-muted mt-1">Manage your brand logo, cover banner, contact details, and public bio.</p>
+                      <p className="text-xs text-muted mt-1">Basic public identity and operating contact details.</p>
                     </div>
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Basic Information')}
                       className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
+                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
                     </Button>
                   </div>
 
                   {/* Brand Firm Photo / Logo Upload */}
                   <div>
                     <FileUploader
-                      label="Brand Profile Photo / Firm Logo"
+                      label="Brand Profile Photo / Firm Logo (Optional)"
                       currentFileUrl={profile.avatarUrl}
                       onFileSelect={(_file, dataUrl) => {
                         if (dataUrl) {
@@ -842,848 +734,694 @@ export default function BusinessProfilePage() {
 
                   <div className="space-y-4">
                     <Input
-                      label="Display Name / Brand Title"
+                      label="Public Brand / Display Name *"
+                      placeholder="e.g. Beacon Luxury Expeditions or Alex Mountain Trails"
                       value={profile.displayName}
                       onChange={(e) => setProfile((prev) => ({ ...prev, displayName: e.target.value }))}
+                      required
                     />
-                    
-                    <Input
-                      label="Primary Mobile Number"
-                      value={profile.phone}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        setProfile((prev) => ({ ...prev, phone: val, whatsappNumber: prev.whatsappNumber || val }))
-                        triggerAutoSave('Mobile Number')
-                      }}
-                      icon={<Phone className="w-4 h-4 text-teal" />}
-                    />
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {profile.partnerType === 'FREELANCER' && (
+                      <Input
+                        label="Planner's Personal Name (Shown to Travelers) *"
+                        placeholder="e.g. Alex Kumar"
+                        value={profile.personalName || ''}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, personalName: e.target.value }))}
+                        helperText="The human name travelers see when chatting or browsing your tours."
+                        required
+                      />
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <Input
+                          label="Primary Business Phone (10-Digit Mobile) *"
+                          type="tel"
+                          icon={<Phone className="w-4 h-4 text-teal" />}
+                          placeholder="e.g. 9876543210"
+                          value={profile.phone}
+                          onChange={(e) => setProfile((prev) => ({ ...prev, phone: e.target.value }))}
+                          required
+                        />
+                        {profile.phone && !validateIndianMobile(profile.phone).isValid && (
+                          <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3 h-3" /> {validateIndianMobile(profile.phone).message}
+                          </p>
+                        )}
+                      </div>
+
+                      <Input
+                        label="Business Email *"
+                        type="email"
+                        icon={<Mail className="w-4 h-4 text-teal" />}
+                        value={profile.email}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, email: e.target.value }))}
+                        required
+                      />
+                    </div>
+
                     <Input
-                      label="Business Email"
-                      type="email"
-                      value={profile.email}
-                      placeholder="planner@domain.com"
-                      onChange={(e) => setProfile((prev) => ({ ...prev, email: e.target.value }))}
-                      icon={<Mail className="w-4 h-4 text-teal" />}
-                    />
-                    <Input
-                      label="WhatsApp Line"
+                      label="WhatsApp Support Line (Optional)"
+                      type="tel"
+                      icon={<Phone className="w-4 h-4 text-teal" />}
+                      placeholder="e.g. 9876543210"
                       value={profile.whatsappNumber}
-                      placeholder="+91 98765 43210"
                       onChange={(e) => setProfile((prev) => ({ ...prev, whatsappNumber: e.target.value }))}
-                      icon={<Phone className="w-4 h-4 text-teal" />}
                     />
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <Input
-                      label="City"
-                      placeholder="e.g. Jalna"
-                      value={profile.city || ''}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        setProfile((prev) => ({ ...prev, city: val }))
-                        triggerAutoSave('City')
-                      }}
-                      icon={<MapPin className="w-4 h-4 text-teal" />}
-                    />
-                    <Input
-                      label="State / Province"
-                      placeholder="e.g. Maharashtra"
-                      value={profile.state || ''}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        setProfile((prev) => ({ ...prev, state: val }))
-                        triggerAutoSave('State')
-                      }}
-                      icon={<MapPin className="w-4 h-4 text-teal" />}
-                    />
-                    <Input
-                      label="Country"
-                      placeholder="e.g. India"
-                      value={profile.country || ''}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        setProfile((prev) => ({ ...prev, country: val }))
-                        triggerAutoSave('Country')
-                      }}
-                      icon={<Globe className="w-4 h-4 text-teal" />}
-                    />
-                  </div>
+                    {/* 3 Location Inputs with Country locked to India */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <Input
+                        label="Operating City *"
+                        placeholder="e.g. Mumbai, Manali, Bengaluru"
+                        value={profile.city || ''}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, city: e.target.value }))}
+                        required
+                      />
+                      <Input
+                        label="Operating State *"
+                        placeholder="e.g. Maharashtra, Himachal Pradesh"
+                        value={profile.state || ''}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, state: e.target.value }))}
+                        required
+                      />
+                      <Input
+                        label="Country *"
+                        value="India"
+                        disabled
+                        helperText="Locked to India for this release"
+                      />
+                    </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-navy block">Professional Bio & Mission Statement</label>
-                    <textarea
-                      rows={4}
-                      value={profile.bio}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, bio: e.target.value }))}
-                      className="w-full p-3 text-xs text-navy border border-border rounded-[14px] bg-page focus:border-teal focus:outline-none resize-none"
-                    />
+                    <div>
+                      <label className="text-xs font-bold text-navy block mb-1.5">
+                        Company Story / Professional Bio (Optional)
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={profile.bio}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, bio: e.target.value }))}
+                        placeholder="Tell travelers what makes your itineraries special and why they should book with you..."
+                        className="w-full p-3 rounded-[12px] border border-border bg-page text-xs text-navy focus:outline-none focus:ring-1 focus:ring-cyan"
+                      />
+                    </div>
                   </div>
                 </Card>
               )}
 
-              {/* ---------------- SECTION 2: TRAVEL EXPERTISE ---------------- */}
+              {/* ---------------- STEP 2: LEGAL & TAX IDENTITY (KYC GATE) ---------------- */}
               {activeStep === 2 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
                   <div className="flex items-center justify-between pb-4 border-b border-border">
                     <div>
                       <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <Award className="w-5 h-5 text-teal" /> 2. Travel Expertise & Specializations
-                      </h3>
-                      <p className="text-xs text-muted mt-1">Define your niche, languages spoken, travel styles, and group size capabilities.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Travel Expertise')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
-                    </Button>
-                  </div>
-
-                  <MultiSelectChips
-                    label="Tour Specializations (Searchable Tags)"
-                    options={SPECIALIZATION_OPTIONS}
-                    selected={profile.specializations}
-                    onChange={(selected) => {
-                      setProfile((prev) => ({ ...prev, specializations: selected }))
-                      triggerAutoSave('Specializations')
-                    }}
-                    placeholder="Search or add specializations... (e.g. Trekking, Luxury Travel, Honeymoon)"
-                  />
-
-                  <MultiSelectChips
-                    label="Languages Spoken"
-                    options={LANGUAGE_OPTIONS}
-                    selected={profile.languages}
-                    onChange={(selected) => {
-                      setProfile((prev) => ({ ...prev, languages: selected }))
-                      triggerAutoSave('Languages')
-                    }}
-                    placeholder="Search or add languages... (e.g. English, Hindi, Marathi)"
-                  />
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Input
-                      label="Years of Industry Experience"
-                      type="number"
-                      value={profile.yearsExperience.toString()}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, yearsExperience: parseInt(e.target.value) || 1 }))}
-                    />
-                    <Input
-                      label="Why Should Travelers Choose Me?"
-                      value={profile.whyChooseMe || (Array.isArray(profile.groupSizes) ? profile.groupSizes.join(', ') : '')}
-                      placeholder="e.g. 10+ years local expertise, 24/7 on-ground support, customized luxury plans"
-                      onChange={(e) => setProfile((prev) => ({ ...prev, whyChooseMe: e.target.value }))}
-                    />
-                  </div>
-                </Card>
-              )}
-
-              {/* ---------------- SECTION 3: OPERATING LOCATIONS ---------------- */}
-              {activeStep === 3 && (
-                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <MapPin className="w-5 h-5 text-teal" /> 3. Operating Locations & Coverage
-                      </h3>
-                      <p className="text-xs text-muted mt-1">Specify countries, regions, and popular destinations where you organize tours.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Operating Locations')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
-                    </Button>
-                  </div>
-
-                  <MultiSelectChips
-                    label="Countries Served"
-                    options={COUNTRY_OPTIONS}
-                    selected={profile.countriesServed}
-                    onChange={(selected) => {
-                      setProfile((prev) => ({ ...prev, countriesServed: selected }))
-                      triggerAutoSave('Countries')
-                    }}
-                    placeholder="Search or add countries... (e.g. India, Japan, Maldives)"
-                  />
-
-                  <MultiSelectChips
-                    label="Popular Destinations Offered"
-                    options={POPULAR_DESTINATIONS_OPTIONS}
-                    selected={profile.popularDestinations}
-                    onChange={(selected) => {
-                      setProfile((prev) => ({ ...prev, popularDestinations: selected }))
-                      triggerAutoSave('Destinations')
-                    }}
-                    placeholder="Search or add destinations... (e.g. Manali, Bali, Goa)"
-                  />
-
-                  <Input
-                    label="Operating Regions / Continents"
-                    value={profile.operatingRegions.join(', ')}
-                    onChange={(e) => setProfile((prev) => ({ ...prev, operatingRegions: e.target.value.split(',').map(s => s.trim()) }))}
-                    placeholder="e.g. South Asia, Western Europe"
-                  />
-                </Card>
-              )}
-
-              {/* ---------------- SECTION 4: DYNAMIC COMPANY vs FREELANCER DETAILS ---------------- */}
-              {activeStep === 4 && (
-                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-teal" />
-                        4. {profile.partnerType === 'COMPANY' ? 'Company Details' : 'Freelancer Details'}
+                        <Building2 className="w-5 h-5 text-teal" /> 2. {profile.partnerType === 'COMPANY' ? 'Company Legal & Tax Identity' : 'Freelancer Identity & Legal'}
                       </h3>
                       <p className="text-xs text-muted mt-1">
-                        {profile.partnerType === 'COMPANY'
-                          ? 'Specify legal entity credentials, registration numbers, tax IDs, and office details.'
-                          : 'Provide your personal freelance title, portfolio, and government ID details.'}
+                        Mandatory compliance verification under Indian business and tax laws.
                       </p>
                     </div>
-
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Legal Details')}
                       className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
+                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
                     </Button>
                   </div>
 
                   {profile.partnerType === 'COMPANY' ? (
-                    // COMPANY SPECIFIC FIELDS
+                    /* COMPANY LEGAL PATH */
                     <div className="space-y-4">
+                      <Input
+                        label="Registered Legal Company Name (as per ROC) *"
+                        placeholder="e.g. Beacon Travel International Pvt Ltd"
+                        value={profile.companyName}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, companyName: e.target.value }))}
+                        helperText="Must match your Certificate of Incorporation."
+                        required
+                      />
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Input
-                          label="Company Registered Legal Name"
-                          value={profile.companyName}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, companyName: e.target.value }))}
-                        />
-                        <Input
-                          label="Business Registration Number (CIN / LLPIN / EIN)"
-                          value={profile.registrationNumber}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, registrationNumber: e.target.value }))}
-                        />
+                        <div>
+                          <Input
+                            label="Company PAN (10 Characters) *"
+                            placeholder="e.g. AABCB1234F"
+                            value={profile.panNumber}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, panNumber: e.target.value.toUpperCase() }))}
+                            required
+                          />
+                          {profile.panNumber && !validatePAN(profile.panNumber, 'COMPANY').isValid && (
+                            <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                              <AlertCircle className="w-3 h-3" /> {validatePAN(profile.panNumber, 'COMPANY').message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <Input
+                            label="CIN / LLPIN / Firm Registration No. *"
+                            placeholder="e.g. U63040MH2020PTC345678 or AAA-1234"
+                            value={profile.registrationNumber}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, registrationNumber: e.target.value.toUpperCase() }))}
+                            required
+                          />
+                          {profile.registrationNumber && !validateCINorLLPIN(profile.registrationNumber).isValid && (
+                            <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                              <AlertCircle className="w-3 h-3" /> {validateCINorLLPIN(profile.registrationNumber).message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* GSTIN with Exemption Checkbox */}
+                      <div className="p-4 bg-slate-50 border border-border rounded-[16px] space-y-3">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-bold text-navy block">
+                            GSTIN (Goods and Services Tax Number) *
+                          </label>
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={profile.isGstExempt || false}
+                              onChange={(e) => setProfile((prev) => ({ ...prev, isGstExempt: e.target.checked }))}
+                              className="rounded border-border text-cyan focus:ring-cyan w-3.5 h-3.5"
+                            />
+                            <span className="text-xs text-muted font-medium">I am not GST-registered</span>
+                          </label>
+                        </div>
+
+                        {profile.isGstExempt ? (
+                          <Input
+                            label="Reason for GST Exemption *"
+                            placeholder="e.g. Turnover below ₹20 Lakhs statutory threshold"
+                            value={profile.gstExemptionReason || ''}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, gstExemptionReason: e.target.value }))}
+                            required
+                          />
+                        ) : (
+                          <div>
+                            <Input
+                              placeholder="e.g. 27AABCB1234F1Z5"
+                              value={profile.gstNumber}
+                              onChange={(e) => setProfile((prev) => ({ ...prev, gstNumber: e.target.value.toUpperCase() }))}
+                              helperText="Characters 3-12 must match entered PAN."
+                              required
+                            />
+                            {profile.gstNumber && !validateGSTIN(profile.gstNumber, profile.panNumber).isValid && (
+                              <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                                <AlertCircle className="w-3 h-3" /> {validateGSTIN(profile.gstNumber, profile.panNumber).message}
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <Input
-                          label="GST / Tax Identification Number"
-                          value={profile.gstNumber}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, gstNumber: e.target.value }))}
-                        />
-                        <Input
-                          label="PAN Card Number"
-                          value={profile.panNumber}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, panNumber: e.target.value }))}
-                        />
-                        <Input
-                          label="Company Website URL"
-                          value={profile.companyWebsite}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, companyWebsite: e.target.value }))}
-                        />
+                        <div className="sm:col-span-2">
+                          <Input
+                            label="Registered Office Address *"
+                            placeholder="e.g. 4th Floor, Mittal Towers, Nariman Point, Mumbai"
+                            value={profile.officeAddress}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, officeAddress: e.target.value }))}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            label="PIN Code *"
+                            placeholder="e.g. 400001"
+                            value={profile.pinCode || ''}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, pinCode: e.target.value }))}
+                            required
+                          />
+                          {profile.pinCode && !validatePINCode(profile.pinCode).isValid && (
+                            <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                              <AlertCircle className="w-3 h-3" /> {validatePINCode(profile.pinCode).message}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <Input
-                          label="Office / Headquarters Address"
-                          value={profile.officeAddress}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, officeAddress: e.target.value }))}
+                          label="Year of Establishment (Optional)"
+                          type="number"
+                          value={profile.establishedYear?.toString() || ''}
+                          onChange={(e) => setProfile((prev) => ({ ...prev, establishedYear: parseInt(e.target.value) || 2020 }))}
                         />
-                        <div className="grid grid-cols-2 gap-3">
-                          <Input
-                            label="Established Year"
-                            type="number"
-                            value={profile.establishedYear.toString()}
-                            onChange={(e) => setProfile((prev) => ({ ...prev, establishedYear: parseInt(e.target.value) || 2020 }))}
-                          />
-                          <Input
-                            label="Number of Employees"
-                            value={profile.numberOfEmployees}
-                            onChange={(e) => setProfile((prev) => ({ ...prev, numberOfEmployees: e.target.value }))}
-                          />
+                        <div className="space-y-1">
+                          <label className="text-xs font-bold text-navy block">Company Team Size (Optional)</label>
+                          <select
+                            value={profile.teamSize || '1-10 Employees'}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, teamSize: e.target.value }))}
+                            className="w-full p-2.5 rounded-[12px] border border-border bg-page text-xs text-navy focus:outline-none focus:ring-1 focus:ring-cyan"
+                          >
+                            <option value="1-10 Employees">1-10 Employees</option>
+                            <option value="11-50 Employees">11-50 Employees</option>
+                            <option value="51-200 Employees">51-200 Employees</option>
+                            <option value="200+ Employees">200+ Employees</option>
+                          </select>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    // FREELANCER SPECIFIC FIELDS
+                    /* FREELANCER LEGAL PATH */
                     <div className="space-y-4">
+                      <Input
+                        label="Full Legal Name (as per Govt ID) *"
+                        placeholder="e.g. Aditya Vijay Kumar"
+                        value={profile.legalName || profile.displayName}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, legalName: e.target.value }))}
+                        required
+                      />
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <Input
-                          label="Occupation / Title"
-                          value={profile.occupation}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, occupation: e.target.value }))}
-                          placeholder="e.g. Expedition Leader & Freelance Planner"
-                        />
-                        <Input
-                          label="Portfolio Website URL"
-                          value={profile.portfolioWebsite}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, portfolioWebsite: e.target.value }))}
-                        />
+                        <div>
+                          <Input
+                            label="Personal PAN Card Number *"
+                            placeholder="e.g. ABCPK1234F"
+                            value={profile.panNumber}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, panNumber: e.target.value.toUpperCase() }))}
+                            helperText="4th character must be 'P' for Individual."
+                            required
+                          />
+                          {profile.panNumber && !validatePAN(profile.panNumber, 'INDIVIDUAL').isValid && (
+                            <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                              <AlertCircle className="w-3 h-3" /> {validatePAN(profile.panNumber, 'INDIVIDUAL').message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <Input
+                            label="Aadhaar Number (12-Digit + Verhoeff Checksum) *"
+                            placeholder="e.g. 2345 6789 0123"
+                            value={profile.aadhaarNumber || ''}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, aadhaarNumber: e.target.value }))}
+                            helperText="Encrypted & masked. Verified via UIDAI Verhoeff checksum."
+                            required
+                          />
+                          {profile.aadhaarNumber && !validateAadhaar(profile.aadhaarNumber).isValid && (
+                            <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                              <AlertCircle className="w-3 h-3" /> {validateAadhaar(profile.aadhaarNumber).message}
+                            </p>
+                          )}
+                          {profile.aadhaarNumber && validateAadhaar(profile.aadhaarNumber).isValid && (
+                            <p className="text-[11px] text-emerald-600 mt-1 flex items-center gap-1 font-semibold">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-500" /> Verhoeff Checksum Valid ({maskAadhaar(profile.aadhaarNumber)})
+                            </p>
+                          )}
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <Input
+                            label="Voter ID (EPIC) Number *"
+                            placeholder="e.g. ABC1234567"
+                            value={profile.voterIdNumber || ''}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, voterIdNumber: e.target.value.toUpperCase() }))}
+                            helperText="3 letters + 7 digits (confirms 18+ age eligibility)."
+                            required
+                          />
+                          {profile.voterIdNumber && !validateVoterID(profile.voterIdNumber).isValid && (
+                            <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                              <AlertCircle className="w-3 h-3" /> {validateVoterID(profile.voterIdNumber).message}
+                            </p>
+                          )}
+                        </div>
+
                         <Input
-                          label="Government ID Type"
-                          value={profile.govtIdType}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, govtIdType: e.target.value }))}
-                          placeholder="Passport / Aadhaar / National ID"
+                          label="Udyam (MSME) Registration (Optional)"
+                          placeholder="e.g. UDYAM-MH-01-0012345"
+                          value={profile.udyamNumber || ''}
+                          onChange={(e) => setProfile((prev) => ({ ...prev, udyamNumber: e.target.value.toUpperCase() }))}
+                          helperText="Unlocks tourism scheme eligibility & adds trust badge."
                         />
-                        <Input
-                          label="Government ID Number"
-                          value={profile.govtIdNumber}
-                          onChange={(e) => setProfile((prev) => ({ ...prev, govtIdNumber: e.target.value }))}
-                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="sm:col-span-2">
+                          <Input
+                            label="Residential / Operating Address *"
+                            placeholder="e.g. Flat 402, Green Meadows, Bandra West, Mumbai"
+                            value={profile.residentialAddress || ''}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, residentialAddress: e.target.value }))}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <Input
+                            label="PIN Code *"
+                            placeholder="e.g. 400050"
+                            value={profile.pinCode || ''}
+                            onChange={(e) => setProfile((prev) => ({ ...prev, pinCode: e.target.value }))}
+                            required
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
                 </Card>
               )}
 
-              {/* ---------------- SECTION 5: PACKAGES & SERVICES OFFERED ---------------- */}
-              {activeStep === 5 && (
+              {/* ---------------- STEP 3: BANKING & PAYOUTS ---------------- */}
+              {activeStep === 3 && (
                 <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
                   <div className="flex items-center justify-between pb-4 border-b border-border">
                     <div>
                       <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <Package className="w-5 h-5 text-teal" /> 5. Packages & Included Services
+                        <CreditCard className="w-5 h-5 text-teal" /> 3. Banking & Payout Credentials
                       </h3>
-                      <p className="text-xs text-muted mt-1">Use interactive ON/OFF cards to indicate standard inclusions for your trip packages.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Package Services')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <ToggleCard
-                      icon={<Plane className="w-5 h-5" />}
-                      title="Flight Bookings"
-                      description="Domestic and international flight assistance"
-                      enabled={profile.serviceFlights}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceFlights: enabled }))}
-                    />
-                    <ToggleCard
-                      icon={<Hotel className="w-5 h-5" />}
-                      title="Hotels & Resorts"
-                      description="Luxury & boutique accommodations included"
-                      enabled={profile.serviceHotels}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceHotels: enabled }))}
-                    />
-                    <ToggleCard
-                      icon={<Utensils className="w-5 h-5" />}
-                      title="Meals & Dining"
-                      description="Daily breakfast, lunch, or gourmet dinner"
-                      enabled={profile.serviceMeals}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceMeals: enabled }))}
-                    />
-                    <ToggleCard
-                      icon={<Car className="w-5 h-5" />}
-                      title="Local Transport"
-                      description="Private cab transfers & airport pickups"
-                      enabled={profile.serviceLocalTransport}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceLocalTransport: enabled }))}
-                    />
-                    <ToggleCard
-                      icon={<FileCheck className="w-5 h-5" />}
-                      title="Visa Assistance"
-                      description="Express visa application & documentation"
-                      enabled={profile.serviceVisaAssistance}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceVisaAssistance: enabled }))}
-                    />
-                    <ToggleCard
-                      icon={<Shield className="w-5 h-5" />}
-                      title="Travel Insurance"
-                      description="Comprehensive medical & trip coverage"
-                      enabled={profile.serviceTravelInsurance}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceTravelInsurance: enabled }))}
-                    />
-                    <ToggleCard
-                      icon={<User className="w-5 h-5" />}
-                      title="Licensed Tour Guide"
-                      description="Dedicated local guide & concierge"
-                      enabled={profile.serviceTourGuide}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceTourGuide: enabled }))}
-                    />
-                    <ToggleCard
-                      icon={<Sparkles className="w-5 h-5" />}
-                      title="Customized Itineraries"
-                      description="Tailor-made schedules according to traveler preferences"
-                      enabled={profile.serviceCustomizedItinerary}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, serviceCustomizedItinerary: enabled }))}
-                    />
-                  </div>
-                </Card>
-              )}
-
-              {/* ---------------- SECTION 6: OPERATING AVAILABILITY ---------------- */}
-              {activeStep === 6 && (
-                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <Clock className="w-5 h-5 text-teal" /> 6. Operating Availability & SLA
-                      </h3>
-                      <p className="text-xs text-muted mt-1">Configure your working days, business hours, and inquiry response SLAs.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Availability')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
-                    </Button>
-                  </div>
-
-                  <DayPicker
-                    label="Working Days Selection"
-                    selectedDays={profile.workingDays}
-                    onChange={(days) => {
-                      setProfile((prev) => ({ ...prev, workingDays: days }))
-                      triggerAutoSave('Working Days')
-                    }}
-                  />
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <Input
-                      label="Opening Time"
-                      type="time"
-                      value={profile.workingHoursStart}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, workingHoursStart: e.target.value }))}
-                    />
-                    <Input
-                      label="Closing Time"
-                      type="time"
-                      value={profile.workingHoursEnd}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, workingHoursEnd: e.target.value }))}
-                    />
-                    <Input
-                      label="Response Time SLA"
-                      value={profile.responseTimeSla}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, responseTimeSla: e.target.value }))}
-                    />
-                  </div>
-
-                  <ToggleCard
-                    title="Taking New Bookings"
-                    description="When enabled, travelers can directly send inquiries and book packages."
-                    enabled={profile.isTakingBookings}
-                    onChange={(enabled) => setProfile((prev) => ({ ...prev, isTakingBookings: enabled }))}
-                  />
-                </Card>
-              )}
-
-              {/* ---------------- SECTION 7: BANKING & PAYMENTS ---------------- */}
-              {activeStep === 7 && (
-                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <CreditCard className="w-5 h-5 text-teal" /> 7. Banking & Payment Settlement Details
-                      </h3>
-                      <p className="text-xs text-muted mt-1">Configure payout bank accounts, PhonePe API keys, and cancellation terms.</p>
+                      <p className="text-xs text-muted mt-1">
+                        Bank details for booking payouts and UPI settlement.
+                      </p>
                     </div>
                     <Button
                       size="sm"
                       onClick={() => triggerAutoSave('Banking Details', 'banking')}
                       className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
                     >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Input
-                      label="Bank Account Holder Name"
-                      value={profile.bankAccountName}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, bankAccountName: e.target.value }))}
-                    />
-                    <Input
-                      label="Bank Account Number / IBAN"
-                      value={profile.bankAccountNumber}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, bankAccountNumber: e.target.value }))}
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <Input
-                      label="Bank Name"
-                      value={profile.bankName}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, bankName: e.target.value }))}
-                    />
-                    <Input
-                      label="IFSC / SWIFT Code"
-                      value={profile.ifscOrSwiftCode}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, ifscOrSwiftCode: e.target.value }))}
-                    />
-                    <Input
-                      label="UPI ID / PayPal Email"
-                      value={profile.upiOrPaypalId}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, upiOrPaypalId: e.target.value }))}
-                    />
-                  </div>
-
-                  {/* PhonePe Merchant Account Settings */}
-                  <div className="pt-4 border-t border-border/40 space-y-4">
-                    <div>
-                      <h4 className="text-xs font-extrabold text-teal uppercase tracking-wider">PhonePe Automatic Payment Settlement (Dynamic QR)</h4>
-                      <p className="text-[10px] text-muted mt-0.5">Integrate your direct planner merchant settlement keys to generate dynamic traveler payment scanner QR codes.</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <Input
-                        label="PhonePe Merchant ID"
-                        placeholder="e.g. MERCH1203984"
-                        value={profile.phonepeMerchantId}
-                        onChange={(e) => setProfile((prev) => ({ ...prev, phonepeMerchantId: e.target.value }))}
-                      />
-                      <Input
-                        label="PhonePe Salt Key"
-                        type="password"
-                        placeholder={profile.phonepeSaltKey ? "••••••••" : "Enter API salt key"}
-                        value={profile.phonepeSaltKey}
-                        onChange={(e) => setProfile((prev) => ({ ...prev, phonepeSaltKey: e.target.value }))}
-                      />
-                      <Input
-                        label="PhonePe Salt Index"
-                        placeholder="e.g. 1"
-                        value={profile.phonepeSaltIndex}
-                        onChange={(e) => setProfile((prev) => ({ ...prev, phonepeSaltIndex: e.target.value }))}
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-page p-4 rounded-xl border border-border/30">
-                      <Input
-                        label="Webhook Basic Auth Username"
-                        placeholder="Choose webhook authorization username"
-                        value={profile.webhookAuthUsername}
-                        onChange={(e) => setProfile((prev) => ({ ...prev, webhookAuthUsername: e.target.value }))}
-                      />
-                      <Input
-                        label="Webhook Basic Auth Password"
-                        type="password"
-                        placeholder={profile.webhookAuthPassword ? "••••••••" : "Choose webhook password"}
-                        value={profile.webhookAuthPassword}
-                        onChange={(e) => setProfile((prev) => ({ ...prev, webhookAuthPassword: e.target.value }))}
-                      />
-                    </div>
-                  </div>
-
-                  <MultiSelectChips
-                    label="Accepted Payment Methods"
-                    options={PAYMENT_METHOD_OPTIONS}
-                    selected={profile.acceptedPaymentMethods}
-                    onChange={(selected) => setProfile((prev) => ({ ...prev, acceptedPaymentMethods: selected }))}
-                  />
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-navy block">Payment Terms & Cancellation Policy</label>
-                    <textarea
-                      rows={3}
-                      value={profile.paymentTerms}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, paymentTerms: e.target.value }))}
-                      className="w-full p-3 text-xs text-navy border border-border rounded-[14px] bg-page focus:border-teal focus:outline-none resize-none"
-                    />
-                  </div>
-                </Card>
-              )}
-
-              {/* ---------------- SECTION 8: SOCIAL & BRAND LINKS ---------------- */}
-              {activeStep === 8 && (
-                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <Share2 className="w-5 h-5 text-teal" /> 8. Social Links & Online Presence
-                      </h3>
-                      <p className="text-xs text-muted mt-1">Connect your website and social media profiles with live link previews.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Social Links')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Input
-                      label="Official Website"
-                      value={profile.socialWebsite}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, socialWebsite: e.target.value }))}
-                      icon={<Globe className="w-4 h-4 text-teal" />}
-                    />
-                    <Input
-                      label="Instagram Handle URL"
-                      value={profile.socialInstagram}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, socialInstagram: e.target.value }))}
-                      icon={<FaInstagram className="w-4 h-4 text-rose-500" />}
-                    />
-                    <Input
-                      label="Facebook Page URL"
-                      value={profile.socialFacebook}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, socialFacebook: e.target.value }))}
-                      icon={<FaFacebook className="w-4 h-4 text-blue-600" />}
-                    />
-                    <Input
-                      label="YouTube Channel"
-                      value={profile.socialYouTube}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, socialYouTube: e.target.value }))}
-                      icon={<FaYoutube className="w-4 h-4 text-red-600" />}
-                    />
-                    <Input
-                      label="LinkedIn Profile"
-                      value={profile.socialLinkedIn}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, socialLinkedIn: e.target.value }))}
-                      icon={<FaLinkedin className="w-4 h-4 text-sky-600" />}
-                    />
-                    <Input
-                      label="Twitter / X Profile"
-                      value={profile.socialTwitter}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, socialTwitter: e.target.value }))}
-                      icon={<FaTwitter className="w-4 h-4 text-slate-800" />}
-                    />
-                  </div>
-                </Card>
-              )}
-
-              {/* ---------------- SECTION 9: PREFERENCES ---------------- */}
-              {activeStep === 9 && (
-                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
-                  <div className="flex items-center justify-between pb-4 border-b border-border">
-                    <div>
-                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
-                        <Settings className="w-5 h-5 text-teal" /> 9. Communication & Platform Preferences
-                      </h3>
-                      <p className="text-xs text-muted mt-1">Configure automated notifications, auto-responders, and booking controls.</p>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => triggerAutoSave('Preferences')}
-                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
-                    >
-                      <Save className="w-3.5 h-3.5 text-cyan" /> Save Section
+                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
                     </Button>
                   </div>
 
                   <div className="space-y-4">
-                    <ToggleCard
-                      title="Direct Instant Booking"
-                      description="Allow verified travelers to instantly book without prior chat approval."
-                      enabled={profile.acceptDirectBookings}
-                      onChange={(enabled) => setProfile((prev) => ({ ...prev, acceptDirectBookings: enabled }))}
+                    <Input
+                      label="Bank Account Beneficiary Name *"
+                      placeholder="e.g. Beacon Travel International or Aditya Kumar"
+                      value={profile.bankAccountName}
+                      onChange={(e) => setProfile((prev) => ({ ...prev, bankAccountName: e.target.value }))}
+                      helperText="Must match the legal name entered in Step 2."
+                      required
                     />
 
-                    <div className="p-4 bg-page border border-border rounded-[16px] space-y-3">
-                      <h4 className="text-xs font-bold text-navy uppercase tracking-wider">Notification Delivery Channels</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={profile.notifyEmail}
-                            onChange={(e) => setProfile((prev) => ({ ...prev, notifyEmail: e.target.checked }))}
-                            className="rounded border-border text-teal"
-                          />
-                          <span>Email Notifications</span>
-                        </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <Input
+                          label="Bank Account Number (9-18 Digits) *"
+                          placeholder="e.g. 987654321098"
+                          value={profile.bankAccountNumber}
+                          onChange={(e) => setProfile((prev) => ({ ...prev, bankAccountNumber: e.target.value }))}
+                          required
+                        />
+                        {profile.bankAccountNumber && !validateBankAccount(profile.bankAccountNumber).isValid && (
+                          <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3 h-3" /> {validateBankAccount(profile.bankAccountNumber).message}
+                          </p>
+                        )}
+                      </div>
 
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={profile.notifySms}
-                            onChange={(e) => setProfile((prev) => ({ ...prev, notifySms: e.target.checked }))}
-                            className="rounded border-border text-teal"
-                          />
-                          <span>SMS Alerts</span>
-                        </label>
-
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={profile.notifyWhatsApp}
-                            onChange={(e) => setProfile((prev) => ({ ...prev, notifyWhatsApp: e.target.checked }))}
-                            className="rounded border-border text-teal"
-                          />
-                          <span>WhatsApp Messages</span>
-                        </label>
+                      <div>
+                        <Input
+                          label="Bank IFSC Code *"
+                          placeholder="e.g. HDFC0000123, SBIN0001234"
+                          value={profile.ifscOrSwiftCode}
+                          onChange={(e) => setProfile((prev) => ({ ...prev, ifscOrSwiftCode: e.target.value.toUpperCase() }))}
+                          helperText="11 characters, 5th character is always 0."
+                          required
+                        />
+                        {profile.ifscOrSwiftCode && !validateIFSC(profile.ifscOrSwiftCode).isValid && (
+                          <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3 h-3" /> {validateIFSC(profile.ifscOrSwiftCode).message}
+                          </p>
+                        )}
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-bold text-navy block">Auto-Responder Welcome Message</label>
-                      <textarea
-                        rows={3}
-                        value={profile.autoResponderMessage}
-                        onChange={(e) => setProfile((prev) => ({ ...prev, autoResponderMessage: e.target.value }))}
-                        className="w-full p-3 text-xs text-navy border border-border rounded-[14px] bg-page focus:border-teal focus:outline-none resize-none"
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <Input
+                          label="Primary UPI ID (handle@bank) *"
+                          placeholder="e.g. beaconplanner@okaxis or 9876543210@paytm"
+                          value={profile.upiOrPaypalId}
+                          onChange={(e) => setProfile((prev) => ({ ...prev, upiOrPaypalId: e.target.value.toLowerCase() }))}
+                          helperText="Primary payout rail for instant settlement."
+                          required
+                        />
+                        {profile.upiOrPaypalId && !validateUPI(profile.upiOrPaypalId).isValid && (
+                          <p className="text-[11px] text-rose-500 mt-1 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3 h-3" /> {validateUPI(profile.upiOrPaypalId).message}
+                          </p>
+                        )}
+                      </div>
+
+                      <Input
+                        label="Settlement Currency"
+                        value="INR (Indian Rupee ₹)"
+                        disabled
+                        helperText="Derived automatically from Indian Banking Rail"
                       />
                     </div>
                   </div>
                 </Card>
               )}
 
-              {/* ---------------- SECTION 10: VERIFICATION VAULT (PRIVATE & CONFIDENTIAL) ---------------- */}
-              {activeStep === 10 && (
-                <div className="space-y-6">
-                  <Card className="p-6 border border-border shadow-xl rounded-[24px] bg-slate-900 text-white space-y-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-full bg-cyan/20 text-cyan flex items-center justify-center font-bold shrink-0 mt-1">
-                          <Lock className="w-5 h-5 text-cyan" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold text-white">Confidential Verification Documents Vault</h3>
-                            <span className="text-[10px] font-mono uppercase bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2.5 py-0.5 rounded-md">
-                              Encrypted & Role Protected
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-400 mt-1">
-                            Uploaded verification documents are accessible ONLY to you and platform compliance administrators. They are strictly excluded from public APIs and travelers.
-                          </p>
-                        </div>
-                      </div>
-
-                      <Button
-                        onClick={() => setShowUploadModal(true)}
-                        className="bg-cyan hover:bg-cyan/90 text-navy font-bold text-xs gap-1.5 shrink-0 cursor-pointer"
-                      >
-                        <FileText className="w-4 h-4" /> Upload Verification File
-                      </Button>
+              {/* ---------------- STEP 4: DOCUMENT VAULT & eKYC ---------------- */}
+              {activeStep === 4 && (
+                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
+                  <div className="flex items-center justify-between pb-4 border-b border-border">
+                    <div>
+                      <h3 className="text-base font-bold text-navy flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5 text-teal" /> 4. Document Vault & eKYC Verification
+                      </h3>
+                      <p className="text-xs text-muted mt-1">
+                        Upload official proof documents to unlock verified organizer status.
+                      </p>
                     </div>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowUploadModal(true)}
+                      className="bg-navy hover:bg-navy/90 text-white text-xs font-bold gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-cyan" /> Upload New Document
+                    </Button>
+                  </div>
 
-                    {/* Vault Documents Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {documents.map((doc) => (
-                        <div
-                          key={doc.id}
-                          className="p-4 bg-slate-800/90 border border-white/10 rounded-[18px] flex items-center justify-between gap-3 shadow-md"
-                        >
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-10 h-10 rounded-[12px] bg-emerald-500/15 text-emerald-400 flex items-center justify-center shrink-0">
-                              <ShieldCheck className="w-5 h-5" />
-                            </div>
-                            <div className="min-w-0">
-                              <h4 className="font-bold text-xs text-white truncate">{doc.title}</h4>
-                              <p className="text-[10px] text-slate-400 mt-0.5">
-                                {doc.documentType} · {doc.fileName} · {formatDate(doc.uploadedAt)}
-                              </p>
-                            </div>
+                  {/* Required Documents List Checklist */}
+                  <div className="p-4 bg-slate-50 border border-border rounded-[16px] space-y-3">
+                    <h5 className="text-xs font-bold text-navy">
+                      Mandatory Document Set for {profile.partnerType === 'COMPANY' ? 'Company Path' : 'Freelancer Path'}:
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      {profile.partnerType === 'COMPANY' ? (
+                        <>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Certificate of Incorporation / ROC (Mandatory)
                           </div>
-
-                          <span
-                            className={`text-[10px] font-extrabold px-3 py-1 rounded-full border uppercase shrink-0 font-mono ${
-                              doc.status === 'VERIFIED'
-                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                                : doc.status === 'UNDER_REVIEW'
-                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                                : 'bg-red-500/20 text-red-300 border-red-500/30'
-                            }`}
-                          >
-                            {doc.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Status Alert Footer */}
-                    <div className="p-4 bg-navy-light/80 border border-border/80 rounded-[16px] text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-white">
-                            Vault Verification Status: {kycStatus === 'VERIFIED' ? '100% VERIFIED & APPROVED' : kycStatus === 'UNDER_REVIEW' ? 'UNDER REVIEW' : 'PENDING SUBMISSION'}
-                          </span>
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border uppercase ${
-                            kycStatus === 'VERIFIED'
-                              ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-                              : kycStatus === 'UNDER_REVIEW'
-                              ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                              : 'bg-red-500/20 text-red-300 border-red-500/30'
-                          }`}>
-                            {kycStatus}
-                          </span>
-                        </div>
-                        <span className="text-[11px] text-slate-400 mt-1 block">
-                          {kycStatus === 'VERIFIED'
-                            ? 'All required documents have been verified by Beacon Compliance Team. You can create & publish packages.'
-                            : kycStatus === 'UNDER_REVIEW'
-                            ? 'Your documents have been submitted and are being reviewed by the compliance team.'
-                            : 'Upload required documents above to complete your eKYC and unlock package creation.'}
-                        </span>
-                      </div>
-
-                      {kycStatus !== 'VERIFIED' && (
-                        <Button
-                          type="button"
-                          onClick={handleSimulateApproval}
-                          size="xs"
-                          glow
-                          className="bg-gradient-to-r from-teal to-cyan text-white font-bold text-[11px] py-1.5 px-3 shrink-0"
-                        >
-                          <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-                          Approve eKYC (Demo Mode)
-                        </Button>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> GST Certificate (Mandatory if GSTIN provided)
+                          </div>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Company PAN Card Copy (Mandatory)
+                          </div>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Cancelled Cheque / Statement (Mandatory)
+                          </div>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Registered Office Address Proof (Mandatory)
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Personal PAN Card Copy (Mandatory)
+                          </div>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Masked Aadhaar Card Proof (Mandatory)
+                          </div>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Voter ID (EPIC) Front & Back (Mandatory)
+                          </div>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Cancelled Cheque / Passbook Copy (Mandatory)
+                          </div>
+                          <div className="flex items-center gap-2 text-navy font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-teal shrink-0" /> Residential Address Proof Document (Mandatory)
+                          </div>
+                        </>
                       )}
                     </div>
-                  </Card>
-                </div>
+                  </div>
+
+                  {/* Uploaded Documents Table */}
+                  <div className="space-y-3">
+                    <h5 className="text-xs font-bold text-navy">Uploaded Documents Vault ({documents.length})</h5>
+                    {documents.length === 0 ? (
+                      <div className="p-8 text-center bg-page border border-dashed border-border rounded-[16px] space-y-2">
+                        <FileText className="w-8 h-8 text-muted mx-auto" />
+                        <p className="text-xs font-medium text-muted">No verification documents uploaded yet.</p>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setShowUploadModal(true)}
+                          className="text-xs text-navy font-bold mt-2"
+                        >
+                          + Upload First Document
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-3">
+                        {documents.map((doc) => (
+                          <div key={doc.id} className="p-3.5 bg-page border border-border rounded-[16px] flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-10 h-10 rounded-[10px] bg-teal/10 text-teal flex items-center justify-center shrink-0">
+                                <FileCheck className="w-5 h-5" />
+                              </div>
+                              <div className="min-w-0">
+                                <h6 className="text-xs font-bold text-navy truncate">{doc.title}</h6>
+                                <p className="text-[11px] text-muted truncate">{doc.documentType} • {doc.fileName}</p>
+                              </div>
+                            </div>
+                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full shrink-0 ${
+                              doc.status === 'VERIFIED'
+                                ? 'bg-emerald-100 text-emerald-700'
+                                : 'bg-amber-100 text-amber-700'
+                            }`}>
+                              {doc.status === 'VERIFIED' ? '✓ Verified' : '⏳ Under Review'}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </Card>
               )}
-            </motion.div>
-          </AnimatePresence>
 
-          {/* ---------------- NAVIGATION CONTROLS: SAVE & NEXT SECTION ---------------- */}
-          <div className="bg-white border border-border rounded-[24px] p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              size="md"
-              onClick={handlePrevStep}
-              disabled={activeStep === 1}
-              className="w-full sm:w-auto font-bold text-xs px-5 py-2.5 rounded-[12px] border-border text-navy hover:bg-page disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-            >
-              ← Previous Step
-            </Button>
+              {/* ---------------- STEP 5: OPTIONAL PROFILE-COMPLETION TRACK ---------------- */}
+              {activeStep === 5 && (
+                <Card className="p-6 border border-border shadow-md space-y-6 rounded-[24px]">
+                  <div className="flex items-center justify-between pb-4 border-b border-border">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base font-bold text-navy flex items-center gap-2">
+                          <Award className="w-5 h-5 text-teal" /> 5. Specializations & Public Profile
+                        </h3>
+                        <span className="text-[10px] font-bold text-teal bg-teal/10 border border-teal/20 px-2 py-0.5 rounded-full">
+                          Optional Track
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted mt-1">
+                        Answers key traveler questions: where you operate, certifications, and what you are known for.
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => triggerAutoSave('Profile Track')}
+                      className="bg-cyan hover:bg-cyan/90 text-navy text-xs font-bold gap-1 cursor-pointer shadow-xs"
+                    >
+                      <Save className="w-3.5 h-3.5 text-navy" /> Save Section
+                    </Button>
+                  </div>
 
-            <div className="flex items-center gap-2 text-xs text-muted">
-              <span>Step <strong className="text-navy">{activeStep}</strong> of 10</span>
-              <span>•</span>
-              <span className="font-semibold text-teal">{steps[activeStep - 1]?.title}</span>
+                  <div className="space-y-5">
+                    <MultiSelectChips
+                      label="Countries Served (Optional)"
+                      options={COUNTRY_OPTIONS}
+                      selected={profile.countriesServed}
+                      onChange={(selected) => setProfile((prev) => ({ ...prev, countriesServed: selected }))}
+                      placeholder="Search or add countries... (e.g. India, Nepal, Bhutan, Sri Lanka)"
+                    />
+
+                    <MultiSelectChips
+                      label="Tour Specializations (Searchable Tags) (Optional)"
+                      options={SPECIALIZATION_OPTIONS}
+                      selected={profile.specializations}
+                      onChange={(selected) => setProfile((prev) => ({ ...prev, specializations: selected }))}
+                      placeholder="Search or add specializations... (e.g. Trekking, Luxury Expeditions, Wildlife)"
+                    />
+
+                    <MultiSelectChips
+                      label="Languages Spoken (Optional)"
+                      options={LANGUAGE_OPTIONS}
+                      selected={profile.languages}
+                      onChange={(selected) => setProfile((prev) => ({ ...prev, languages: selected }))}
+                      placeholder="Search or add languages... (e.g. English, Hindi, Marathi, French)"
+                    />
+
+                    <MultiSelectChips
+                      label="Certifications & Safety Training (Optional — Increases Trust Score)"
+                      options={CERTIFICATION_OPTIONS}
+                      selected={profile.certifications || []}
+                      onChange={(selected) => setProfile((prev) => ({ ...prev, certifications: selected }))}
+                      placeholder="e.g. NIM Basic Mountaineering (BMC), First Aid & CPR"
+                    />
+
+                    <MultiSelectChips
+                      label="India Trade-Body Accreditations (Optional)"
+                      options={INDIA_ACCREDITATION_OPTIONS}
+                      selected={profile.indiaAccreditations || []}
+                      onChange={(selected) => setProfile((prev) => ({ ...prev, indiaAccreditations: selected }))}
+                      placeholder="e.g. Ministry of Tourism (MOT) Approved, IATO, ATOAI"
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Input
+                        label="Years in Tourism Industry"
+                        type="number"
+                        value={profile.yearsExperience?.toString() || '2'}
+                        onChange={(e) => setProfile((prev) => ({ ...prev, yearsExperience: parseInt(e.target.value) || 1 }))}
+                      />
+                      <Input
+                        label="In Your Own Words: Why Should a Traveler Book With You? (150-200 chars)"
+                        value={profile.whyChooseMe || ''}
+                        placeholder="e.g. 10+ years organizing Himalayan treks, 24/7 dedicated support, customized luxury plans"
+                        onChange={(e) => setProfile((prev) => ({ ...prev, whyChooseMe: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </AnimatePresence>
+
+            {/* ---------------- BOTTOM STEP NAVIGATION BAR ---------------- */}
+            <div className="sticky bottom-4 z-30 bg-surface/95 backdrop-blur-md border border-border rounded-[20px] p-4 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+              <Button
+                type="button"
+                variant="outline"
+                size="md"
+                disabled={activeStep === 1}
+                onClick={() => {
+                  if (activeStep > 1) {
+                    setActiveStep(prev => prev - 1)
+                    window.scrollTo({ top: 0, behavior: 'smooth' })
+                  }
+                }}
+                className={`w-full sm:w-auto font-bold text-xs px-5 py-2.5 rounded-[12px] cursor-pointer flex items-center justify-center gap-1.5 ${
+                  activeStep === 1 ? 'opacity-40 cursor-not-allowed text-muted' : 'border-border text-navy hover:bg-page'
+                }`}
+              >
+                <span className="text-sm">←</span>
+                <span>Previous Step</span>
+              </Button>
+
+              <div className="flex items-center gap-2 text-xs text-muted">
+                <span>Step <strong className="text-navy">{activeStep}</strong> of {steps.length}</span>
+                <span>•</span>
+                <span className="font-semibold text-teal">{steps[activeStep - 1]?.title}</span>
+              </div>
+
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={handleNextStep}
+                className="w-full sm:w-auto bg-gradient-to-r from-teal to-cyan text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {activeStep < steps.length ? (
+                  <>
+                    <span>Save & Next Step</span>
+                    <span className="text-sm font-bold">→</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Save & Return to Dashboard</span>
+                    <span>🎉</span>
+                  </>
+                )}
+              </Button>
             </div>
-
-            <Button
-              type="button"
-              variant="primary"
-              size="md"
-              onClick={handleNextStep}
-              className="w-full sm:w-auto bg-gradient-to-r from-teal to-cyan text-white font-extrabold text-xs px-6 py-2.5 rounded-[12px] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
-            >
-              {activeStep < 10 ? (
-                <>
-                  <span>Save & Next Step</span>
-                  <span className="text-sm font-bold">→</span>
-                </>
-              ) : (
-                <>
-                  <span>Save & Return to Dashboard</span>
-                  <span>🎉</span>
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
           </>
         )}
       </div>
@@ -1707,7 +1445,7 @@ export default function BusinessProfilePage() {
               className="relative w-full max-w-md bg-surface border border-border rounded-[24px] p-6 shadow-2xl space-y-4 z-10"
             >
               <div className="flex items-center justify-between border-b border-border pb-3">
-                <h3 className="font-bold text-navy text-lg flex items-center gap-2">
+                <h3 className="font-bold text-navy text-base flex items-center gap-2">
                   <Lock className="w-5 h-5 text-teal" /> Upload Verification Document
                 </h3>
                 <button
@@ -1721,32 +1459,37 @@ export default function BusinessProfilePage() {
 
               <form onSubmit={handleDocumentSubmit} className="space-y-4">
                 <Input
-                  label="Document Description / Title"
-                  placeholder="e.g. Tourism License 2026"
+                  label="Document Description / Title *"
+                  placeholder="e.g. Certificate of Incorporation, PAN Card Copy"
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
                   required
                 />
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-navy block">Document Category</label>
+                  <label className="text-xs font-bold text-navy block">Document Category *</label>
                   <select
                     value={uploadType}
                     onChange={(e) => setUploadType(e.target.value)}
                     className="w-full p-2.5 rounded-[12px] border border-border bg-page text-xs text-navy"
                   >
-                    <option value="Government ID">Government Photo ID (Passport / Aadhaar)</option>
-                    <option value="Business Registration">Business Registration Certificate</option>
-                    <option value="GST Certificate">GST / Corporate Tax Certificate</option>
-                    <option value="Tourism License">Tourism Operator License</option>
-                    <option value="Selfie Verification">Selfie Photo Verification</option>
-                    <option value="Address Proof">Headquarters Address Proof</option>
+                    <option value="Company Registration / ROC">Company Registration / ROC / LLPIN</option>
+                    <option value="PAN Card Copy">Company or Personal PAN Card Copy</option>
+                    <option value="Aadhaar eKYC Document">Masked Aadhaar Card Document</option>
+                    <option value="Voter ID (EPIC)">Voter ID (EPIC) Front & Back</option>
+                    <option value="Bank Account Proof">Cancelled Cheque / Bank Statement / Passbook</option>
+                    <option value="Address Proof">Registered Office / Residential Address Proof</option>
+                    <option value="GST Certificate">GST Registration Certificate</option>
+                    <option value="Tourism Accreditation">Tourism Accreditation (MOT / IATO / ATOAI)</option>
                   </select>
                 </div>
 
                 <FileUploader
-                  label="Attach Document File"
-                  onFileSelect={(file) => setSelectedUploadFile(file)}
+                  label="Attach Document File *"
+                  onFileSelect={(file, dataUrl) => {
+                    setSelectedUploadFile(file)
+                    if (dataUrl) setSelectedUploadDataUrl(dataUrl)
+                  }}
                   helperText="Upload official document (PDF, PNG, JPG up to 10MB)"
                 />
 
