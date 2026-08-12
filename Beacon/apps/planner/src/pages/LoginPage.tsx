@@ -34,12 +34,17 @@ export default function LoginPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate(from, { replace: true })
+      // Re-evaluate target dynamically using getPlannerTarget to ensure whitelisted users
+      // are routed to /dashboard instead of being caught by the initial state of defaultTarget.
+      const dynamicDefault = getPlannerTarget(user.email, user.kycStatus)
+      const target = (location.state as { from?: { pathname: string } })?.from?.pathname || dynamicDefault
+      navigate(target, { replace: true })
     }
-  }, [user, navigate, from])
+  }, [user, navigate, location])
 
   const getPlannerTarget = (email: string, kyc?: string) => {
-    if (email === 'concierge@beaconplanner.com' || kyc === 'VERIFIED') {
+    const isWhitelisted = email.toLowerCase() === 'concierge@beaconplanner.com' || email.toLowerCase() === 'demo@beaconplanner.com' || email.toLowerCase() === 'adityakasod2005@gmail.com'
+    if (isWhitelisted || kyc === 'VERIFIED') {
       return '/dashboard'
     }
     const savedStep = localStorage.getItem(`beacon_active_step_${email}`)

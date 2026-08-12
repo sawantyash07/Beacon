@@ -125,24 +125,29 @@ export default function BusinessProfilePage() {
         occupation: 'Senior Expedition Architect & Mountain Guide',
         portfolioUrl: 'https://demopartner.in',
         // Banking
-        bankAccountName: 'Beacon Planner Travel International Pvt Ltd',
-        bankAccountNumber: '987654321098',
-        bankName: 'HDFC Bank',
-        ifscOrSwiftCode: 'HDFC0000123',
-        upiOrPaypalId: 'beaconplanner@hdfcbank',
-        preferredCurrency: 'INR',
-        // Optional Track
-        countriesServed: ['India', 'Nepal', 'Bhutan', 'Sri Lanka'],
-        specializations: ['Trekking & Mountaineering', 'Luxury & Private Expeditions', 'Wildlife & Jungle Safaris'],
-        languages: ['English', 'Hindi', 'Marathi'],
-        yearsExperience: 8,
-        certifications: ['NIM Basic Mountaineering (BMC)', 'First Aid & CPR Certified'],
-        indiaAccreditations: ['Ministry of Tourism (MOT) Approved', 'ATOAI Member (Adventure Tour Operators Association of India)'],
-        whyChooseMe: '10+ years organizing Himalayan treks, 24/7 dedicated on-ground support team, and zero-compromise safety protocols.',
+        website: 'https://adventures.in',
+        address: '101, Adventure Hub, Connaught Place, New Delhi 110001, India',
+        contactPerson: 'Rahul Sharma',
+        foundedYear: '2021',
+        description: 'Specialized in premium trekking expeditions across the Himalayas and curated corporate retreats.',
+        socialLinks: { instagram: 'adventures_in', linkedin: 'adventures-india', facebook: 'adventures.india' },
+        countriesServed: ['India', 'Nepal', 'Bhutan'],
+        specializations: ['Trekking', 'Wildlife', 'Cultural Tours'],
+        languages: ['English', 'Hindi'] as string[],
+        yearsExperience: 5,
+        certifications: ['NIM Basic Mountaineering (BMC)', 'First Aid & CPR'] as string[],
+        indiaAccreditations: ['Ministry of Tourism (MOT) Approved'] as string[],
+        whyChooseMe: 'We maintain a 1:4 guide-to-trekker ratio with certified mountaineering leads.',
         isVerified: true,
         verificationProgress: 'VERIFIED' as 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED',
-        partnerLevel: 'Gold Organizer',
+        partnerLevel: 'Elite Organizer',
       }
+    }
+
+    const storageKey = `beacon_profile_${user?.email || 'default'}`
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      try { return JSON.parse(saved) } catch (e) {}
     }
 
     // Fresh clean state for Indian Onboarding
@@ -210,11 +215,6 @@ export default function BusinessProfilePage() {
     uploadedAt: string
     fileDataUrl?: string
   }>>(() => {
-    const storageKey = `beacon_docs_${user?.email || 'default'}`
-    const saved = localStorage.getItem(storageKey)
-    if (saved) {
-      try { return JSON.parse(saved) } catch (e) {}
-    }
     if (isDemoUser(user?.email)) {
       return [
         { id: '1', title: 'Certificate of Incorporation (ROC)', documentType: 'Company Registration', fileName: 'ROC_Certificate_2020.pdf', status: 'VERIFIED', uploadedAt: '2026-01-15' },
@@ -224,6 +224,13 @@ export default function BusinessProfilePage() {
         { id: '5', title: 'Office Lease & Electricity Bill', documentType: 'Address Proof', fileName: 'Office_Address_Proof.pdf', status: 'VERIFIED', uploadedAt: '2026-01-15' }
       ]
     }
+    
+    const storageKey = `beacon_docs_${user?.email || 'default'}`
+    const saved = localStorage.getItem(storageKey)
+    if (saved) {
+      try { return JSON.parse(saved) } catch (e) {}
+    }
+
     return []
   })
 
