@@ -810,7 +810,13 @@ export function MasterAdminProvider({ children }: { children: ReactNode }) {
   // Data States
   const [infraHealth, setInfraHealth] = useState<InfrastructureHealth>(initialInfraHealth);
   const [kpiMetrics, setKpiMetrics] = useState<KpiMetrics>(initialKpiMetrics);
-  const [activityStream, setActivityStream] = useState<ActivityEvent[]>(initialActivityStream);
+  const [activityStream, setActivityStream] = useState<ActivityEvent[]>(() => {
+    const saved = localStorage.getItem('master_activity_stream');
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    return initialActivityStream;
+  });
   const [riskAlerts, setRiskAlerts] = useState<RiskAlert[]>(initialRiskAlerts);
   const [planners, setPlanners] = useState<Planner[]>(() => {
     const saved = localStorage.getItem('master_planners');
@@ -820,9 +826,43 @@ export function MasterAdminProvider({ children }: { children: ReactNode }) {
     return initialPlanners;
   });
 
+  // Sync back to local storage ONLY if it differs, to prevent infinite loops, 
+  // but mostly just persist when state changes internally.
   useEffect(() => {
-    localStorage.setItem('master_planners', JSON.stringify(planners));
+    const current = localStorage.getItem('master_planners');
+    const next = JSON.stringify(planners);
+    if (current !== next) {
+      localStorage.setItem('master_planners', next);
+    }
   }, [planners]);
+
+  useEffect(() => {
+    const current = localStorage.getItem('master_activity_stream');
+    const next = JSON.stringify(activityStream);
+    if (current !== next) {
+      localStorage.setItem('master_activity_stream', next);
+    }
+  }, [activityStream]);
+
+  // Listen for changes from other tabs (e.g. Planner submitting KYC)
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'master_planners' && e.newValue) {
+        try {
+          const updated = JSON.parse(e.newValue);
+          setPlanners(updated);
+        } catch (err) {}
+      }
+      if (e.key === 'master_activity_stream' && e.newValue) {
+        try {
+          const updated = JSON.parse(e.newValue);
+          setActivityStream(updated);
+        } catch (err) {}
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
   const [packages, setPackages] = useState<Package[]>(initialPackages);
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
