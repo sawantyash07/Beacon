@@ -58,7 +58,7 @@ export default function DisputesReportsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by Dispute Case ID, Traveler, Operator..."
-            className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2.5 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+            className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2.5 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
           />
         </div>
 
@@ -77,8 +77,8 @@ export default function DisputesReportsPage() {
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono font-bold text-gray-400">{caseItem.id}</span>
-                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold font-mono ${
+                  <span className="font-medium font-bold text-gray-400">{caseItem.id}</span>
+                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold font-medium ${
                     caseItem.status === 'RESOLVED' 
                       ? 'bg-green-950 text-green-400' 
                       : 'bg-red-955/40 text-red-400 animate-pulse'
@@ -88,7 +88,7 @@ export default function DisputesReportsPage() {
                 </div>
                 <h4 className="text-gray-300 font-semibold mb-2">{caseItem.type.replace('_', ' ')}</h4>
                 
-                <div className="flex justify-between items-center text-[10px] font-mono text-gray-500 border-t border-gray-850/45 pt-2">
+                <div className="flex justify-between items-center text-[10px] font-medium text-gray-500 border-t border-gray-850/45 pt-2">
                   <span>Guest: {caseItem.customerName}</span>
                   <span className="text-gray-400">Agent: {caseItem.plannerName}</span>
                 </div>
@@ -97,7 +97,7 @@ export default function DisputesReportsPage() {
           })}
 
           {filteredDisputes.length === 0 && (
-            <div className="text-center py-16 text-gray-600 font-mono text-xs border border-dashed border-gray-855 rounded-3xl">
+            <div className="text-center py-16 text-gray-600 font-medium text-xs border border-dashed border-gray-855 rounded-3xl">
               No arbitration cases recorded.
             </div>
           )}
@@ -114,12 +114,12 @@ export default function DisputesReportsPage() {
             {/* Case details and evidence files */}
             <div className="lg:col-span-8 border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-6 shadow-xl">
               <div className="flex items-center justify-between border-b border-gray-850 pb-3">
-                <h3 className="text-sm font-bold font-mono text-cyan-400">{activeCase.id} — Dossier</h3>
-                <span className="text-xs text-red-400 font-mono font-bold uppercase">{activeCase.status}</span>
+                <h3 className="text-sm font-bold font-medium text-cyan-400">{activeCase.id} — Dossier</h3>
+                <span className="text-xs text-red-400 font-medium font-bold uppercase">{activeCase.status}</span>
               </div>
 
               {/* Dispute details box */}
-              <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl space-y-2.5 text-xs font-mono text-gray-400">
+              <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl space-y-2.5 text-xs font-medium text-gray-400">
                 <div className="flex justify-between">
                   <span>Dispute Type:</span>
                   <span className="text-gray-200">{activeCase.type.replace('_', ' ')}</span>
@@ -140,7 +140,7 @@ export default function DisputesReportsPage() {
 
               {/* Evidence Locker files */}
               <div className="space-y-3">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                   <ImageIcon size={13} className="text-cyan-400" /> Evidence Locker Attachment Files
                 </h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -157,10 +157,10 @@ export default function DisputesReportsPage() {
 
               {/* Case timeline logs */}
               <div className="space-y-3">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                   <Clock size={13} className="text-cyan-400" /> Investigation Diary Timeline
                 </h4>
-                <div className="space-y-3 pl-3 border-l-2 border-gray-800 text-[11px] font-mono text-gray-400">
+                <div className="space-y-3 pl-3 border-l-2 border-gray-800 text-[11px] font-medium text-gray-400">
                   {activeCase.timeline.map((log, index) => (
                     <div key={index} className="relative space-y-0.5">
                       <span className="absolute -left-[17px] top-1 w-2 h-2 rounded-full bg-cyan-400" />
@@ -178,7 +178,7 @@ export default function DisputesReportsPage() {
               
               {/* Internal notes input */}
               <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-3">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                   Internal Investigation notes
                 </h4>
                 <textarea
@@ -186,9 +186,9 @@ export default function DisputesReportsPage() {
                   value={internalNotesInput}
                   onChange={(e) => setInternalNotesInput(e.target.value)}
                   rows={3}
-                  className="w-full bg-gray-950 border border-gray-855 rounded-2xl p-2.5 text-xs outline-none text-gray-200 resize-none font-mono"
+                  className="w-full bg-gray-950 border border-gray-855 rounded-2xl p-2.5 text-xs outline-none text-gray-200 resize-none font-medium"
                 />
-                <div className="text-[10px] leading-relaxed text-gray-500 font-mono bg-gray-950/40 p-2.5 rounded-xl border border-gray-850">
+                <div className="text-[10px] leading-relaxed text-gray-500 font-medium bg-gray-950/40 p-2.5 rounded-xl border border-gray-850">
                   <span className="text-cyan-400 font-bold block mb-1">Dossier Notes:</span>
                   {activeCase.internalNotes}
                 </div>
@@ -196,10 +196,10 @@ export default function DisputesReportsPage() {
 
               {/* Verdict actions */}
               <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                   <Scale size={13} className="text-cyan-400" /> Dispatch Arbitration Verdict
                 </h4>
-                <div className="space-y-2 text-xs font-mono">
+                <div className="space-y-2 text-xs font-medium">
                   <button
                     onClick={() => handleResolveCase('REFUNDED_TO_CUSTOMER')}
                     disabled={activeCase.status === 'RESOLVED'}
@@ -228,7 +228,7 @@ export default function DisputesReportsPage() {
 
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-24 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-24 text-center text-gray-500 font-medium text-xs">
             Select a dispute case from the index.
           </div>
         )}

@@ -87,13 +87,13 @@ export default function MarketingAnnouncementsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search campaigns..."
-              className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+              className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
             />
           </div>
           
           <button
             onClick={() => setShowCreatorModal(true)}
-            className="px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5 font-mono shrink-0"
+            className="px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5 font-medium shrink-0"
           >
             <Plus size={14} /> Create Campaign
           </button>
@@ -115,14 +115,14 @@ export default function MarketingAnnouncementsPage() {
                       : 'bg-gray-900/40 border-gray-855 text-gray-400 hover:border-gray-800'
                   }`}
                 >
-                  <div className="flex items-center gap-2 mb-2 font-mono text-[9px] text-gray-500">
+                  <div className="flex items-center gap-2 mb-2 font-medium text-[9px] text-gray-500">
                     <span>ID: {camp.id}</span>
                     <span>•</span>
                     <span className="text-cyan-400">{camp.status}</span>
                   </div>
 
                   <h4 className="text-sm font-bold text-gray-200 truncate mb-1">{camp.title}</h4>
-                  <p className="text-[10px] text-gray-500 font-mono mb-4">Segment: {camp.targetSegment}</p>
+                  <p className="text-[10px] text-gray-500 font-medium mb-4">Segment: {camp.targetSegment}</p>
 
                   {/* Icon channels */}
                   <div className="flex gap-2 text-gray-600">
@@ -147,32 +147,32 @@ export default function MarketingAnnouncementsPage() {
         {activeCamp ? (
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-5">
             <div className="border-b border-gray-850 pb-4 space-y-1">
-              <span className="text-[10px] text-cyan-400 font-mono font-bold">PERFORMANCE STATS</span>
+              <span className="text-[10px] text-cyan-400 font-medium font-bold">PERFORMANCE STATS</span>
               <h3 className="text-md font-black text-white leading-snug">{activeCamp.title}</h3>
-              <p className="text-xs text-gray-500 font-mono">Target: {activeCamp.targetSegment}</p>
+              <p className="text-xs text-gray-500 font-medium">Target: {activeCamp.targetSegment}</p>
             </div>
 
             {/* Metrics layout grid */}
             <div className="grid grid-cols-2 gap-3 text-center">
-              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-mono">
+              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-medium">
                 <span className="text-[9px] text-gray-500 block mb-0.5 uppercase">Delivery Rate</span>
                 <span className="font-bold text-cyan-300 flex items-center justify-center gap-0.5">
                   <CheckCircle2 size={12} /> {activeCamp.metrics.deliveryRate}%
                 </span>
               </div>
-              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-mono">
+              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-medium">
                 <span className="text-[9px] text-gray-500 block mb-0.5 uppercase">Open Rate</span>
                 <span className="font-bold text-yellow-500 flex items-center justify-center gap-0.5">
                   <TrendingUp size={12} /> {activeCamp.metrics.openRate}%
                 </span>
               </div>
-              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-mono">
+              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-medium">
                 <span className="text-[9px] text-gray-500 block mb-0.5 uppercase">Click Rate</span>
                 <span className="font-bold text-green-400 flex items-center justify-center gap-0.5">
                   <Percent size={12} /> {activeCamp.metrics.clickRate}%
                 </span>
               </div>
-              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-mono">
+              <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850 text-xs font-medium">
                 <span className="text-[9px] text-gray-500 block mb-0.5 uppercase">Conversions</span>
                 <span className="font-bold text-purple-400 flex items-center justify-center gap-0.5">
                   <Users size={12} /> {activeCamp.metrics.conversions}
@@ -180,20 +180,20 @@ export default function MarketingAnnouncementsPage() {
               </div>
             </div>
 
-            <div className="pt-2 flex items-center gap-1.5 text-[10px] text-gray-500 font-mono">
+            <div className="pt-2 flex items-center gap-1.5 text-[10px] text-gray-500 font-medium">
               <BarChart3 size={12} className="text-cyan-400 animate-pulse" />
               <span>Diagnostic tracking online for this campaign node.</span>
             </div>
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-medium text-xs">
             Select a campaign to check performance statistics.
           </div>
         )}
 
         {/* Instant Notification Dispatcher */}
         <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4 shadow-xl">
-          <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1.5">
+          <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1.5">
             <Megaphone size={14} className="text-cyan-400 animate-pulse" /> Instant Broadcast Banner
           </h4>
 
@@ -201,7 +201,7 @@ export default function MarketingAnnouncementsPage() {
             <select
               value={instantTarget}
               onChange={(e) => setInstantTarget(e.target.value)}
-              className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2.5 text-xs text-gray-200 outline-none font-mono"
+              className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2.5 text-xs text-gray-200 outline-none font-medium"
             >
               <option value="ALL">All Platform Users</option>
               <option value="TRAVELERS">All Travelers (Customers)</option>
@@ -212,11 +212,11 @@ export default function MarketingAnnouncementsPage() {
               value={instantAlertText}
               onChange={(e) => setInstantAlertText(e.target.value)}
               rows={3}
-              className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-mono"
+              className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-medium"
             />
             <button
               onClick={handleSendInstantAlert}
-              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-xl text-xs font-mono uppercase cursor-pointer"
+              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-xl text-xs font-medium uppercase cursor-pointer"
             >
               Broadcast Alert
             </button>
@@ -247,7 +247,7 @@ export default function MarketingAnnouncementsPage() {
             </div>
 
             {/* Campaign inputs */}
-            <div className="space-y-4 text-xs font-mono">
+            <div className="space-y-4 text-xs font-medium">
               <div className="space-y-1">
                 <label className="text-gray-400">Campaign Title</label>
                 <input
@@ -304,14 +304,14 @@ export default function MarketingAnnouncementsPage() {
                   value={newMessageText}
                   onChange={(e) => setNewMessageText(e.target.value)}
                   rows={4}
-                  className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 outline-none text-gray-200 resize-none font-mono"
+                  className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 outline-none text-gray-200 resize-none font-medium"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-2xl text-xs uppercase font-mono cursor-pointer"
+              className="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-2xl text-xs uppercase font-medium cursor-pointer"
             >
               Construct & Dispatch Campaign
             </button>

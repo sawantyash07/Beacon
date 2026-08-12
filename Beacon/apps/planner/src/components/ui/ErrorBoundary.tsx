@@ -34,7 +34,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-muted mb-6 text-sm">
               An unexpected error occurred. Please try refreshing the page or contact support if the problem persists.
             </p>
-            <div className="bg-red-500/5 text-red-500 p-3 rounded-lg text-xs font-mono text-left mb-6 overflow-auto max-h-32">
+            <div className="bg-red-500/5 text-red-500 p-3 rounded-lg text-xs font-medium text-left mb-6 overflow-auto max-h-32">
               {this.state.error?.message || "Unknown error"}
             </div>
             <button

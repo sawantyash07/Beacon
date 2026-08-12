@@ -180,7 +180,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-[var(--color-bg-canvas)] flex flex-col items-center justify-center p-4">
         <div className="flex flex-col items-center gap-3">
           <img src="/planner/beacon-logo.png" alt="Beacon" className="h-10 w-auto object-contain animate-pulse" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
           <div className="w-6 h-6 border-2 border-cyan/20 border-t-cyan rounded-full animate-spin" />

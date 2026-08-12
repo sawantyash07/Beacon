@@ -120,7 +120,7 @@ export default function MissionControlOverviewPage() {
             Real-time visual operations dashboard, security alerts monitor, and infrastructure console.
           </p>
         </div>
-        <div className="flex items-center gap-2 border border-gray-800 bg-gray-900/40 p-2 rounded-xl text-xs font-mono text-gray-400">
+        <div className="flex items-center gap-2 border border-gray-800 bg-gray-900/40 p-2 rounded-xl text-xs font-medium text-gray-400">
           <span>Active Operations Scope:</span>
           <span className="text-cyan-400 font-bold">{currentRole}</span>
         </div>
@@ -147,10 +147,10 @@ export default function MissionControlOverviewPage() {
                 {item.label}
               </span>
               <div className="flex items-baseline justify-between">
-                <span className={`text-xl font-bold font-mono tracking-tight ${item.color}`}>
+                <span className={`text-xl font-bold font-medium tracking-tight ${item.color}`}>
                   {metric.value}
                 </span>
-                <span className={`inline-flex items-center text-[10px] font-bold rounded px-1.5 py-0.5 font-mono ${
+                <span className={`inline-flex items-center text-[10px] font-bold rounded px-1.5 py-0.5 font-medium ${
                   metric.isPositive 
                     ? 'bg-green-950/40 text-green-400 border border-green-500/10' 
                     : 'bg-red-950/40 text-red-400 border border-red-500/10'
@@ -175,7 +175,7 @@ export default function MissionControlOverviewPage() {
             <h3 className="text-sm font-bold flex items-center gap-2">
               <Server size={18} className="text-cyan-400" /> Infrastructure Diagnostics
             </h3>
-            <span className="text-[10px] font-mono text-gray-500">
+            <span className="text-[10px] font-medium text-gray-500">
               Uptime: 99.98%
             </span>
           </div>
@@ -183,9 +183,9 @@ export default function MissionControlOverviewPage() {
           {/* CPU & Memory meters */}
           <div className="grid grid-cols-2 gap-4">
             <div className="border border-gray-850 bg-gray-950/40 p-4 rounded-2xl space-y-2">
-              <span className="text-[10px] font-mono text-gray-500 block uppercase">SYSTEM CPU COMPUTE</span>
+              <span className="text-[10px] font-medium text-gray-500 block uppercase">SYSTEM CPU COMPUTE</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black font-mono text-cyan-400">{infraHealth.cpuUsage}%</span>
+                <span className="text-2xl font-black font-medium text-cyan-400">{infraHealth.cpuUsage}%</span>
                 <span className="text-[9px] text-gray-500">64-core vCPU Cluster</span>
               </div>
               <div className="w-full bg-gray-850 h-2 rounded-full overflow-hidden">
@@ -193,9 +193,9 @@ export default function MissionControlOverviewPage() {
               </div>
             </div>
             <div className="border border-gray-850 bg-gray-950/40 p-4 rounded-2xl space-y-2">
-              <span className="text-[10px] font-mono text-gray-500 block uppercase">DB BUFFER MEMORY</span>
+              <span className="text-[10px] font-medium text-gray-500 block uppercase">DB BUFFER MEMORY</span>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-black font-mono text-cyan-400">{infraHealth.memoryUsage}%</span>
+                <span className="text-2xl font-black font-medium text-cyan-400">{infraHealth.memoryUsage}%</span>
                 <span className="text-[9px] text-gray-500">RAM Allocation: 512GB</span>
               </div>
               <div className="w-full bg-gray-850 h-2 rounded-full overflow-hidden">
@@ -206,10 +206,10 @@ export default function MissionControlOverviewPage() {
 
           {/* Downstream Microservices Latency metrics */}
           <div className="space-y-3">
-            <h4 className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">
+            <h4 className="text-[10px] font-medium text-gray-500 uppercase tracking-widest">
               Downstream Node Connections
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-medium">
               {infraHealth.services.map((srv, idx) => (
                 <div key={idx} className="flex items-center justify-between p-2.5 rounded-xl bg-gray-950/20 border border-gray-850">
                   <div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export default function MissionControlOverviewPage() {
               <h3 className="text-sm font-bold flex items-center gap-2 text-red-400">
                 <AlertCircle size={18} /> High-Risk Incidents
               </h3>
-              <span className="px-2 py-0.5 rounded bg-red-950/40 border border-red-500/20 text-red-500 text-[10px] font-mono font-bold animate-pulse">
+              <span className="px-2 py-0.5 rounded bg-red-950/40 border border-red-500/20 text-red-500 text-[10px] font-medium font-bold animate-pulse">
                 {riskAlerts.filter(a => a.status === 'PENDING').length} CRITICAL
               </span>
             </div>
@@ -243,17 +243,17 @@ export default function MissionControlOverviewPage() {
                 <div key={alert.id} className="border border-red-900/20 bg-red-950/5 p-3.5 rounded-2xl flex items-start justify-between gap-3 text-xs leading-normal">
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5">
-                      <span className="px-1.5 py-0.5 rounded bg-red-950 text-red-400 text-[9px] font-mono font-bold border border-red-900/30">
+                      <span className="px-1.5 py-0.5 rounded bg-red-950 text-red-400 text-[9px] font-medium font-bold border border-red-900/30">
                         {alert.score}% RISK
                       </span>
                       <span className="font-bold text-gray-200">{alert.title}</span>
                     </div>
                     <p className="text-gray-400 text-[11px] leading-tight">{alert.description}</p>
-                    <span className="text-[9px] text-gray-500 block font-mono">Scope: {alert.affectedEntity}</span>
+                    <span className="text-[9px] text-gray-500 block font-medium">Scope: {alert.affectedEntity}</span>
                   </div>
                   <button 
                     onClick={() => resolveAlert(alert.id)}
-                    className="px-2 py-1 rounded bg-green-500/20 hover:bg-green-500 hover:text-black transition-colors text-[10px] font-bold text-green-400 uppercase font-mono cursor-pointer shrink-0"
+                    className="px-2 py-1 rounded bg-green-500/20 hover:bg-green-500 hover:text-black transition-colors text-[10px] font-bold text-green-400 uppercase font-medium cursor-pointer shrink-0"
                   >
                     Resolve
                   </button>
@@ -261,7 +261,7 @@ export default function MissionControlOverviewPage() {
               ))}
 
               {riskAlerts.filter(a => a.status === 'PENDING').length === 0 && (
-                <div className="text-center py-12 text-gray-600 text-xs font-mono border border-dashed border-gray-850 rounded-2xl">
+                <div className="text-center py-12 text-gray-600 text-xs font-medium border border-dashed border-gray-850 rounded-2xl">
                   ✓ Core systems report no critical alerts.
                 </div>
               )}
@@ -284,7 +284,7 @@ export default function MissionControlOverviewPage() {
             </h3>
             <button
               onClick={() => setStreamPaused(!streamPaused)}
-              className={`p-1.5 rounded-lg border transition-colors cursor-pointer flex items-center gap-1 text-[10px] font-mono ${
+              className={`p-1.5 rounded-lg border transition-colors cursor-pointer flex items-center gap-1 text-[10px] font-medium ${
                 streamPaused 
                   ? 'bg-amber-950/20 border-amber-500/30 text-amber-400' 
                   : 'bg-cyan-950/20 border-cyan-500/20 text-cyan-400'
@@ -296,7 +296,7 @@ export default function MissionControlOverviewPage() {
           </div>
 
           {/* Activity Category Filters */}
-          <div className="flex items-center gap-1 bg-gray-950/60 p-1 rounded-xl text-[10px] font-mono border border-gray-855 select-none">
+          <div className="flex items-center gap-1 bg-gray-950/60 p-1 rounded-xl text-[10px] font-medium border border-gray-855 select-none">
             {['all', 'booking', 'payment', 'user', 'fraud', 'system'].map((f) => (
               <button
                 key={f}
@@ -318,7 +318,7 @@ export default function MissionControlOverviewPage() {
           {filteredEvents.map((evt) => (
             <div key={evt.id} className="flex items-center justify-between p-3 rounded-xl bg-gray-950/20 border border-gray-855 text-xs">
               <div className="flex items-center gap-3">
-                <span className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold ${
+                <span className={`px-2 py-0.5 rounded text-[9px] font-medium uppercase font-bold ${
                   evt.type === 'fraud' 
                     ? 'bg-red-950 text-red-400 border border-red-500/10'
                     : evt.type === 'system'
@@ -334,14 +334,14 @@ export default function MissionControlOverviewPage() {
                   <span className="text-gray-500 ml-2">— {evt.description}</span>
                 </div>
               </div>
-              <span className="text-[10px] text-gray-600 font-mono">
+              <span className="text-[10px] text-gray-600 font-medium">
                 {new Date(evt.timestamp).toLocaleTimeString()}
               </span>
             </div>
           ))}
 
           {filteredEvents.length === 0 && (
-            <div className="text-center py-12 text-gray-600 font-mono text-xs">
+            <div className="text-center py-12 text-gray-600 font-medium text-xs">
               No recent events logged matching filter requirements.
             </div>
           )}
@@ -362,7 +362,7 @@ export default function MissionControlOverviewPage() {
           
           {/* Quick Verify Planner */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-medium tracking-wider">
               <ShieldCheck size={14} className="text-green-400" /> Quick Verify Planner
             </h4>
             <div className="space-y-2">
@@ -402,7 +402,7 @@ export default function MissionControlOverviewPage() {
 
           {/* Quick Payout / Account Suspension */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-medium tracking-wider">
               <UserX size={14} className="text-red-400" /> Suspend Accounts
             </h4>
             <div className="space-y-2">
@@ -442,7 +442,7 @@ export default function MissionControlOverviewPage() {
 
           {/* Quick Issue Refund */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-medium tracking-wider">
               <Wallet size={14} className="text-yellow-400" /> Dispatch Refund
             </h4>
             <div className="space-y-2">
@@ -461,7 +461,7 @@ export default function MissionControlOverviewPage() {
                 placeholder="Refund amount (INR)"
                 value={refundAmount}
                 onChange={(e) => setRefundAmount(e.target.value)}
-                className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2 text-xs outline-none text-gray-200 font-mono"
+                className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2 text-xs outline-none text-gray-200 font-medium"
               />
               <button
                 onClick={handleRefundAction}
@@ -474,7 +474,7 @@ export default function MissionControlOverviewPage() {
 
           {/* Broadcast Announcement */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-mono tracking-wider">
+            <h4 className="text-xs font-bold text-gray-400 flex items-center gap-1.5 uppercase font-medium tracking-wider">
               <Megaphone size={14} className="text-indigo-400" /> Broadcast Banner
             </h4>
             <div className="space-y-2">

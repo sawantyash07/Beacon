@@ -47,7 +47,7 @@ export function VerificationPromptModal({
           className="relative w-full max-w-xl bg-white border border-border/80 rounded-[24px] shadow-2xl overflow-hidden my-8"
         >
           {/* Header Banner */}
-          <div className="relative p-6 bg-gradient-to-r from-[#031525] via-[#092B48] to-[#0A3D62] text-white overflow-hidden">
+          <div className="relative p-6 bg-gradient-to-r bg-[var(--nav-bg)] text-white overflow-hidden">
             <div className="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-cyan/15 blur-2xl pointer-events-none" />
             <div className="absolute right-12 bottom-0 w-24 h-24 rounded-full bg-teal/20 blur-xl pointer-events-none" />
 
@@ -83,15 +83,15 @@ export function VerificationPromptModal({
           <div className="p-6 space-y-5">
             {/* Why Verification Matters */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-3 rounded-[14px] bg-[#F4F9FD] border border-border/60 flex flex-col items-start">
+              <div className="p-3 rounded-[14px] bg-[var(--color-bg-surface-raised)] border border-border/60 flex flex-col items-start">
                 <div className="w-7 h-7 rounded-[8px] bg-cyan/15 text-cyan flex items-center justify-center mb-2">
-                  <Sparkles className="w-4 h-4 text-[#0284C7]" />
+                  <Sparkles className="w-4 h-4 text-[var(--color-link)]" />
                 </div>
                 <h4 className="text-xs font-bold text-navy">Verified Badge</h4>
                 <p className="text-[11px] text-muted mt-0.5">Increases traveler trust and booking conversion.</p>
               </div>
 
-              <div className="p-3 rounded-[14px] bg-[#F4F9FD] border border-border/60 flex flex-col items-start">
+              <div className="p-3 rounded-[14px] bg-[var(--color-bg-surface-raised)] border border-border/60 flex flex-col items-start">
                 <div className="w-7 h-7 rounded-[8px] bg-emerald-500/15 text-emerald-600 flex items-center justify-center mb-2">
                   <FileText className="w-4 h-4 text-emerald-600" />
                 </div>
@@ -99,7 +99,7 @@ export function VerificationPromptModal({
                 <p className="text-[11px] text-muted mt-0.5">Unlock publishing custom itineraries & trips.</p>
               </div>
 
-              <div className="p-3 rounded-[14px] bg-[#F4F9FD] border border-border/60 flex flex-col items-start">
+              <div className="p-3 rounded-[14px] bg-[var(--color-bg-surface-raised)] border border-border/60 flex flex-col items-start">
                 <div className="w-7 h-7 rounded-[8px] bg-purple-500/15 text-purple-600 flex items-center justify-center mb-2">
                   <Lock className="w-4 h-4 text-purple-600" />
                 </div>
@@ -109,7 +109,7 @@ export function VerificationPromptModal({
             </div>
 
             {/* Account Type Selector & Document Preview */}
-            <div className="p-4 rounded-[16px] bg-[#FAFCFE] border border-border">
+            <div className="p-4 rounded-[16px] bg-[var(--color-bg-surface)] border border-border">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-navy uppercase tracking-wider">Required Document Checklist</span>
                 <div className="flex items-center gap-1 bg-[#E8F1F8] p-0.5 rounded-[10px]">

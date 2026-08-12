@@ -220,14 +220,14 @@ export function DashboardLayout() {
               </div>
 
               {/* Amount Display */}
-              <div className="text-3xl font-extrabold text-teal font-mono mb-2">
+              <div className="text-3xl font-extrabold text-teal font-medium mb-2">
                 {alarm.amount}
               </div>
 
               {/* Description body */}
               <div className="text-xs text-muted leading-relaxed mb-4">
-                Customer <span className="text-navy font-bold">{alarm.customerName}</span> has {alarm.type === 'started' ? 'started payment check' : 'submitted payment confirmation'} for booking <span className="font-mono font-bold text-navy">{alarm.bookingId}</span>.
-                <span className="block mt-1 font-mono text-[10px]">Time: {alarm.time}</span>
+                Customer <span className="text-navy font-bold">{alarm.customerName}</span> has {alarm.type === 'started' ? 'started payment check' : 'submitted payment confirmation'} for booking <span className="font-medium font-bold text-navy">{alarm.bookingId}</span>.
+                <span className="block mt-1 font-medium text-[10px]">Time: {alarm.time}</span>
               </div>
 
               {/* Action buttons */}

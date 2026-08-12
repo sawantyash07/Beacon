@@ -434,7 +434,7 @@ export default function BookingsPage() {
                           alt={pkg.title}
                           className="h-48 sm:h-full"
                         />
-                        <div className="absolute top-2 right-2 bg-navy/80 backdrop-blur-sm text-cyan text-[10px] font-mono font-bold px-2 py-0.5 rounded-full z-20">
+                        <div className="absolute top-2 right-2 bg-navy/80 backdrop-blur-sm text-cyan text-[10px] font-medium font-bold px-2 py-0.5 rounded-full z-20">
                           {pkg.id}
                         </div>
                       </div>
@@ -485,7 +485,7 @@ export default function BookingsPage() {
                               <Users className="w-3.5 h-3.5 text-teal" />
                               <span>{bookedSeats} / {capacity} Seats Booked</span>
                             </span>
-                            <span className={`font-mono font-bold ${
+                            <span className={`font-medium font-bold ${
                               availableSeats === 0 ? 'text-rose-600' : availableSeats <= 10 ? 'text-amber-600' : 'text-emerald-600'
                             }`}>
                               {availableSeats} Available
@@ -510,7 +510,7 @@ export default function BookingsPage() {
 
                           <div className="flex items-center justify-between text-[11px] text-muted">
                             <span>Occupancy: <strong className="text-navy">{occupancyPercentage}% Full</strong></span>
-                            <span>Revenue: <strong className="text-teal font-mono">{formatCurrency(totalRevenue)}</strong></span>
+                            <span>Revenue: <strong className="text-teal font-medium">{formatCurrency(totalRevenue)}</strong></span>
                           </div>
                         </div>
 
@@ -555,7 +555,7 @@ export default function BookingsPage() {
               <span>Back to Packages</span>
             </Button>
 
-            <span className="text-xs font-mono text-muted bg-page px-3 py-1 rounded-full border border-border">
+            <span className="text-xs font-medium text-muted bg-page px-3 py-1 rounded-full border border-border">
               Viewing Package ID: {selectedGroup.package.id}
             </span>
           </div>
@@ -603,7 +603,7 @@ export default function BookingsPage() {
 
                 <div className="pt-2 flex items-center gap-4 text-xs text-muted">
                   <span>Next Departure: <strong className="text-navy">{formatDate(selectedGroup.nextDepartureDate)}</strong></span>
-                  <span>Base Rate: <strong className="text-teal font-mono">{formatCurrency(selectedGroup.package.price)}</strong></span>
+                  <span>Base Rate: <strong className="text-teal font-medium">{formatCurrency(selectedGroup.package.price)}</strong></span>
                 </div>
               </div>
 
@@ -612,8 +612,8 @@ export default function BookingsPage() {
                 <div>
                   <span className="text-[10px] uppercase font-bold text-muted tracking-wider block mb-1">Live Capacity & Occupancy</span>
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-extrabold font-mono text-navy">{selectedGroup.bookedSeats} / {selectedGroup.capacity}</span>
-                    <span className={`text-sm font-bold font-mono ${
+                    <span className="text-2xl font-extrabold font-medium text-navy">{selectedGroup.bookedSeats} / {selectedGroup.capacity}</span>
+                    <span className={`text-sm font-bold font-medium ${
                       selectedGroup.availableSeats === 0 ? 'text-rose-600' : selectedGroup.availableSeats <= 10 ? 'text-amber-600' : 'text-emerald-600'
                     }`}>
                       {selectedGroup.availableSeats} Available
@@ -633,13 +633,13 @@ export default function BookingsPage() {
                   </div>
                   <div className="flex justify-between text-[11px] text-muted font-medium">
                     <span>Occupancy Rate</span>
-                    <strong className="text-navy font-mono">{selectedGroup.occupancyPercentage}% Full</strong>
+                    <strong className="text-navy font-medium">{selectedGroup.occupancyPercentage}% Full</strong>
                   </div>
                 </div>
 
                 <div className="border-t border-border/60 pt-2 text-xs flex justify-between items-center text-muted">
                   <span>Generated Revenue:</span>
-                  <strong className="text-teal font-mono text-sm">{formatCurrency(selectedGroup.totalRevenue)}</strong>
+                  <strong className="text-teal font-medium text-sm">{formatCurrency(selectedGroup.totalRevenue)}</strong>
                 </div>
               </div>
             </div>
@@ -651,42 +651,42 @@ export default function BookingsPage() {
               <div className="flex items-center gap-1.5 text-muted text-xs font-semibold mb-1">
                 <Calendar className="w-3.5 h-3.5 text-teal" /> Total Bookings
               </div>
-              <div className="text-xl font-bold text-navy font-mono">{selectedGroup.totalBookings}</div>
+              <div className="text-xl font-bold text-navy font-medium">{selectedGroup.totalBookings}</div>
             </div>
 
             <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
               <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-semibold mb-1">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Confirmed
               </div>
-              <div className="text-xl font-bold text-emerald-600 font-mono">{selectedGroup.summary.confirmed}</div>
+              <div className="text-xl font-bold text-emerald-600 font-medium">{selectedGroup.summary.confirmed}</div>
             </div>
 
             <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
               <div className="flex items-center gap-1.5 text-amber-600 text-xs font-semibold mb-1">
                 <Clock className="w-3.5 h-3.5 text-amber-500" /> Pending
               </div>
-              <div className="text-xl font-bold text-amber-600 font-mono">{selectedGroup.summary.pending}</div>
+              <div className="text-xl font-bold text-amber-600 font-medium">{selectedGroup.summary.pending}</div>
             </div>
 
             <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
               <div className="flex items-center gap-1.5 text-rose-600 text-xs font-semibold mb-1">
                 <XCircle className="w-3.5 h-3.5 text-rose-500" /> Cancelled
               </div>
-              <div className="text-xl font-bold text-rose-600 font-mono">{selectedGroup.summary.cancelled}</div>
+              <div className="text-xl font-bold text-rose-600 font-medium">{selectedGroup.summary.cancelled}</div>
             </div>
 
             <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
               <div className="flex items-center gap-1.5 text-muted text-xs font-semibold mb-1">
                 <Users className="w-3.5 h-3.5 text-teal" /> Total Travelers
               </div>
-              <div className="text-xl font-bold text-navy font-mono">{selectedGroup.totalTravelers}</div>
+              <div className="text-xl font-bold text-navy font-medium">{selectedGroup.totalTravelers}</div>
             </div>
 
             <div className="bg-surface border border-border rounded-[16px] p-3.5 shadow-sm">
               <div className="flex items-center gap-1.5 text-teal text-xs font-semibold mb-1">
                 <DollarSign className="w-3.5 h-3.5 text-teal" /> Total Revenue
               </div>
-              <div className="text-xl font-bold text-teal font-mono">{formatCurrency(selectedGroup.totalRevenue)}</div>
+              <div className="text-xl font-bold text-teal font-medium">{formatCurrency(selectedGroup.totalRevenue)}</div>
             </div>
           </div>
 
@@ -894,7 +894,7 @@ export default function BookingsPage() {
               <div className="bg-page border border-border rounded-[16px] p-3.5 text-xs space-y-2">
                 <div className="flex justify-between items-center font-bold text-navy">
                   <span>{confirmTargetBooking.traveler}</span>
-                  <span className="font-mono text-teal">{confirmTargetBooking.id}</span>
+                  <span className="font-medium text-teal">{confirmTargetBooking.id}</span>
                 </div>
                 <div className="text-muted flex justify-between">
                   <span>Package:</span>
@@ -955,7 +955,7 @@ export default function BookingsPage() {
                   />
                   <div>
                     <h3 className="font-bold text-navy text-lg">{detailsBooking.traveler}</h3>
-                    <p className="text-xs text-muted font-mono">{detailsBooking.id}</p>
+                    <p className="text-xs text-muted font-medium">{detailsBooking.id}</p>
                   </div>
                 </div>
 
@@ -1005,15 +1005,15 @@ export default function BookingsPage() {
                 <h5 className="font-bold text-muted uppercase text-[10px] tracking-wider">Financial Breakdown</h5>
                 <div className="flex justify-between py-1 border-b border-border/40">
                   <span className="text-muted">Total Package Rate:</span>
-                  <strong className="font-mono text-navy">{formatCurrency(detailsBooking.amount)}</strong>
+                  <strong className="font-medium text-navy">{formatCurrency(detailsBooking.amount)}</strong>
                 </div>
                 <div className="flex justify-between py-1 border-b border-border/40">
                   <span className="text-muted">Amount Paid:</span>
-                  <strong className="font-mono text-emerald-600">{formatCurrency(detailsBooking.amountPaid || detailsBooking.amount)}</strong>
+                  <strong className="font-medium text-emerald-600">{formatCurrency(detailsBooking.amountPaid || detailsBooking.amount)}</strong>
                 </div>
                 <div className="flex justify-between py-1">
                   <span className="text-muted">Remaining Balance:</span>
-                  <strong className="font-mono text-rose-600">{formatCurrency(detailsBooking.remainingBalance || 0)}</strong>
+                  <strong className="font-medium text-rose-600">{formatCurrency(detailsBooking.remainingBalance || 0)}</strong>
                 </div>
               </div>
 
@@ -1208,7 +1208,7 @@ function BookingsTable({
                 transition={{ delay: i * 0.04 }}
                 className="border-b border-border last:border-0 hover:bg-page/40 transition-colors"
               >
-                <td className="p-4 font-mono font-bold text-teal">{booking.id}</td>
+                <td className="p-4 font-medium font-bold text-teal">{booking.id}</td>
 
                 <td className="p-4">
                   <div className="flex items-center gap-2.5">
@@ -1249,7 +1249,7 @@ function BookingsTable({
 
                 <td className="p-4 text-navy font-semibold">{booking.travelersCount || 1} Travelers</td>
 
-                <td className="p-4 font-mono font-bold text-navy">
+                <td className="p-4 font-medium font-bold text-navy">
                   {formatCurrency(booking.amountPaid || booking.amount)}
                   {booking.remainingBalance > 0 && (
                     <span className="block text-[9px] text-rose-500 font-normal">

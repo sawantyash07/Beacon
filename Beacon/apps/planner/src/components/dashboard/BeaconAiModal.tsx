@@ -70,7 +70,7 @@ export function BeaconAiModal({ isOpen, onClose }: BeaconAiModalProps) {
           className="relative w-full max-w-xl bg-surface border border-border rounded-[24px] shadow-2xl overflow-hidden flex flex-col"
         >
           {/* Header */}
-          <div className="p-6 bg-gradient-to-r from-[#031525] via-[#092B48] to-[#0A3D62] text-white flex items-center justify-between border-b border-border/40 shrink-0">
+          <div className="p-6 bg-gradient-to-r bg-[var(--nav-bg)] text-white flex items-center justify-between border-b border-border/40 shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-[12px] bg-cyan/20 text-cyan flex items-center justify-center border border-cyan/30">
                 <Bot className="w-6 h-6 text-cyan" />
@@ -78,7 +78,7 @@ export function BeaconAiModal({ isOpen, onClose }: BeaconAiModalProps) {
               <div>
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   Ask Beacon AI
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan/20 text-cyan border border-cyan/30 uppercase">
+                  <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-cyan/20 text-cyan border border-cyan/30 uppercase">
                     Ctrl + J
                   </span>
                 </h2>
@@ -168,7 +168,7 @@ export function BeaconAiModal({ isOpen, onClose }: BeaconAiModalProps) {
 
           {/* Footer */}
           <div className="p-4 bg-page border-t border-border flex items-center justify-between text-xs text-muted">
-            <span>Press <kbd className="px-1.5 py-0.5 bg-white border rounded font-mono text-[10px]">Enter</kbd> to run</span>
+            <span>Press <kbd className="px-1.5 py-0.5 bg-white border rounded font-medium text-[10px]">Enter</kbd> to run</span>
             <button
               onClick={onClose}
               className="text-xs font-semibold text-muted hover:text-navy"

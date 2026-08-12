@@ -502,7 +502,7 @@ export default function TeamManagementPage() {
               <stat.icon className={`w-4 h-4 ${stat.color}`} />
             </div>
             <div className="mt-2">
-              <span className="text-2xl font-extrabold text-navy font-mono">{stat.value}</span>
+              <span className="text-2xl font-extrabold text-navy font-medium">{stat.value}</span>
               <span className="text-[9px] text-muted block mt-0.5">{stat.sub}</span>
             </div>
           </Card>
@@ -610,7 +610,7 @@ export default function TeamManagementPage() {
                       </div>
                       
                       <div className="flex items-center gap-1 mt-0.5">
-                        <span className="text-[10px] text-muted font-mono font-bold">{member.employeeId}</span>
+                        <span className="text-[10px] text-muted font-medium font-bold">{member.employeeId}</span>
                       </div>
                     </div>
                   </div>
@@ -622,7 +622,7 @@ export default function TeamManagementPage() {
                         <Shield className="w-3.5 h-3.5 text-teal shrink-0" />
                         <span className="text-navy font-bold">{member.role}</span>
                       </div>
-                      <Badge variant="outline" className="text-[9px] font-bold border-teal/20 text-teal py-0 px-2 font-mono">
+                      <Badge variant="outline" className="text-[9px] font-bold border-teal/20 text-teal py-0 px-2 font-medium">
                         {member.department || 'General'}
                       </Badge>
                     </div>
@@ -640,11 +640,11 @@ export default function TeamManagementPage() {
                   <div className="grid grid-cols-2 gap-4 text-xs font-semibold">
                     <div className="bg-navy/5 p-2 rounded-lg border border-border">
                       <span className="text-[9px] text-muted uppercase block">Assigned Trips</span>
-                      <span className="text-sm font-extrabold text-navy font-mono">{member.assignedTrips} active</span>
+                      <span className="text-sm font-extrabold text-navy font-medium">{member.assignedTrips} active</span>
                     </div>
                     <div className="bg-navy/5 p-2 rounded-lg border border-border">
                       <span className="text-[9px] text-muted uppercase block">Pending Tasks</span>
-                      <span className="text-sm font-extrabold text-navy font-mono">{member.assignedTasks} duties</span>
+                      <span className="text-sm font-extrabold text-navy font-medium">{member.assignedTasks} duties</span>
                     </div>
                   </div>
 
@@ -736,7 +736,7 @@ export default function TeamManagementPage() {
           <Card className="p-5 border border-border">
             <h3 className="font-extrabold text-navy text-sm mb-3 flex items-center justify-between">
               <span>Organizational Departments</span>
-              <Badge variant="outline" className="text-[10px] py-0 px-2 border-teal/30 text-teal font-mono">
+              <Badge variant="outline" className="text-[10px] py-0 px-2 border-teal/30 text-teal font-medium">
                 {departments.length} total
               </Badge>
             </h3>
@@ -798,7 +798,7 @@ export default function TeamManagementPage() {
                         {member.role} · {member.department}
                       </p>
                     </div>
-                    <span className="text-[9px] text-muted font-mono whitespace-nowrap">
+                    <span className="text-[9px] text-muted font-medium whitespace-nowrap">
                       {member.joinedDate}
                     </span>
                   </div>
@@ -820,11 +820,11 @@ export default function TeamManagementPage() {
                     <p className="text-navy text-[11px] font-bold">
                       {log.member} <span className="text-muted font-normal">{log.action}</span>
                     </p>
-                    <Badge variant="outline" className="text-[8px] border-teal/20 text-teal py-0 px-1 font-mono">
+                    <Badge variant="outline" className="text-[8px] border-teal/20 text-teal py-0 px-1 font-medium">
                       {log.module}
                     </Badge>
                   </div>
-                  <span className="text-[9px] text-muted font-mono shrink-0">{log.time}</span>
+                  <span className="text-[9px] text-muted font-medium shrink-0">{log.time}</span>
                 </div>
               ))}
             </div>
@@ -891,7 +891,7 @@ export default function TeamManagementPage() {
                       placeholder="e.g. EMP-024"
                       value={formEmpId}
                       onChange={(e) => setFormEmpId(e.target.value)}
-                      className="w-full bg-page border border-border rounded-lg px-3 py-1.5 text-xs text-navy focus:outline-none focus:border-teal font-medium font-mono"
+                      className="w-full bg-page border border-border rounded-lg px-3 py-1.5 text-xs text-navy focus:outline-none focus:border-teal font-medium font-medium"
                     />
                   </div>
                 </div>
@@ -1179,11 +1179,11 @@ export default function TeamManagementPage() {
                     <div key={log.id} className="flex justify-between items-center text-xs bg-navy/5 border border-border/50 p-2.5 rounded-lg">
                       <div className="space-y-1">
                         <span className="text-navy font-bold block">{log.action}</span>
-                        <Badge variant="outline" className="text-[9px] border-teal/20 text-teal py-0 px-2 font-mono">
+                        <Badge variant="outline" className="text-[9px] border-teal/20 text-teal py-0 px-2 font-medium">
                           {log.module}
                         </Badge>
                       </div>
-                      <span className="text-[10px] text-muted font-mono shrink-0">{log.time}</span>
+                      <span className="text-[10px] text-muted font-medium shrink-0">{log.time}</span>
                     </div>
                   ))}
                 {logs.filter(l => l.member === activeLogMember.name).length === 0 && (

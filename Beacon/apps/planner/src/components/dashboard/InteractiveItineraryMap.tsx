@@ -329,7 +329,7 @@ export function InteractiveItineraryMap({
           <span className="font-semibold text-navy/80 flex items-center gap-1.5">
             <Compass className="w-3.5 h-3.5 text-cyan animate-pulse" /> Interactive Map View
           </span>
-          <span className="font-mono text-[10px] text-teal font-medium bg-teal/10 px-2 py-0.5 rounded-full border border-teal/30">
+          <span className="font-medium text-[10px] text-teal font-medium bg-teal/10 px-2 py-0.5 rounded-full border border-teal/30">
             {currentLoc.lat.toFixed(4)}, {currentLoc.lng.toFixed(4)}
           </span>
         </div>

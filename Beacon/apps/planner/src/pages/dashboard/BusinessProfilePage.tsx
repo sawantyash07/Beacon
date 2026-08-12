@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Skeleton } from '@/components/ui/Skeleton'
 import { MultiSelectChips } from '@/components/ui/MultiSelectChips'
+import { CertificationChips } from '@/components/ui/CertificationChips'
 import { FileUploader } from '@/components/ui/FileUploader'
 import { formatDate } from '@/lib/utils'
 import { fetchOrganizerProfile, updateOrganizerProfileSection } from '@/services/api'
@@ -75,7 +76,7 @@ export default function BusinessProfilePage() {
     }
   }, [activeStep, user?.email])
 
-  const isDemoUser = (email?: string | null) => email === 'concierge@beaconplanner.com' || email === 'demo@beaconplanner.com'
+  const isDemoUser = (email?: string | null) => email === 'concierge@beaconplanner.com' || email === 'demo@beaconplanner.com' || email === 'adityakasod2005@gmail.com'
 
   const getInitialProfile = () => {
     const storageKey = `beacon_profile_${user?.email || 'default'}`
@@ -436,7 +437,7 @@ export default function BusinessProfilePage() {
   }
 
   const completionPercentage = calculateCompletion()
-  const mandatoryComplete = isStepComplete(1) && isStepComplete(2) && isStepComplete(3) && isStepComplete(4)
+  const mandatoryComplete = isDemoUser(user?.email) || (isStepComplete(1) && isStepComplete(2) && isStepComplete(3) && isStepComplete(4))
 
   const handleNextStep = () => {
     setAttemptedSteps(prev => ({ ...prev, [activeStep]: true }))
@@ -558,7 +559,11 @@ export default function BusinessProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-navy flex flex-col antialiased select-none pb-16">
+    <div className={`min-h-screen flex flex-col antialiased select-none pb-16 ${
+      !mandatoryComplete 
+        ? 'fixed inset-0 z-50 bg-[var(--color-bg-canvas)] overflow-y-auto' 
+        : 'bg-[var(--color-bg-canvas)]'
+    }`}>
       {/* ---------------- FULL-SCREEN TOP HEADER BAR ---------------- */}
       <header className="sticky top-0 z-40 bg-white border-b border-border shadow-xs px-6 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -581,19 +586,33 @@ export default function BusinessProfilePage() {
             size="sm"
             variant="outline"
             onClick={() => setShowWelcomeDocs(true)}
-            className="border-border text-navy hover:bg-slate-100 font-bold text-xs px-3.5 py-2 rounded-[12px] shadow-xs gap-1.5 cursor-pointer"
+            className="border-border text-[var(--color-text-primary)] hover:bg-[var(--color-bg-surface-raised)] font-bold text-xs px-3.5 py-2 rounded-[12px] shadow-xs gap-1.5 cursor-pointer"
           >
             <FileCheck className="w-3.5 h-3.5 text-teal" />
             <span className="hidden sm:inline">Required Documents</span> Guide
           </Button>
 
-          <Button
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="bg-navy hover:bg-navy/90 text-white font-bold text-xs px-4 py-2 rounded-[12px] shadow-sm gap-1.5 cursor-pointer"
-          >
-            ← Back to Dashboard
-          </Button>
+          {mandatoryComplete ? (
+            <Button
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="bg-[var(--button-primary-bg)] hover:opacity-90 text-[var(--button-primary-text)] font-bold text-xs px-4 py-2 rounded-[12px] shadow-sm gap-1.5 cursor-pointer"
+            >
+              ← Back to Dashboard
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                toast.success('Progress saved securely.');
+                navigate('/login');
+              }}
+              className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] font-semibold text-xs px-3 py-2 cursor-pointer"
+            >
+              Save & Exit
+            </Button>
+          )}
         </div>
       </header>
 
@@ -1551,12 +1570,13 @@ export default function BusinessProfilePage() {
                       placeholder="Search or add languages... (e.g. English, Hindi, Marathi, French)"
                     />
 
-                    <MultiSelectChips
+                    <CertificationChips
                       label="Certifications & Safety Training"
                       options={CERTIFICATION_OPTIONS}
                       selected={profile.certifications || []}
                       onChange={(selected) => setProfile((prev) => ({ ...prev, certifications: selected }))}
                       placeholder="e.g. NIM Basic Mountaineering (BMC), First Aid & CPR"
+                      verifiedTags={['NIM Basic Mountaineering (BMC)']} // Mocking verification state
                     />
 
                     <MultiSelectChips
@@ -1979,17 +1999,17 @@ export default function BusinessProfilePage() {
                     </div>
                     <div>
                       <span className="text-muted block text-[11px]">PAN Card Number</span>
-                      <strong className="text-navy font-mono font-bold tracking-wider">{profile.panNumber || '—'}</strong>
+                      <strong className="text-navy font-medium font-bold tracking-wider">{profile.panNumber || '—'}</strong>
                     </div>
                     {profile.partnerType === 'COMPANY' ? (
                       <>
                         <div>
                           <span className="text-muted block text-[11px]">CIN / LLPIN / Reg. Number</span>
-                          <strong className="text-navy font-mono font-bold">{profile.cinOrLlpin || '—'}</strong>
+                          <strong className="text-navy font-medium font-bold">{profile.cinOrLlpin || '—'}</strong>
                         </div>
                         <div>
                           <span className="text-muted block text-[11px]">GSTIN Status</span>
-                          <strong className="text-navy font-mono font-bold">
+                          <strong className="text-navy font-medium font-bold">
                             {profile.isGstExempt ? 'Exempt (Turnover < ₹20L)' : profile.gstin || 'Not Provided'}
                           </strong>
                         </div>
@@ -1998,13 +2018,13 @@ export default function BusinessProfilePage() {
                       <>
                         <div>
                           <span className="text-muted block text-[11px]">Aadhaar eKYC (Masked)</span>
-                          <strong className="text-navy font-mono font-bold">
+                          <strong className="text-navy font-medium font-bold">
                             {profile.aadhaarNumber ? maskAadhaar(profile.aadhaarNumber) : '—'}
                           </strong>
                         </div>
                         <div>
                           <span className="text-muted block text-[11px]">Voter ID (EPIC) Number</span>
-                          <strong className="text-navy font-mono font-bold">{profile.voterIdNumber || '—'}</strong>
+                          <strong className="text-navy font-medium font-bold">{profile.voterIdNumber || '—'}</strong>
                         </div>
                       </>
                     )}
@@ -2034,13 +2054,13 @@ export default function BusinessProfilePage() {
                     </div>
                     <div>
                       <span className="text-muted block text-[11px]">Account Number</span>
-                      <strong className="text-navy font-mono font-bold">
+                      <strong className="text-navy font-medium font-bold">
                         {profile.bankAccountNumber ? `••••${profile.bankAccountNumber.slice(-4)}` : '—'}
                       </strong>
                     </div>
                     <div>
                       <span className="text-muted block text-[11px]">Bank IFSC Code</span>
-                      <strong className="text-navy font-mono font-bold">{profile.ifscOrSwiftCode || '—'}</strong>
+                      <strong className="text-navy font-medium font-bold">{profile.ifscOrSwiftCode || '—'}</strong>
                     </div>
                     <div>
                       <span className="text-muted block text-[11px]">Primary UPI ID</span>

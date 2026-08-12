@@ -234,7 +234,7 @@ export default function SettingsPage() {
                     <div key={member.id} className="flex items-center justify-between p-3 rounded-[12px] border border-border hover:border-teal/20 transition-all text-xs">
                       <div>
                         <span className="font-semibold text-navy block">{member.name}</span>
-                        <span className="text-[10px] text-muted block font-mono">{member.email}</span>
+                        <span className="text-[10px] text-muted block font-medium">{member.email}</span>
                       </div>
                       <div className="flex items-center gap-4">
                         <Badge variant={member.role === 'Owner' ? 'default' : 'muted'} className="text-[9px] py-0.5 px-2">
@@ -305,7 +305,7 @@ export default function SettingsPage() {
                                 {item.keys.map((k, ki) => (
                                   <kbd
                                     key={ki}
-                                    className="px-2 py-0.5 bg-page border border-border rounded-[6px] text-[11px] font-mono font-bold text-navy shadow-xs"
+                                    className="px-2 py-0.5 bg-page border border-border rounded-[6px] text-[11px] font-medium font-bold text-navy shadow-xs"
                                   >
                                     {k}
                                   </kbd>

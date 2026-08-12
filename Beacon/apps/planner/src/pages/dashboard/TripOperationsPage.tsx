@@ -302,7 +302,7 @@ export default function TripOperationsPage() {
                       <div className="flex justify-between items-start gap-2">
                         <div>
                           <h4 className="font-bold text-navy text-base">{trip.packageName}</h4>
-                          <span className="text-[10px] text-muted font-mono block mt-0.5">{trip.destination}</span>
+                          <span className="text-[10px] text-muted font-medium block mt-0.5">{trip.destination}</span>
                         </div>
                         <Badge className={statusColor}>
                           {trip.status}
@@ -417,7 +417,7 @@ export default function TripOperationsPage() {
                         </div>
 
                         {/* Price Difference Summary Indicator */}
-                        <div className="bg-white/[0.02] p-3 rounded-[10px] border border-border/20 text-[10px] space-y-1 font-mono">
+                        <div className="bg-white/[0.02] p-3 rounded-[10px] border border-border/20 text-[10px] space-y-1 font-medium">
                           <div className="flex justify-between"><span>Original Package:</span><span>₹{selectedTrip.originalPrice}</span></div>
                           <div className="flex justify-between"><span>New Package:</span><span>₹{selectedTrip.originalPrice + priceDiff}</span></div>
                           <div className="flex justify-between font-bold text-teal border-t border-border/10 pt-1">
@@ -484,7 +484,7 @@ export default function TripOperationsPage() {
                           </select>
                         </div>
 
-                        <div className="bg-white/[0.02] p-3 rounded-[10px] border border-border/20 text-[10px] space-y-1 font-mono text-muted">
+                        <div className="bg-white/[0.02] p-3 rounded-[10px] border border-border/20 text-[10px] space-y-1 font-medium text-muted">
                           <div className="flex justify-between"><span>Base Refund:</span><span>₹{selectedTrip.originalPrice}</span></div>
                           <div className="flex justify-between"><span>GST Refund (18%):</span><span>₹{selectedTrip.originalPrice * 0.18}</span></div>
                           <div className="flex justify-between font-bold text-red-500 border-t border-border/10 pt-1">
@@ -509,7 +509,7 @@ export default function TripOperationsPage() {
                             }`} />
                             <div>
                               <span className="font-bold text-navy block">{step.event}</span>
-                              <span className="text-[10px] text-muted block font-mono">{step.time}</span>
+                              <span className="text-[10px] text-muted block font-medium">{step.time}</span>
                             </div>
                           </div>
                         ))}
@@ -524,7 +524,7 @@ export default function TripOperationsPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted">Status Code:</span>
-                        <span className="font-mono text-navy font-bold">{selectedTrip.id.toUpperCase()}</span>
+                        <span className="font-medium text-navy font-bold">{selectedTrip.id.toUpperCase()}</span>
                       </div>
                     </div>
 
@@ -581,7 +581,7 @@ export default function TripOperationsPage() {
 
                     {/* Actions panel */}
                     <div className="flex justify-between items-center gap-3 pt-3 border-t border-border/5">
-                      <span className="text-[10px] text-muted font-mono">{req.id.toUpperCase()}</span>
+                      <span className="text-[10px] text-muted font-medium">{req.id.toUpperCase()}</span>
                       <div className="flex gap-2">
                         <Button size="sm" variant="ghost" onClick={() => handleRejectRequest(req.id)}>
                           Reject
@@ -677,7 +677,7 @@ export default function TripOperationsPage() {
                   <p className="text-xs text-muted mt-0.5">Automated billing calculations & invoice adjustments</p>
                 </div>
 
-                <div className="space-y-3.5 text-xs border-y border-border/40 py-4 font-mono">
+                <div className="space-y-3.5 text-xs border-y border-border/40 py-4 font-medium">
                   <div className="flex justify-between"><span>Original Package base:</span><span className="text-navy font-semibold">₹{req.priceDetails.originalPrice}</span></div>
                   <div className="flex justify-between"><span>New Package base:</span><span className="text-navy font-semibold">₹{req.priceDetails.newPrice}</span></div>
                   <div className="flex justify-between text-teal font-bold border-t border-border/10 pt-2 text-sm">

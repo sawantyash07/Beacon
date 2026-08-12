@@ -98,7 +98,7 @@ export default function PlatformSettingsPage() {
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 select-none font-mono text-xs">
+    <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 select-none font-medium text-xs">
       
       {/* ==========================================
           LEFT: FINANCIALS, GENERAL CONFIGS & FLAGS
@@ -248,7 +248,7 @@ export default function PlatformSettingsPage() {
         
         {/* System Diagnostics status override */}
         <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 border-b border-gray-850 pb-3">
+          <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 border-b border-gray-850 pb-3">
             Platform Mode status
           </h4>
 
@@ -285,7 +285,7 @@ export default function PlatformSettingsPage() {
 
         {/* Legal templates editor */}
         <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4 shadow-xl">
-          <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1">
+          <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1">
             <FileText size={14} className="text-cyan-400" /> Policy Document Editor
           </h4>
 
@@ -318,12 +318,12 @@ export default function PlatformSettingsPage() {
               value={legalText}
               onChange={(e) => setLegalText(e.target.value)}
               rows={6}
-              className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-mono leading-relaxed"
+              className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-medium leading-relaxed"
             />
 
             <button
               onClick={handleSaveLegal}
-              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-xl text-xs font-mono uppercase cursor-pointer"
+              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-xl text-xs font-medium uppercase cursor-pointer"
             >
               Save & Publish Template
             </button>

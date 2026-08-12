@@ -89,7 +89,7 @@ export default function UserManagementPage() {
           </p>
         </div>
 
-        <div className="flex bg-gray-950/60 p-1 rounded-xl text-xs font-mono border border-gray-855">
+        <div className="flex bg-gray-950/60 p-1 rounded-xl text-xs font-medium border border-gray-855">
           <button
             onClick={() => setActiveTab('planners')}
             className={`px-4 py-2 rounded-lg cursor-pointer ${
@@ -132,10 +132,10 @@ export default function UserManagementPage() {
                 value={plannerSearch}
                 onChange={(e) => setPlannerSearch(e.target.value)}
                 placeholder="Filter operators by agency name..."
-                className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+                className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
               />
             </div>
-            <button className="px-3.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5 font-mono">
+            <button className="px-3.5 py-2 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-xl text-xs cursor-pointer flex items-center gap-1.5 font-medium">
               <Plus size={14} /> Add Planner
             </button>
           </div>
@@ -145,7 +145,7 @@ export default function UserManagementPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="border-b border-gray-850 bg-gray-950/40 text-gray-400 font-mono">
+                  <tr className="border-b border-gray-850 bg-gray-950/40 text-gray-400 font-medium">
                     <th className="p-4">Agency Name</th>
                     <th className="p-4">Owner</th>
                     <th className="p-4">Status</th>
@@ -156,7 +156,7 @@ export default function UserManagementPage() {
                     <th className="p-4 text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-855 font-mono">
+                <tbody className="divide-y divide-gray-855 font-medium">
                   {planners
                     .filter(p => p.agencyName.toLowerCase().includes(plannerSearch.toLowerCase()))
                     .map((p) => (
@@ -214,7 +214,7 @@ export default function UserManagementPage() {
                 value={customerSearch}
                 onChange={(e) => setCustomerSearch(e.target.value)}
                 placeholder="Filter travelers by name or email..."
-                className="w-full bg-gray-900 border border-gray-855 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+                className="w-full bg-gray-900 border border-gray-855 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
               />
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function UserManagementPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="border-b border-gray-850 bg-gray-950/40 text-gray-400 font-mono">
+                  <tr className="border-b border-gray-850 bg-gray-950/40 text-gray-400 font-medium">
                     <th className="p-4">Customer Name</th>
                     <th className="p-4">Contact</th>
                     <th className="p-4">Status</th>
@@ -234,7 +234,7 @@ export default function UserManagementPage() {
                     <th className="p-4 text-center">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-855 font-mono">
+                <tbody className="divide-y divide-gray-855 font-medium">
                   {customers
                     .filter(c => c.name.toLowerCase().includes(customerSearch.toLowerCase()) || c.email.toLowerCase().includes(customerSearch.toLowerCase()))
                     .map((c) => (
@@ -288,13 +288,13 @@ export default function UserManagementPage() {
             <h3 className="text-sm font-bold flex items-center gap-2">
               <Lock size={18} className="text-cyan-400" /> Platform Role Access Control (RBAC)
             </h3>
-            <p className="text-[11px] text-gray-500 font-mono mt-1">
+            <p className="text-[11px] text-gray-500 font-medium mt-1">
               Select permissions that correspond to the scope authorization of administrative staff members.
             </p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs font-mono">
+            <table className="w-full text-left border-collapse text-xs font-medium">
               <thead>
                 <tr className="border-b border-gray-855 bg-gray-950/40 text-gray-400">
                   <th className="p-4">Administrative Role</th>
@@ -368,7 +368,7 @@ export default function UserManagementPage() {
             <div className="space-y-6">
               <div className="flex items-center justify-between border-b border-gray-850 pb-4">
                 <div>
-                  <span className="text-[10px] text-yellow-500 font-mono font-bold">★ {activePlanner.tier} PLANNER OPERATOR</span>
+                  <span className="text-[10px] text-yellow-500 font-medium font-bold">★ {activePlanner.tier} PLANNER OPERATOR</span>
                   <h2 className="text-lg font-black text-white">{activePlanner.agencyName}</h2>
                 </div>
                 <button
@@ -382,23 +382,23 @@ export default function UserManagementPage() {
               {/* Business Stats Grid */}
               <div className="grid grid-cols-3 gap-2 text-center">
                 <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850">
-                  <span className="text-[9px] text-gray-500 font-mono block">REVENUE</span>
-                  <span className="text-xs font-bold text-cyan-300 font-mono">₹{activePlanner.revenue.toLocaleString()}</span>
+                  <span className="text-[9px] text-gray-500 font-medium block">REVENUE</span>
+                  <span className="text-xs font-bold text-cyan-300 font-medium">₹{activePlanner.revenue.toLocaleString()}</span>
                 </div>
                 <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850">
-                  <span className="text-[9px] text-gray-500 font-mono block">BOOKINGS</span>
-                  <span className="text-xs font-bold text-gray-200 font-mono">{activePlanner.bookings} trips</span>
+                  <span className="text-[9px] text-gray-500 font-medium block">BOOKINGS</span>
+                  <span className="text-xs font-bold text-gray-200 font-medium">{activePlanner.bookings} trips</span>
                 </div>
                 <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850">
-                  <span className="text-[9px] text-gray-500 font-mono block">RISK SCORE</span>
-                  <span className={`text-xs font-bold font-mono ${activePlanner.riskScore > 50 ? 'text-red-400' : 'text-green-400'}`}>
+                  <span className="text-[9px] text-gray-500 font-medium block">RISK SCORE</span>
+                  <span className={`text-xs font-bold font-medium ${activePlanner.riskScore > 50 ? 'text-red-400' : 'text-green-400'}`}>
                     {activePlanner.riskScore}%
                   </span>
                 </div>
               </div>
 
               {/* Owner Info & bank details */}
-              <div className="border border-gray-855 bg-gray-950/20 p-4 rounded-2xl space-y-2.5 text-xs font-mono text-gray-400">
+              <div className="border border-gray-855 bg-gray-950/20 p-4 rounded-2xl space-y-2.5 text-xs font-medium text-gray-400">
                 <div className="flex justify-between">
                   <span>Owner Legal Name:</span>
                   <span className="text-gray-200">{activePlanner.ownerName}</span>
@@ -423,10 +423,10 @@ export default function UserManagementPage() {
 
               {/* Operational Ratios */}
               <div className="space-y-2">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                   Operational Health metrics
                 </h4>
-                <div className="space-y-2 text-xs font-mono">
+                <div className="space-y-2 text-xs font-medium">
                   <div>
                     <div className="flex justify-between text-gray-400 mb-1 text-[11px]">
                       <span>Trip Cancellation Ratio</span>
@@ -450,17 +450,17 @@ export default function UserManagementPage() {
 
               {/* Admin Notes log */}
               <div className="space-y-2">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                   Security Log Annotations
                 </h4>
-                <div className="p-3.5 rounded-2xl bg-gray-950/40 border border-gray-850 text-xs font-mono text-gray-300 leading-normal">
+                <div className="p-3.5 rounded-2xl bg-gray-950/40 border border-gray-850 text-xs font-medium text-gray-300 leading-normal">
                   {activePlanner.notes || 'No security log annotations recorded.'}
                 </div>
               </div>
             </div>
 
             {/* Actions panel */}
-            <div className="border-t border-gray-850 pt-4 mt-6 grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="border-t border-gray-850 pt-4 mt-6 grid grid-cols-2 gap-2 text-xs font-medium">
               <button
                 onClick={() => {
                   suspendPlanner(activePlanner.id, activePlanner.status !== 'SUSPENDED', 'Administrative override suspension');
@@ -518,7 +518,7 @@ export default function UserManagementPage() {
             <div className="space-y-6">
               <div className="flex items-center justify-between border-b border-gray-850 pb-4">
                 <div>
-                  <span className="text-[10px] text-cyan-400 font-mono font-bold">TRAVELER CUSTOMER PROFILE</span>
+                  <span className="text-[10px] text-cyan-400 font-medium font-bold">TRAVELER CUSTOMER PROFILE</span>
                   <h2 className="text-lg font-black text-white">{activeCustomer.name}</h2>
                 </div>
                 <button
@@ -530,7 +530,7 @@ export default function UserManagementPage() {
               </div>
 
               {/* Fraud and general metric badges */}
-              <div className="grid grid-cols-3 gap-2 text-center font-mono">
+              <div className="grid grid-cols-3 gap-2 text-center font-medium">
                 <div className="bg-gray-950/40 p-3 rounded-2xl border border-gray-850">
                   <span className="text-[9px] text-gray-500 block">TOTAL SPENT</span>
                   <span className="text-xs font-bold text-cyan-300">₹{activeCustomer.totalSpent.toLocaleString()}</span>
@@ -548,7 +548,7 @@ export default function UserManagementPage() {
               </div>
 
               {/* Personal contact */}
-              <div className="border border-gray-855 bg-gray-950/20 p-4 rounded-2xl space-y-2.5 text-xs font-mono text-gray-400">
+              <div className="border border-gray-855 bg-gray-950/20 p-4 rounded-2xl space-y-2.5 text-xs font-medium text-gray-400">
                 <div className="flex justify-between">
                   <span>Registered Email:</span>
                   <span className="text-gray-200">{activeCustomer.email}</span>
@@ -573,10 +573,10 @@ export default function UserManagementPage() {
 
               {/* Travel History list */}
               <div className="space-y-2">
-                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+                <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                   Travel Ledger History
                 </h4>
-                <div className="space-y-1.5 font-mono text-[11px]">
+                <div className="space-y-1.5 font-medium text-[11px]">
                   {activeCustomer.travelHistory.map((tr, idx) => (
                     <div key={idx} className="p-3 rounded-xl bg-gray-950/40 border border-gray-850 flex justify-between items-center text-gray-300">
                       <div>
@@ -594,7 +594,7 @@ export default function UserManagementPage() {
             </div>
 
             {/* Action buttons */}
-            <div className="border-t border-gray-855 pt-4 mt-6 grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="border-t border-gray-855 pt-4 mt-6 grid grid-cols-2 gap-2 text-xs font-medium">
               <button
                 onClick={() => {
                   const newStatus = activeCustomer.status === 'BLACKLISTED' ? 'ACTIVE' : 'BLACKLISTED';

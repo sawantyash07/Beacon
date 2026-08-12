@@ -452,7 +452,7 @@ export default function InquiriesPage() {
                         <img src={inq.avatar} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 border border-slate-100" />
                         <div>
                           <h4 className="font-bold text-navy text-xs sm:text-sm">{inq.name}</h4>
-                          <span className="text-[10px] font-mono text-muted block">{inq.id}</span>
+                          <span className="text-[10px] font-medium text-muted block">{inq.id}</span>
                         </div>
                       </div>
                       <StatusBadge status={inq.status} />
@@ -494,14 +494,14 @@ export default function InquiriesPage() {
                       <h3 className="font-bold text-navy text-sm leading-none">{activeInquiry.name}</h3>
                       <StatusBadge status={activeInquiry.status} />
                     </div>
-                    <span className="text-[10px] text-muted font-mono block mt-1">
+                    <span className="text-[10px] text-muted font-medium block mt-1">
                       Dest: {activeInquiry.destination} · Assigned to: <strong className="text-teal font-semibold">{activeInquiry.assignedTo || 'Unassigned'}</strong>
                     </span>
                   </div>
                 </div>
 
                 <div className="flex gap-2">
-                  <span className="hidden md:flex text-[10px] font-mono text-muted bg-page px-2 py-1 rounded border border-border">
+                  <span className="hidden md:flex text-[10px] font-medium text-muted bg-page px-2 py-1 rounded border border-border">
                     ID: {activeInquiry.id}
                   </span>
                 </div>
@@ -650,7 +650,7 @@ export default function InquiriesPage() {
                             <span className="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-teal ring-4 ring-white" />
                             <div className="space-y-1">
                               <p className="text-xs font-medium text-navy">{item.text}</p>
-                              <span className="text-[9px] text-muted font-mono block">
+                              <span className="text-[9px] text-muted font-medium block">
                                 {new Date(item.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                               </span>
                             </div>
@@ -715,7 +715,7 @@ export default function InquiriesPage() {
                             type="number"
                             value={quotePrice}
                             onChange={(e) => setQuotePrice(Number(e.target.value))}
-                            className="w-full px-3 py-2 rounded-[10px] border border-border text-xs text-navy focus:outline-none focus:border-teal font-mono font-bold"
+                            className="w-full px-3 py-2 rounded-[10px] border border-border text-xs text-navy focus:outline-none focus:border-teal font-medium font-bold"
                           />
                         </div>
                         <div className="space-y-1">
@@ -752,7 +752,7 @@ export default function InquiriesPage() {
                             type="number"
                             value={reqPayAmount}
                             onChange={(e) => setReqPayAmount(Number(e.target.value))}
-                            className="w-full px-3 py-2 rounded-[10px] border border-border text-xs text-navy focus:outline-none focus:border-teal font-mono font-bold"
+                            className="w-full px-3 py-2 rounded-[10px] border border-border text-xs text-navy focus:outline-none focus:border-teal font-medium font-bold"
                           />
                         </div>
                         <div className="space-y-1">

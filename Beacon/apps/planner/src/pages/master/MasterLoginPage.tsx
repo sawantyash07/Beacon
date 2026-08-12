@@ -89,7 +89,7 @@ export default function MasterLoginPage() {
         {/* Left Side: Security Audit Badge & Diagnostics */}
         <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-950/20 text-cyan-400 text-xs font-mono glow-cyan-sm">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/20 bg-cyan-950/20 text-cyan-400 text-xs font-medium glow-cyan-sm">
               <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
               SECURE DEPLOYMENT : V1.0.8
             </div>
@@ -105,15 +105,15 @@ export default function MasterLoginPage() {
           {/* Audit diagnostics badge */}
           <div className="border border-gray-800 bg-gray-900/40 backdrop-blur-xl p-5 rounded-2xl space-y-4 shadow-2xl">
             <div className="flex items-center justify-between border-b border-gray-800 pb-3">
-              <span className="text-xs font-mono text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
                 <Terminal size={14} className="text-cyan-400" /> SYSTEM AUDIT LOGS
               </span>
-              <span className="text-xs text-green-400 font-mono flex items-center gap-1">
+              <span className="text-xs text-green-400 font-medium flex items-center gap-1">
                 <ShieldCheck size={12} /> SECURE
               </span>
             </div>
 
-            <div className="space-y-2 text-xs font-mono text-gray-400">
+            <div className="space-y-2 text-xs font-medium text-gray-400">
               <div className="flex justify-between">
                 <span>CLIENT IP:</span>
                 <span className="text-gray-200">192.168.42.105</span>
@@ -142,13 +142,13 @@ export default function MasterLoginPage() {
 
             <div className="pt-2 flex items-center gap-2 border-t border-gray-850">
               <Globe size={14} className="text-cyan-400 animate-spin" />
-              <span className="text-[10px] text-gray-500 font-mono">NODE CENTRAL ROUTER STATUS: ONLINE</span>
+              <span className="text-[10px] text-gray-500 font-medium">NODE CENTRAL ROUTER STATUS: ONLINE</span>
             </div>
           </div>
 
           {/* Quick Demo Access Badges */}
           <div className="space-y-3">
-            <div className="text-xs font-mono text-gray-500 uppercase tracking-widest">
+            <div className="text-xs font-medium text-gray-500 uppercase tracking-widest">
               DEMO ACCESS PROFILE SELECTOR
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -184,14 +184,14 @@ export default function MasterLoginPage() {
             <h2 className="text-xl font-bold mb-1 flex items-center gap-2">
               <KeyRound size={20} className="text-cyan-400" /> SECURE MFA ACCESS
             </h2>
-            <p className="text-gray-400 text-xs mb-6 font-mono">
+            <p className="text-gray-400 text-xs mb-6 font-medium">
               Provide hardware code and master passcode to unlock operations ledger.
             </p>
 
             <form onSubmit={handleManualLogin} className="space-y-5">
               {/* Master PIN Input */}
               <div className="space-y-1.5">
-                <label className="text-xs font-mono text-gray-400 uppercase tracking-wider">
+                <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                   MASTER KEY PIN
                 </label>
                 <div className="relative">
@@ -200,7 +200,7 @@ export default function MasterLoginPage() {
                     value={pin}
                     onChange={(e) => setPin(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-4 pr-12 py-3.5 bg-gray-950/80 border border-gray-850 rounded-2xl focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-gray-100 placeholder-gray-700 outline-none transition-all font-mono"
+                    className="w-full pl-4 pr-12 py-3.5 bg-gray-950/80 border border-gray-850 rounded-2xl focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-gray-100 placeholder-gray-700 outline-none transition-all font-medium"
                   />
                   <button
                     type="button"
@@ -215,7 +215,7 @@ export default function MasterLoginPage() {
               {/* Security Token MFA */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-mono text-gray-400 uppercase tracking-wider">
+                  <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     HARDWARE TOKEN (MFA)
                   </label>
                   <input
@@ -223,19 +223,19 @@ export default function MasterLoginPage() {
                     value={mfaToken}
                     onChange={(e) => setMfaToken(e.target.value)}
                     placeholder="Enter 6-digit Code"
-                    className="w-full px-4 py-3.5 bg-gray-950/80 border border-gray-850 rounded-2xl focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-gray-100 placeholder-gray-700 outline-none transition-all font-mono text-center tracking-[0.25em]"
+                    className="w-full px-4 py-3.5 bg-gray-950/80 border border-gray-850 rounded-2xl focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-gray-100 placeholder-gray-700 outline-none transition-all font-medium text-center tracking-[0.25em]"
                   />
                 </div>
 
                 {/* Authenticator Code display for demo convenience */}
                 <div className="border border-dashed border-gray-800 bg-gray-950/40 p-3 rounded-2xl flex flex-col justify-center items-center text-center">
-                  <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider flex items-center gap-1">
                     <Cpu size={12} /> Live Device Token
                   </span>
-                  <span className="text-lg font-bold font-mono text-cyan-400 tracking-wider">
+                  <span className="text-lg font-bold font-medium text-cyan-400 tracking-wider">
                     {activeMfaCode}
                   </span>
-                  <span className="text-[9px] text-gray-600 font-mono mt-0.5">
+                  <span className="text-[9px] text-gray-600 font-medium mt-0.5">
                     Resets in 15 seconds
                   </span>
                 </div>

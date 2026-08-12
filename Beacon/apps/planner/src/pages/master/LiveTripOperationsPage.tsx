@@ -69,7 +69,7 @@ export default function LiveTripOperationsPage() {
             <h3 className="text-sm font-bold flex items-center gap-2">
               <Compass size={18} className="text-cyan-400" /> GPS Operational Satellite Tracking
             </h3>
-            <span className="text-[10px] font-mono text-gray-500">
+            <span className="text-[10px] font-medium text-gray-500">
               Active Coordinates: 2 Nodes Online
             </span>
           </div>
@@ -79,7 +79,7 @@ export default function LiveTripOperationsPage() {
             {/* Grid overlay */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f293708_1px,transparent_1px),linear-gradient(to_bottom,#1f293708_1px,transparent_1px)] bg-[size:16px_16px] opacity-30" />
             
-            <div className="absolute text-[10px] font-mono text-gray-650 p-2 bottom-0 left-0">
+            <div className="absolute text-[10px] font-medium text-gray-650 p-2 bottom-0 left-0">
               SATELLITE RECEPTOR FEED: GPS_MOCK_GRID
             </div>
 
@@ -119,7 +119,7 @@ export default function LiveTripOperationsPage() {
                   </span>
                   
                   {/* Tooltip labels */}
-                  <span className={`mt-1.5 px-2 py-0.5 rounded text-[9px] font-mono font-bold border transition-colors ${
+                  <span className={`mt-1.5 px-2 py-0.5 rounded text-[9px] font-medium font-bold border transition-colors ${
                     isSelected 
                       ? 'bg-cyan-500 text-black border-white' 
                       : 'bg-gray-900 text-gray-300 border-gray-800'
@@ -135,7 +135,7 @@ export default function LiveTripOperationsPage() {
         {/* Trips Table List */}
         <div className="border border-gray-855 bg-gray-900/40 rounded-3xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs font-mono">
+            <table className="w-full text-left border-collapse text-xs font-medium">
               <thead>
                 <tr className="border-b border-gray-850 bg-gray-950/40 text-gray-400">
                   <th className="p-4">Trip Group</th>
@@ -199,19 +199,19 @@ export default function LiveTripOperationsPage() {
             {/* Header info */}
             <div className="border-b border-gray-850 pb-4 space-y-1">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] text-cyan-400 font-mono font-bold">DEPARTURE COMMAND</span>
-                <span className="text-[10px] text-gray-500 font-mono">ID: {activeTrip.id}</span>
+                <span className="text-[10px] text-cyan-400 font-medium font-bold">DEPARTURE COMMAND</span>
+                <span className="text-[10px] text-gray-500 font-medium">ID: {activeTrip.id}</span>
               </div>
               <h3 className="text-lg font-black text-white">{activeTrip.destination}</h3>
-              <p className="text-xs text-gray-400 font-mono">Agency: {activeTrip.plannerName}</p>
+              <p className="text-xs text-gray-400 font-medium">Agency: {activeTrip.plannerName}</p>
             </div>
 
             {/* Guide Contact Details */}
             <div className="space-y-3.5">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                 Assigned Departure Team
               </h4>
-              <div className="border border-gray-855 bg-gray-950/40 p-4 rounded-2xl space-y-2.5 text-xs font-mono text-gray-400">
+              <div className="border border-gray-855 bg-gray-950/40 p-4 rounded-2xl space-y-2.5 text-xs font-medium text-gray-400">
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5"><User size={13} /> Guide:</span>
                   <span className="text-gray-200">{activeTrip.guideName}</span>
@@ -245,7 +245,7 @@ export default function LiveTripOperationsPage() {
                 </div>
                 <button
                   onClick={handleEmergencyAction}
-                  className="w-full py-2 bg-red-650 hover:bg-red-550 text-gray-950 font-bold rounded-xl text-xs font-mono uppercase cursor-pointer"
+                  className="w-full py-2 bg-red-650 hover:bg-red-550 text-gray-950 font-bold rounded-xl text-xs font-medium uppercase cursor-pointer"
                 >
                   Terminate Emergency SOS
                 </button>
@@ -254,7 +254,7 @@ export default function LiveTripOperationsPage() {
 
             {/* Direct Broadcast to Travelers */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <Megaphone size={13} className="text-cyan-400" /> Broadcast to Group Travelers
               </h4>
               <div className="space-y-2">
@@ -263,7 +263,7 @@ export default function LiveTripOperationsPage() {
                   value={broadcastText}
                   onChange={(e) => setBroadcastText(e.target.value)}
                   rows={3}
-                  className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-mono"
+                  className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-medium"
                 />
                 <button
                   onClick={handleBroadcast}
@@ -276,14 +276,14 @@ export default function LiveTripOperationsPage() {
 
             {/* Transfer travelers */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <CornerUpRight size={13} className="text-cyan-400" /> Transfer Travelers between departures
               </h4>
               <div className="flex gap-2">
                 <select
                   value={selectedTransferGroup}
                   onChange={(e) => setSelectedTransferGroup(e.target.value)}
-                  className="flex-1 bg-gray-950 border border-gray-850 rounded-xl px-3 py-2 text-xs text-gray-200 outline-none font-mono"
+                  className="flex-1 bg-gray-950 border border-gray-850 rounded-xl px-3 py-2 text-xs text-gray-200 outline-none font-medium"
                 >
                   <option value="">Select Target Group</option>
                   {liveTrips.filter(t => t.id !== activeTrip.id).map(t => (
@@ -292,7 +292,7 @@ export default function LiveTripOperationsPage() {
                 </select>
                 <button
                   onClick={handleTransferTravelers}
-                  className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold rounded-xl text-xs cursor-pointer font-mono"
+                  className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold rounded-xl text-xs cursor-pointer font-medium"
                 >
                   Transfer
                 </button>
@@ -303,7 +303,7 @@ export default function LiveTripOperationsPage() {
             <button
               onClick={handleContactPlanner}
               disabled={isContacting}
-              className="w-full py-3 rounded-2xl bg-gray-950 hover:bg-gray-850 text-gray-300 border border-gray-800 font-bold text-xs font-mono flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+              className="w-full py-3 rounded-2xl bg-gray-950 hover:bg-gray-850 text-gray-300 border border-gray-800 font-bold text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
             >
               <RefreshCw size={14} className={isContacting ? 'animate-spin' : ''} />
               {isContacting ? 'CONNECTING AGENT...' : 'ESTABLISH LINK WITH OPERATOR'}
@@ -311,7 +311,7 @@ export default function LiveTripOperationsPage() {
 
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-medium text-xs">
             Select a trip from the monitoring board.
           </div>
         )}

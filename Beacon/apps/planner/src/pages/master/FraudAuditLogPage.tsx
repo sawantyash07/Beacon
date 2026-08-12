@@ -87,20 +87,20 @@ export default function FraudAuditLogPage() {
           
           {/* Risk Level gauge */}
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-6 shadow-xl space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 border-b border-gray-850 pb-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 border-b border-gray-850 pb-3">
               Platform Threat Rating
             </h4>
             <div className="flex items-center gap-6">
               {/* Score circle */}
-              <div className="w-24 h-24 rounded-full border-[8px] border-red-500/20 border-t-red-500 flex flex-col justify-center items-center font-mono relative shrink-0">
+              <div className="w-24 h-24 rounded-full border-[8px] border-red-500/20 border-t-red-500 flex flex-col justify-center items-center font-medium relative shrink-0">
                 <span className="text-2xl font-black text-red-400">14%</span>
                 <span className="text-[8px] text-gray-500 font-bold uppercase">Risk Score</span>
               </div>
               <div className="space-y-1.5 text-xs text-gray-400">
-                <span className="text-[10px] text-green-400 font-bold font-mono flex items-center gap-1">
+                <span className="text-[10px] text-green-400 font-bold font-medium flex items-center gap-1">
                   <ShieldCheck size={12} /> SECURE STATUS
                 </span>
-                <p className="text-[11px] leading-relaxed font-mono">
+                <p className="text-[11px] leading-relaxed font-medium">
                   Real-time transactional audit score matches the standard safety parameters. Operational threat rating is LOW.
                 </p>
               </div>
@@ -109,10 +109,10 @@ export default function FraudAuditLogPage() {
 
           {/* Automated Rule Engines */}
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-6 shadow-xl space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 border-b border-gray-850 pb-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 border-b border-gray-850 pb-3">
               Automated Detection Rules
             </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-gray-300">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium text-gray-300">
               {[
                 { key: 'utrScan', label: 'UTR Duplicate scan' },
                 { key: 'plagiarismCheck', label: 'Plagiarism Checker' },
@@ -140,7 +140,7 @@ export default function FraudAuditLogPage() {
         {/* Immutable Audit Logs Table */}
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-gray-400">
+            <h3 className="text-sm font-bold uppercase tracking-wider font-medium text-gray-400">
               Immutable Platform Security Audit logs
             </h3>
             
@@ -148,7 +148,7 @@ export default function FraudAuditLogPage() {
               <select
                 value={logFilterModule}
                 onChange={(e) => setLogFilterModule(e.target.value)}
-                className="bg-gray-950 border border-gray-850 rounded-xl px-2.5 py-1.5 text-xs text-gray-200 outline-none font-mono"
+                className="bg-gray-950 border border-gray-850 rounded-xl px-2.5 py-1.5 text-xs text-gray-200 outline-none font-medium"
               >
                 {uniqueModules.map(mod => (
                   <option key={mod} value={mod}>{mod}</option>
@@ -159,14 +159,14 @@ export default function FraudAuditLogPage() {
                 value={logSearchQuery}
                 onChange={(e) => setLogSearchQuery(e.target.value)}
                 placeholder="Find log actions..."
-                className="bg-gray-900 border border-gray-850 pl-3 pr-4 py-1.5 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+                className="bg-gray-900 border border-gray-850 pl-3 pr-4 py-1.5 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
               />
             </div>
           </div>
 
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl overflow-hidden shadow-xl">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-[11px] font-mono">
+              <table className="w-full text-left border-collapse text-[11px] font-medium">
                 <thead>
                   <tr className="border-b border-gray-850 bg-gray-955/40 text-gray-400">
                     <th className="p-4">Timestamp</th>
@@ -202,7 +202,7 @@ export default function FraudAuditLogPage() {
 
                   {filteredLogs.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="text-center py-16 text-gray-600 font-mono text-xs border border-dashed border-gray-855 rounded-3xl">
+                      <td colSpan={7} className="text-center py-16 text-gray-600 font-medium text-xs border border-dashed border-gray-855 rounded-3xl">
                         No audit files logged matching search parameters.
                       </td>
                     </tr>
@@ -223,10 +223,10 @@ export default function FraudAuditLogPage() {
         {/* Risk Alerts diagnostics list */}
         <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4 shadow-xl">
           <div className="flex justify-between items-center border-b border-gray-850 pb-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1">
+            <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1">
               <ShieldAlert className="text-red-400 animate-pulse" size={16} /> Real-time Alert Desk
             </h4>
-            <span className="text-[10px] font-mono text-gray-500">{riskAlerts.length} Flagged</span>
+            <span className="text-[10px] font-medium text-gray-500">{riskAlerts.length} Flagged</span>
           </div>
 
           <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
@@ -242,7 +242,7 @@ export default function FraudAuditLogPage() {
                       : 'bg-gray-950/30 border-gray-855 text-gray-400 hover:border-gray-800'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1 font-mono">
+                  <div className="flex items-center justify-between mb-1 font-medium">
                     <span className="font-bold text-[10px] uppercase">{alert.type.replace('_', ' ')}</span>
                     <span className="text-[9px] text-red-400">{alert.score}% threat</span>
                   </div>
@@ -257,23 +257,23 @@ export default function FraudAuditLogPage() {
         {activeAlert ? (
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-5">
             <div className="border-b border-gray-850 pb-4 space-y-1">
-              <span className="text-[10px] text-cyan-400 font-mono font-bold">DISPATCH OVERRIDES</span>
+              <span className="text-[10px] text-cyan-400 font-medium font-bold">DISPATCH OVERRIDES</span>
               <h3 className="text-sm font-black text-white">{activeAlert.title}</h3>
-              <p className="text-xs text-gray-500 font-mono">Target: {activeAlert.affectedEntity}</p>
+              <p className="text-xs text-gray-500 font-medium">Target: {activeAlert.affectedEntity}</p>
             </div>
 
-            <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl text-xs font-mono text-gray-400 leading-normal">
+            <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl text-xs font-medium text-gray-400 leading-normal">
               <span className="text-cyan-300 font-bold block mb-1">Threat description:</span>
               {activeAlert.description}
             </div>
 
             {/* Quick action triggers */}
             <div className="space-y-3 pt-2">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1.5">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1.5">
                 <Terminal size={14} className="text-cyan-400 animate-pulse" /> Counter-Measure Recommendations
               </h4>
 
-              <div className="space-y-2 text-xs font-mono">
+              <div className="space-y-2 text-xs font-medium">
                 <button
                   onClick={() => handleFixAlert('freeze')}
                   className="w-full py-2.5 rounded-xl bg-gray-950 hover:bg-gray-850 text-yellow-500 border border-yellow-905/30 font-bold cursor-pointer flex items-center justify-center gap-1.5"
@@ -297,7 +297,7 @@ export default function FraudAuditLogPage() {
 
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-medium text-xs">
             Select a threat alert from the list.
           </div>
         )}

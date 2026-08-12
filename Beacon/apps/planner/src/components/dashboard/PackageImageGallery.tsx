@@ -135,7 +135,7 @@ export function PackageImageGallery({
 
       {/* Top Left Image Counter Badge */}
       {hasMultiple && (
-        <div className="absolute top-3 left-3 bg-navy/70 backdrop-blur-md text-white text-[11px] font-mono font-bold px-2.5 py-1 rounded-full shadow-md z-20 pointer-events-none flex items-center gap-1">
+        <div className="absolute top-3 left-3 bg-navy/70 backdrop-blur-md text-white text-[11px] font-medium font-bold px-2.5 py-1 rounded-full shadow-md z-20 pointer-events-none flex items-center gap-1">
           <span>{currentIndex + 1}</span>
           <span className="text-white/60">/</span>
           <span>{imageList.length}</span>

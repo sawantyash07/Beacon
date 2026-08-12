@@ -106,7 +106,7 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
           className="relative w-full max-w-3xl bg-surface border border-border/80 rounded-[24px] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
         >
           {/* Header */}
-          <div className="p-6 bg-gradient-to-r from-[#031525] via-[#092B48] to-[#0A3D62] text-white flex items-center justify-between border-b border-border/40 shrink-0">
+          <div className="p-6 bg-gradient-to-r bg-[var(--nav-bg)] text-white flex items-center justify-between border-b border-border/40 shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-[12px] bg-cyan/20 text-cyan flex items-center justify-center border border-cyan/30">
                 <Keyboard className="w-5 h-5" />
@@ -188,7 +188,7 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
                         return (
                           <kbd
                             key={kIdx}
-                            className="px-2 py-1 bg-[#EEF4FA] border border-border text-navy text-[11px] font-mono font-bold rounded-[6px] shadow-2xs min-w-[24px] text-center"
+                            className="px-2 py-1 bg-[#EEF4FA] border border-border text-navy text-[11px] font-medium font-bold rounded-[6px] shadow-2xs min-w-[24px] text-center"
                           >
                             {displayKey}
                           </kbd>
@@ -204,7 +204,7 @@ export function KeyboardShortcutsModal({ isOpen, onClose }: KeyboardShortcutsMod
           {/* Footer */}
           <div className="p-4 bg-page border-t border-border flex items-center justify-between text-xs text-muted shrink-0">
             <span className="flex items-center gap-1.5 font-medium">
-              💡 Tip: Press <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-mono">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-mono">J</kbd> anytime to ask Beacon AI to adjust your trip.
+              💡 Tip: Press <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-medium">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-white border rounded text-[10px] font-medium">J</kbd> anytime to ask Beacon AI to adjust your trip.
             </span>
             <button
               onClick={onClose}

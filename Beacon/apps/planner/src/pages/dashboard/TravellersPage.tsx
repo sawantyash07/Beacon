@@ -172,11 +172,11 @@ export default function TravellersPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 py-4 lg:py-0 border-y lg:border-none border-border">
                   <div>
                     <span className="text-[10px] text-muted uppercase font-bold tracking-wider">Completed Trips</span>
-                    <p className="font-mono font-bold text-navy text-sm mt-0.5">{traveller.completedTrips}</p>
+                    <p className="font-medium font-bold text-navy text-sm mt-0.5">{traveller.completedTrips}</p>
                   </div>
                   <div>
                     <span className="text-[10px] text-muted uppercase font-bold tracking-wider">Upcoming Trips</span>
-                    <p className="font-mono font-bold text-teal text-sm mt-0.5">{traveller.upcomingTrips || 'None'}</p>
+                    <p className="font-medium font-bold text-teal text-sm mt-0.5">{traveller.upcomingTrips || 'None'}</p>
                   </div>
                   <div>
                     <span className="text-[10px] text-muted uppercase font-bold tracking-wider">Meal Preference</span>

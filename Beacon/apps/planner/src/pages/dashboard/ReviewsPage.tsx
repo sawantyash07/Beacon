@@ -118,7 +118,7 @@ export default function ReviewsPage() {
                 <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
                   <div className="h-full bg-teal" style={{ width: `${dist.percent}%` }} />
                 </div>
-                <span className="w-12 text-right text-muted font-mono">{dist.count}</span>
+                <span className="w-12 text-right text-muted font-medium">{dist.count}</span>
               </div>
             ))}
           </div>
@@ -161,7 +161,7 @@ export default function ReviewsPage() {
                         ))}
                       </div>
                     </div>
-                    <span className="text-xs text-muted font-mono">{rev.date}</span>
+                    <span className="text-xs text-muted font-medium">{rev.date}</span>
                   </div>
 
                   {/* Comment */}

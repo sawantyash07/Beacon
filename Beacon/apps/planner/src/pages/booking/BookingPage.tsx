@@ -568,17 +568,17 @@ export default function BookingPage() {
 
                       <div className="space-y-1">
                         <div className="text-xs font-extrabold text-navy">
-                          Amount: <span className="text-teal font-mono text-base">{formatCurrency(phonepeOrder.grandTotal)}</span>
+                          Amount: <span className="text-teal font-medium text-base">{formatCurrency(phonepeOrder.grandTotal)}</span>
                         </div>
                         <div className="text-[10px] text-muted">
-                          Booking Code: <span className="font-mono font-bold text-navy">{phonepeOrder.bookingCode}</span>
+                          Booking Code: <span className="font-medium font-bold text-navy">{phonepeOrder.bookingCode}</span>
                         </div>
                       </div>
 
                       <div className="w-full flex items-center justify-between border-t border-border/20 pt-4 text-xs font-semibold text-navy">
                         <div className="text-left">
                           <span className="text-[9px] text-muted block">Transaction Window Expirer</span>
-                          <span className="text-yellow-600 font-mono">{formatTime(timeLeft)} remaining</span>
+                          <span className="text-yellow-600 font-medium">{formatTime(timeLeft)} remaining</span>
                         </div>
                         <a 
                           href={phonepeOrder.paymentLink} 

@@ -73,14 +73,14 @@ export default function PaymentCenterPage() {
             <h3 className="text-sm font-bold flex items-center gap-2">
               <Calculator size={18} className="text-cyan-400" /> Platform Commission Calculator
             </h3>
-            <span className="text-[10px] font-mono text-gray-500">
+            <span className="text-[10px] font-medium text-gray-500">
               Active Tier: 8% - 15% range
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
             {/* Inputs */}
-            <div className="md:col-span-6 grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="md:col-span-6 grid grid-cols-2 gap-2 text-xs font-medium">
               <div className="space-y-1">
                 <label className="text-[10px] text-gray-500 uppercase block">Booking Base (INR)</label>
                 <input
@@ -107,7 +107,7 @@ export default function PaymentCenterPage() {
             </div>
 
             {/* Diagnostic results */}
-            <div className="md:col-span-6 bg-gray-955/50 border border-gray-855 p-4 rounded-2xl grid grid-cols-3 gap-2 text-center text-xs font-mono text-gray-400">
+            <div className="md:col-span-6 bg-gray-955/50 border border-gray-855 p-4 rounded-2xl grid grid-cols-3 gap-2 text-center text-xs font-medium text-gray-400">
               <div>
                 <span className="text-[9px] text-gray-500 block">GROSS AMOUNT</span>
                 <span className="font-bold text-gray-200">₹{baseAmt.toLocaleString()}</span>
@@ -127,12 +127,12 @@ export default function PaymentCenterPage() {
         {/* Ledger Transactions list */}
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-sm font-bold uppercase tracking-wider font-mono text-gray-400">
+            <h3 className="text-sm font-bold uppercase tracking-wider font-medium text-gray-400">
               Financial ledger audit stream
             </h3>
             <button
               onClick={handleDownloadLedger}
-              className="px-3.5 py-1.5 bg-gray-850 hover:bg-gray-800 border border-gray-800 text-gray-300 font-bold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer font-mono"
+              className="px-3.5 py-1.5 bg-gray-850 hover:bg-gray-800 border border-gray-800 text-gray-300 font-bold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer font-medium"
             >
               <Download size={14} /> Export CSV Ledger
             </button>
@@ -140,7 +140,7 @@ export default function PaymentCenterPage() {
 
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl overflow-hidden shadow-xl">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs font-mono">
+              <table className="w-full text-left border-collapse text-xs font-medium">
                 <thead>
                   <tr className="border-b border-gray-850 bg-gray-955/40 text-gray-400">
                     <th className="p-4">Tx ID</th>
@@ -209,9 +209,9 @@ export default function PaymentCenterPage() {
         {activeTx ? (
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-5">
             <div className="border-b border-gray-850 pb-4 space-y-1">
-              <span className="text-[10px] text-cyan-400 font-mono font-bold">UTR VERIFICATION DESK</span>
+              <span className="text-[10px] text-cyan-400 font-medium font-bold">UTR VERIFICATION DESK</span>
               <h3 className="text-md font-black text-white">UTR: {activeTx.utrNumber}</h3>
-              <p className="text-xs text-gray-500 font-mono">Tx ID: {activeTx.id}</p>
+              <p className="text-xs text-gray-500 font-medium">Tx ID: {activeTx.id}</p>
             </div>
 
             {/* Duplicate UTR security alert box */}
@@ -227,7 +227,7 @@ export default function PaymentCenterPage() {
               </div>
             )}
 
-            <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl space-y-2.5 text-xs font-mono text-gray-400">
+            <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl space-y-2.5 text-xs font-medium text-gray-400">
               <div className="flex justify-between">
                 <span>Associated Booking:</span>
                 <span className="text-gray-200">{activeTx.bookingId}</span>
@@ -247,7 +247,7 @@ export default function PaymentCenterPage() {
             </div>
 
             {/* Actions for UTR verify */}
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="grid grid-cols-2 gap-2 text-xs font-medium">
               <button
                 onClick={() => handleVerifyUtrAction(true)}
                 className="py-2.5 rounded-xl bg-green-500 hover:bg-green-400 text-black font-bold cursor-pointer flex items-center justify-center gap-1.5"
@@ -263,21 +263,21 @@ export default function PaymentCenterPage() {
             </div>
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-medium text-xs">
             Select a ledger transaction to audit.
           </div>
         )}
 
         {/* Schedule Settlements overrides */}
         <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1">
+          <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1">
             <Landmark size={14} className="text-cyan-400" /> Dispatch Settlement Payouts
           </h4>
           <div className="space-y-3">
             <select
               value={selectedPlannerId}
               onChange={(e) => setSelectedPlannerId(e.target.value)}
-              className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2.5 text-xs text-gray-200 outline-none font-mono"
+              className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2.5 text-xs text-gray-200 outline-none font-medium"
             >
               <option value="">Select Planner Agency</option>
               {planners.map(p => (
@@ -289,11 +289,11 @@ export default function PaymentCenterPage() {
               placeholder="Settlement amount (INR)"
               value={settlementAmount}
               onChange={(e) => setSettlementAmount(e.target.value)}
-              className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2 text-xs outline-none text-gray-200 font-mono"
+              className="w-full bg-gray-950 border border-gray-850 rounded-xl p-2 text-xs outline-none text-gray-200 font-medium"
             />
             <button
               onClick={handleSettlePayout}
-              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-xl text-xs font-mono uppercase cursor-pointer"
+              className="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-xl text-xs font-medium uppercase cursor-pointer"
             >
               Dispatch Settlement Payout
             </button>

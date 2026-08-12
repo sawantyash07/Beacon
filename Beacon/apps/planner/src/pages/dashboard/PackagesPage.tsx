@@ -552,7 +552,7 @@ export default function PackagesPage() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <Plane className="w-4 h-4 text-teal" />
-                      <span className="text-xs text-muted font-mono font-bold">{pkg.id}</span>
+                      <span className="text-xs text-muted font-medium font-bold">{pkg.id}</span>
                     </div>
 
                     <span className="text-[11px] font-semibold text-muted bg-page px-2 py-0.5 rounded-md border border-border">
@@ -569,11 +569,11 @@ export default function PackagesPage() {
 
                   <div className="flex items-center justify-between pt-1 border-t border-border/40">
                     <div>
-                      <p className="font-mono text-xl font-extrabold text-teal">
+                      <p className="font-medium text-xl font-extrabold text-teal">
                         {formatCurrency(pkg.price * (1 - pkg.discount / 100))}
                       </p>
                       {pkg.discount > 0 && (
-                        <p className="font-mono text-xs text-muted line-through">{formatCurrency(pkg.price)}</p>
+                        <p className="font-medium text-xs text-muted line-through">{formatCurrency(pkg.price)}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-3 text-xs text-muted font-medium">
@@ -904,7 +904,7 @@ export default function PackagesPage() {
                               <div className="absolute bottom-0 inset-x-0 bg-navy-light/95 border-t border-white/10 px-3 py-2 flex items-center justify-between z-20">
                                 <div className="space-y-0.5">
                                   <span className="text-[9px] text-slate-400 block line-through">{formatCurrency(activeManagementPkg.price)}</span>
-                                  <span className="text-xs font-bold text-teal font-mono">{formatCurrency(activeManagementPkg.price * (1 - activeManagementPkg.discount / 100))}</span>
+                                  <span className="text-xs font-bold text-teal font-medium">{formatCurrency(activeManagementPkg.price * (1 - activeManagementPkg.discount / 100))}</span>
                                 </div>
                                 <button type="button" className="bg-teal text-navy font-bold rounded-lg px-3 py-1.5 text-[10px] cursor-not-allowed">Book Now</button>
                               </div>
@@ -935,9 +935,9 @@ export default function PackagesPage() {
                             </div>
 
                             <div className="pt-2 flex items-baseline gap-2">
-                              <span className="text-xl font-extrabold text-teal font-mono">{formatCurrency(activeManagementPkg.price * (1 - activeManagementPkg.discount / 100))}</span>
+                              <span className="text-xl font-extrabold text-teal font-medium">{formatCurrency(activeManagementPkg.price * (1 - activeManagementPkg.discount / 100))}</span>
                               {activeManagementPkg.discount > 0 && (
-                                <span className="text-xs text-muted line-through font-mono">{formatCurrency(activeManagementPkg.price)}</span>
+                                <span className="text-xs text-muted line-through font-medium">{formatCurrency(activeManagementPkg.price)}</span>
                               )}
                               <span className="text-[11px] font-bold text-teal">({activeManagementPkg.discount}% discount applied)</span>
                             </div>
@@ -1031,7 +1031,7 @@ export default function PackagesPage() {
                                   className="p-2.5 rounded-lg border border-border hover:border-teal/30 hover:bg-teal/5 transition-all text-left group flex flex-col justify-between cursor-pointer"
                                 >
                                   <span className="text-xs font-bold text-navy leading-tight group-hover:text-teal transition-colors">{item.name}</span>
-                                  <span className="text-[9px] text-muted font-bold mt-1 font-mono">{item.ext}</span>
+                                  <span className="text-[9px] text-muted font-bold mt-1 font-medium">{item.ext}</span>
                                 </button>
                               ))}
                             </div>
@@ -1095,7 +1095,7 @@ export default function PackagesPage() {
                               type="number"
                               value={newDepCap}
                               onChange={(e) => setNewDepCap(parseInt(e.target.value) || 20)}
-                              className="w-full bg-page border border-border rounded-lg px-3 py-1.5 text-xs text-navy focus:outline-none focus:border-teal font-medium font-mono"
+                              className="w-full bg-page border border-border rounded-lg px-3 py-1.5 text-xs text-navy focus:outline-none focus:border-teal font-medium font-medium"
                             />
                           </div>
                           <div className="space-y-1">
@@ -1138,8 +1138,8 @@ export default function PackagesPage() {
                                   <Calendar className="w-3.5 h-3.5 text-teal shrink-0" />
                                   <span>{dep.date}</span>
                                 </td>
-                                <td className="px-4 py-3 font-mono font-medium text-navy">{dep.capacity} seats</td>
-                                <td className="px-4 py-3 font-mono font-medium text-navy">
+                                <td className="px-4 py-3 font-medium font-medium text-navy">{dep.capacity} seats</td>
+                                <td className="px-4 py-3 font-medium font-medium text-navy">
                                   <span className="text-teal font-bold">{dep.booked}</span> / <span className={dep.remaining <= 3 ? 'text-amber-500 font-extrabold' : ''}>{dep.remaining} remaining</span>
                                 </td>
                                 <td className="px-4 py-3 text-muted">{dep.deadline}</td>
@@ -1215,7 +1215,7 @@ export default function PackagesPage() {
                         ].map((stat, idx) => (
                           <div key={idx} className="bg-surface p-4 rounded-xl border border-border space-y-1">
                             <span className="text-[10px] text-muted font-bold block uppercase tracking-wider">{stat.label}</span>
-                            <span className="text-lg font-extrabold text-navy font-mono block">{stat.value}</span>
+                            <span className="text-lg font-extrabold text-navy font-medium block">{stat.value}</span>
                             <span className="text-[9px] text-teal font-semibold block">{stat.trend}</span>
                           </div>
                         ))}
@@ -1259,7 +1259,7 @@ export default function PackagesPage() {
                             <div className="space-y-1">
                               <div className="flex justify-between text-[10px] font-bold text-navy">
                                 <span>Impressions / Views</span>
-                                <span className="font-mono">1,842 (100%)</span>
+                                <span className="font-medium">1,842 (100%)</span>
                               </div>
                               <div className="w-full h-2 bg-navy/5 rounded-full overflow-hidden">
                                 <div className="h-full bg-teal w-full" />
@@ -1268,7 +1268,7 @@ export default function PackagesPage() {
                             <div className="space-y-1">
                               <div className="flex justify-between text-[10px] font-bold text-navy">
                                 <span>Enquiry Form Interactions</span>
-                                <span className="font-mono">364 (19.7%)</span>
+                                <span className="font-medium">364 (19.7%)</span>
                               </div>
                               <div className="w-full h-2 bg-navy/5 rounded-full overflow-hidden">
                                 <div className="h-full bg-teal/70 w-[20%]" />
@@ -1277,7 +1277,7 @@ export default function PackagesPage() {
                             <div className="space-y-1">
                               <div className="flex justify-between text-[10px] font-bold text-navy">
                                 <span>Initiated Booking Customizations</span>
-                                <span className="font-mono">89 (4.8%)</span>
+                                <span className="font-medium">89 (4.8%)</span>
                               </div>
                               <div className="w-full h-2 bg-navy/5 rounded-full overflow-hidden">
                                 <div className="h-full bg-teal/50 w-[5%]" />
@@ -1286,7 +1286,7 @@ export default function PackagesPage() {
                             <div className="space-y-1">
                               <div className="flex justify-between text-[10px] font-bold text-navy">
                                 <span>Confirmed Paid Spots</span>
-                                <span className="font-mono">24 (1.3%)</span>
+                                <span className="font-medium">24 (1.3%)</span>
                               </div>
                               <div className="w-full h-2 bg-navy/5 rounded-full overflow-hidden">
                                 <div className="h-full bg-teal/30 w-[1.5%]" />
@@ -1411,7 +1411,7 @@ export default function PackagesPage() {
                             <div className="space-y-1">
                               <span className="text-xs font-bold text-navy block leading-tight">{file.name}</span>
                               <span className="text-[10px] text-muted block">{file.desc}</span>
-                              <span className="text-[9px] text-muted font-bold block font-mono">{file.size}</span>
+                              <span className="text-[9px] text-muted font-bold block font-medium">{file.size}</span>
                             </div>
                             <button
                               type="button"
@@ -1499,7 +1499,7 @@ export default function PackagesPage() {
                                   .filter(b => b.packageId === activeManagementPkg.id)
                                   .map((b) => (
                                     <tr key={b.id} className="hover:bg-navy/5 transition-colors font-medium">
-                                      <td className="p-3 font-mono font-bold text-navy">{b.id}</td>
+                                      <td className="p-3 font-medium font-bold text-navy">{b.id}</td>
                                       <td className="p-3">
                                         <div className="text-navy font-semibold">{b.traveler}</div>
                                         <div className="text-[10px] text-muted">{b.email}</div>

@@ -80,7 +80,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden text-white">
+    <div className="min-h-screen bg-[var(--color-bg-canvas)] flex items-center justify-center p-4 relative overflow-hidden text-white">
       {/* Background ambient glow */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal/10 rounded-full blur-[140px] pointer-events-none" />
@@ -111,7 +111,7 @@ export default function LoginPage() {
 
         <div className="bg-[#0B1528]/90 border border-white/10 rounded-[20px] p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
           {/* Tabs */}
-          <div className="flex bg-[#020617] rounded-lg p-1 mb-8">
+          <div className="flex bg-[var(--color-bg-canvas)] rounded-lg p-1 mb-8">
             <Link to="/login" className="flex-1 text-center py-2 text-sm font-semibold rounded-md bg-white/10 text-white shadow">
               Log in
             </Link>

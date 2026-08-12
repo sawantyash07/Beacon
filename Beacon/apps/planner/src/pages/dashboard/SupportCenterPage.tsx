@@ -456,7 +456,7 @@ export default function SupportCenterPage() {
                 <stat.icon className={`w-4 h-4 ${stat.color}`} />
               </div>
               <div className="mt-2">
-                <span className="text-2xl font-extrabold text-navy font-mono">{stat.value}</span>
+                <span className="text-2xl font-extrabold text-navy font-medium">{stat.value}</span>
                 <span className="text-[9px] text-muted block mt-0.5">{stat.sub}</span>
               </div>
             </Card>
@@ -525,7 +525,7 @@ export default function SupportCenterPage() {
                 }`}
               >
                 <div className="flex justify-between items-start gap-1">
-                  <span className="text-[10px] font-bold text-teal bg-teal/10 px-1.5 py-0.5 rounded border border-teal/20 font-mono tracking-wider">
+                  <span className="text-[10px] font-bold text-teal bg-teal/10 px-1.5 py-0.5 rounded border border-teal/20 font-medium tracking-wider">
                     {ticket.id}
                   </span>
                   <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold ${
@@ -565,7 +565,7 @@ export default function SupportCenterPage() {
               <div className="bg-surface p-5 rounded-xl border border-border space-y-4 text-left">
                 <div className="flex flex-wrap justify-between items-start gap-2 border-b border-border/60 pb-3">
                   <div>
-                    <span className="text-[10px] font-bold text-teal bg-teal/10 px-2 py-0.5 rounded border border-teal/20 uppercase tracking-wider font-mono">{activeTicket.id}</span>
+                    <span className="text-[10px] font-bold text-teal bg-teal/10 px-2 py-0.5 rounded border border-teal/20 uppercase tracking-wider font-medium">{activeTicket.id}</span>
                     <h2 className="text-sm font-extrabold text-navy mt-1.5">{activeTicket.subject}</h2>
                     <p className="text-[11px] text-muted mt-0.5">Category: <strong>{activeTicket.category}</strong> • Created on: {activeTicket.createdDate}</p>
                   </div>
@@ -648,7 +648,7 @@ export default function SupportCenterPage() {
                       <div key={idx} className="flex items-center gap-1.5 shrink-0 bg-page px-2 py-1 rounded border border-border text-muted font-medium">
                         <Check className="w-3 h-3 text-green-500 shrink-0" />
                         <span>{step.status}</span>
-                        <span className="text-[8px] font-mono">({step.date.split(' ')[1] || step.date})</span>
+                        <span className="text-[8px] font-medium">({step.date.split(' ')[1] || step.date})</span>
                         {idx < activeTicket.timeline.length - 1 && <ArrowRight className="w-2.5 h-2.5 text-muted/50 ml-1" />}
                       </div>
                     ))}
@@ -713,7 +713,7 @@ export default function SupportCenterPage() {
                       {activeTicket.internalNotes.map((note, i) => (
                         <div key={i} className="bg-amber-500/5 border border-amber-500/20 p-2.5 rounded-lg text-[11px] text-muted flex justify-between items-center">
                           <span><strong>{note.author}:</strong> {note.text}</span>
-                          <span className="font-mono text-[9px] text-slate-500">{note.time}</span>
+                          <span className="font-medium text-[9px] text-slate-500">{note.time}</span>
                         </div>
                       ))}
                     </div>
@@ -758,7 +758,7 @@ export default function SupportCenterPage() {
         </h3>
         <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
           {notificationLogs.map((log, i) => (
-            <div key={i} className="text-[11px] text-muted bg-page p-2 rounded border border-border/80 font-mono">
+            <div key={i} className="text-[11px] text-muted bg-page p-2 rounded border border-border/80 font-medium">
               {log}
             </div>
           ))}
@@ -905,7 +905,7 @@ export default function SupportCenterPage() {
                           placeholder="e.g. BKG-781"
                           value={newBookingId}
                           onChange={(e) => setNewBookingId(e.target.value)}
-                          className="w-full bg-page border border-border rounded-lg p-1.5 text-[10px] text-navy focus:outline-none focus:border-teal font-mono"
+                          className="w-full bg-page border border-border rounded-lg p-1.5 text-[10px] text-navy focus:outline-none focus:border-teal font-medium"
                         />
                       </div>
                       <div className="space-y-1">
@@ -916,7 +916,7 @@ export default function SupportCenterPage() {
                           placeholder="e.g. PKG-002"
                           value={newPackageId}
                           onChange={(e) => setNewPackageId(e.target.value)}
-                          className="w-full bg-page border border-border rounded-lg p-1.5 text-[10px] text-navy focus:outline-none focus:border-teal font-mono"
+                          className="w-full bg-page border border-border rounded-lg p-1.5 text-[10px] text-navy focus:outline-none focus:border-teal font-medium"
                         />
                       </div>
                       <div className="space-y-1">
@@ -958,7 +958,7 @@ export default function SupportCenterPage() {
                       <div>Category: <strong className="text-navy">{newCategory}</strong></div>
                       <div>Priority Level: <strong className="text-navy">{newPriority}</strong></div>
                       <div className="line-clamp-3">Description: {newDescription}</div>
-                      {newBookingId && <div>Booking Reference: <span className="font-mono text-navy">{newBookingId}</span></div>}
+                      {newBookingId && <div>Booking Reference: <span className="font-medium text-navy">{newBookingId}</span></div>}
                     </div>
                   </div>
 

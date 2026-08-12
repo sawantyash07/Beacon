@@ -70,7 +70,7 @@ export function DayPicker({ selectedDays, onChange, label }: DayPickerProps) {
                   : 'bg-page text-muted border-border hover:bg-border/30 hover:text-navy'
               }`}
             >
-              <span className="text-[10px] uppercase font-mono tracking-wider">{day.short}</span>
+              <span className="text-[10px] uppercase font-medium tracking-wider">{day.short}</span>
               <span
                 className={`w-2 h-2 rounded-full ${
                   isSelected ? 'bg-cyan' : 'bg-transparent'

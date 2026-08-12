@@ -95,7 +95,7 @@ export default function SocialMediaPage() {
                 <p className="text-sm font-medium text-navy">{post.package}</p>
                 <p className="text-xs text-muted">{post.platform} · {formatDate(post.date)}</p>
               </div>
-              <span className="text-sm font-mono text-teal">{post.engagement} engagements</span>
+              <span className="text-sm font-medium text-teal">{post.engagement} engagements</span>
             </motion.div>
           ))}
         </div>

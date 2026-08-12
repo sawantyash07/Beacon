@@ -283,7 +283,7 @@ export default function OverviewPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-navy">{pay.client}</span>
-                        <span className="text-[10px] text-muted font-mono">{pay.utr}</span>
+                        <span className="text-[10px] text-muted font-medium">{pay.utr}</span>
                       </div>
                       <p className="text-[11px] text-muted mt-0.5">{pay.trip} · {pay.time}</p>
                     </div>

@@ -55,7 +55,7 @@ export function ToggleCard({
       {/* Switch Toggle */}
       <div className="flex items-center gap-2 shrink-0">
         <span
-          className={`text-[10px] font-extrabold font-mono uppercase tracking-wider ${
+          className={`text-[10px] font-extrabold font-medium uppercase tracking-wider ${
             enabled ? 'text-teal' : 'text-muted/60'
           }`}
         >

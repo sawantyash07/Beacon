@@ -57,7 +57,7 @@ export default function TripGroupsPage() {
                 <Card hover className="p-0 overflow-hidden border border-border shadow-sm rounded-[18px] group">
                   <div className="relative">
                     <img src={group.image} alt={group.name} className="w-full h-40 object-cover" loading="lazy" />
-                    <div className="absolute top-3 left-3 bg-navy/80 backdrop-blur-sm text-cyan text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full z-10">
+                    <div className="absolute top-3 left-3 bg-navy/80 backdrop-blur-sm text-cyan text-[10px] font-medium font-bold px-2.5 py-0.5 rounded-full z-10">
                       {group.id}
                     </div>
                     {group.unread > 0 && (
@@ -80,7 +80,7 @@ export default function TripGroupsPage() {
                     <div className="grid grid-cols-2 gap-2 text-xs bg-page border border-border p-2.5 rounded-[12px]">
                       <div>
                         <span className="text-[10px] text-muted uppercase font-bold block">Members & Seats</span>
-                        <strong className="text-navy flex items-center gap-1 font-mono">
+                        <strong className="text-navy flex items-center gap-1 font-medium">
                           <Users className="w-3.5 h-3.5 text-teal" />
                           {group.members} Bookings ({totalTravelers} Seats)
                         </strong>
@@ -142,7 +142,7 @@ export default function TripGroupsPage() {
                                     <div className="flex items-center gap-1.5 font-bold text-navy">
                                       <UserCheck className="w-3.5 h-3.5 text-emerald-500" />
                                       <span>{b.traveler}</span>
-                                      <span className="text-[10px] font-mono text-muted">({b.id})</span>
+                                      <span className="text-[10px] font-medium text-muted">({b.id})</span>
                                     </div>
                                     <div className="text-[10px] text-muted flex items-center gap-2 mt-0.5">
                                       <span className="flex items-center gap-1"><Mail className="w-3 h-3 text-teal" />{b.email}</span>

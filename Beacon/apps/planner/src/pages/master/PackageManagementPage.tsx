@@ -62,7 +62,7 @@ export default function PackageManagementPage() {
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           {/* Filters tabs bar */}
-          <div className="flex flex-wrap bg-gray-950/60 p-1 rounded-xl text-[10px] font-mono border border-gray-855">
+          <div className="flex flex-wrap bg-gray-950/60 p-1 rounded-xl text-[10px] font-medium border border-gray-855">
             {['PUBLISHED', 'DRAFT', 'HIDDEN', 'REPORTED', 'FEATURED'].map((filter) => (
               <button
                 key={filter}
@@ -87,7 +87,7 @@ export default function PackageManagementPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search listings..."
-              className="bg-gray-900 border border-gray-850 pl-9 pr-4 py-1.5 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+              className="bg-gray-900 border border-gray-850 pl-9 pr-4 py-1.5 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
             />
           </div>
         </div>
@@ -108,20 +108,20 @@ export default function PackageManagementPage() {
               >
                 {/* Featured Badge */}
                 {pkg.isFeatured && (
-                  <div className="absolute top-0 right-0 bg-yellow-500 text-black px-2 py-0.5 rounded-bl-xl text-[9px] font-bold font-mono">
+                  <div className="absolute top-0 right-0 bg-yellow-500 text-black px-2 py-0.5 rounded-bl-xl text-[9px] font-bold font-medium">
                     ★ FEATURED
                   </div>
                 )}
 
                 <div className="flex items-center gap-2 mb-2">
                   <PkgIcon size={16} className={isSelected ? 'text-cyan-400' : 'text-gray-500'} />
-                  <span className="font-mono text-[10px] text-gray-500">{pkg.id}</span>
+                  <span className="font-medium text-[10px] text-gray-500">{pkg.id}</span>
                 </div>
 
                 <h4 className="text-sm font-bold text-gray-200 truncate pr-16">{pkg.title}</h4>
-                <p className="text-[10px] text-gray-500 font-mono mb-3">Operator: {pkg.plannerName}</p>
+                <p className="text-[10px] text-gray-500 font-medium mb-3">Operator: {pkg.plannerName}</p>
 
-                <div className="flex justify-between items-baseline pt-2 border-t border-gray-855/40 text-[10px] font-mono">
+                <div className="flex justify-between items-baseline pt-2 border-t border-gray-855/40 text-[10px] font-medium">
                   <span className="text-gray-400">₹{pkg.basePrice.toLocaleString()} / guest</span>
                   <span className="text-cyan-400 font-bold">{pkg.duration} Days</span>
                 </div>
@@ -130,7 +130,7 @@ export default function PackageManagementPage() {
           })}
 
           {filteredPackages.length === 0 && (
-            <div className="col-span-2 text-center py-20 text-gray-600 font-mono text-xs border border-dashed border-gray-855 rounded-3xl">
+            <div className="col-span-2 text-center py-20 text-gray-600 font-medium text-xs border border-dashed border-gray-855 rounded-3xl">
               No packages matching selected filter index.
             </div>
           )}
@@ -147,17 +147,17 @@ export default function PackageManagementPage() {
             
             {/* Header Title */}
             <div className="border-b border-gray-850 pb-4 space-y-1">
-              <span className="text-[9px] text-cyan-400 font-mono font-bold">PACKAGE AUDITING MODULE</span>
+              <span className="text-[9px] text-cyan-400 font-medium font-bold">PACKAGE AUDITING MODULE</span>
               <h3 className="text-md font-black text-white leading-snug">{activePkg.title}</h3>
-              <p className="text-xs text-gray-400 font-mono">Operator ID: {activePkg.plannerId}</p>
+              <p className="text-xs text-gray-400 font-medium">Operator ID: {activePkg.plannerId}</p>
             </div>
 
             {/* Quality Scanner diagnostic score */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                 System Content Scanner
               </h4>
-              <div className="border border-gray-855 bg-gray-950/40 p-4 rounded-2xl space-y-3.5 text-xs font-mono text-gray-400">
+              <div className="border border-gray-855 bg-gray-950/40 p-4 rounded-2xl space-y-3.5 text-xs font-medium text-gray-400">
                 
                 {/* Plagiarism indicator */}
                 <div className="flex items-center justify-between">
@@ -193,10 +193,10 @@ export default function PackageManagementPage() {
 
             {/* Revision logs */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <History size={13} className="text-cyan-400" /> Package Revision logs
               </h4>
-              <div className="space-y-2 max-h-36 overflow-y-auto pr-1 text-[11px] font-mono text-gray-400 leading-normal">
+              <div className="space-y-2 max-h-36 overflow-y-auto pr-1 text-[11px] font-medium text-gray-400 leading-normal">
                 <div className="p-2.5 rounded-xl bg-gray-950/40 border border-gray-855/40">
                   <span className="text-[9px] text-gray-500 block">V3 (Latest) — 2026-08-04</span>
                   Base price adjusted to ₹{activePkg.basePrice.toLocaleString()} by operator.
@@ -210,10 +210,10 @@ export default function PackageManagementPage() {
 
             {/* Actions Matrix */}
             <div className="space-y-3 pt-2">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <Edit size={13} className="text-cyan-400" /> Moderation Controls
               </h4>
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div className="grid grid-cols-2 gap-2 text-xs font-medium">
                 
                 {/* Feature override */}
                 <button
@@ -267,7 +267,7 @@ export default function PackageManagementPage() {
 
             {/* Request revisions Form */}
             <div className="space-y-3 pt-2">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <AlertCircle size={13} className="text-red-400" /> Request Operator Revisions
               </h4>
               <div className="space-y-2">
@@ -276,11 +276,11 @@ export default function PackageManagementPage() {
                   value={revisionNotes}
                   onChange={(e) => setRevisionNotes(e.target.value)}
                   rows={2}
-                  className="w-full bg-gray-950 border border-gray-855 rounded-2xl p-2.5 text-xs outline-none text-gray-200 resize-none font-mono"
+                  className="w-full bg-gray-950 border border-gray-855 rounded-2xl p-2.5 text-xs outline-none text-gray-200 resize-none font-medium"
                 />
                 <button
                   onClick={handleRequestModifications}
-                  className="w-full py-2 bg-gradient-to-r from-red-650 to-red-550 text-gray-950 font-black text-xs font-mono uppercase cursor-pointer rounded-xl"
+                  className="w-full py-2 bg-gradient-to-r from-red-650 to-red-550 text-gray-950 font-black text-xs font-medium uppercase cursor-pointer rounded-xl"
                 >
                   Send revision request
                 </button>
@@ -289,7 +289,7 @@ export default function PackageManagementPage() {
 
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-medium text-xs">
             Select a package listing from the index.
           </div>
         )}

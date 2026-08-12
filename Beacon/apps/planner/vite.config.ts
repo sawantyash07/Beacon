@@ -23,7 +23,7 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: process.env.VERCEL ? 'dist' : '../../../public/planner',
+    outDir: '../../../public/planner',
     emptyOutDir: true,
     rolldownOptions: {
       external: ['canvg', 'dompurify'],

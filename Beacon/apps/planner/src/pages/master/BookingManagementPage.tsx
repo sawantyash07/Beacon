@@ -99,14 +99,14 @@ export default function BookingManagementPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by Booking ID, Traveler, Operator, Destination, or UTR..."
-            className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2.5 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+            className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2.5 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
           />
         </div>
 
         {/* Bookings Table Index */}
         <div className="border border-gray-855 bg-gray-900/40 rounded-3xl overflow-hidden shadow-xl">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs font-mono">
+            <table className="w-full text-left border-collapse text-xs font-medium">
               <thead>
                 <tr className="border-b border-gray-850 bg-gray-950/40 text-gray-400">
                   <th className="p-4">Booking ID</th>
@@ -162,7 +162,7 @@ export default function BookingManagementPage() {
 
                 {filteredBookings.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="text-center py-20 text-gray-600 font-mono text-xs border border-dashed border-gray-855 rounded-3xl">
+                    <td colSpan={7} className="text-center py-20 text-gray-600 font-medium text-xs border border-dashed border-gray-855 rounded-3xl">
                       No records match the requested search query index.
                     </td>
                   </tr>
@@ -183,20 +183,20 @@ export default function BookingManagementPage() {
             
             {/* Header summary */}
             <div className="border-b border-gray-850 pb-4 space-y-1">
-              <div className="flex justify-between items-center text-[10px] font-mono">
+              <div className="flex justify-between items-center text-[10px] font-medium">
                 <span className="text-cyan-400 font-bold">LIFECYCLE DOSSIER</span>
                 <span className="text-gray-500">ID: {activeBooking.id}</span>
               </div>
               <h3 className="text-md font-black text-white leading-snug">{activeBooking.packageTitle}</h3>
-              <p className="text-xs text-gray-500 font-mono">Operator Agency: {activeBooking.plannerName}</p>
+              <p className="text-xs text-gray-500 font-medium">Operator Agency: {activeBooking.plannerName}</p>
             </div>
 
             {/* Travelers preferences */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                 Guest Boarding Pass Preferences
               </h4>
-              <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl space-y-2.5 text-xs font-mono text-gray-400">
+              <div className="border border-gray-855 bg-gray-955/40 p-4 rounded-2xl space-y-2.5 text-xs font-medium text-gray-400">
                 <div className="flex justify-between">
                   <span>Traveler Name:</span>
                   <span className="text-gray-200">{activeBooking.customerName}</span>
@@ -224,10 +224,10 @@ export default function BookingManagementPage() {
 
             {/* Lifecycle Timeline */}
             <div className="space-y-3">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <Clock size={13} className="text-cyan-400" /> Booking Chronological Steps
               </h4>
-              <div className="space-y-3 pl-2.5 border-l-2 border-gray-800 text-[11px] font-mono text-gray-400 leading-normal">
+              <div className="space-y-3 pl-2.5 border-l-2 border-gray-800 text-[11px] font-medium text-gray-400 leading-normal">
                 {activeBooking.timeline.map((item, idx) => (
                   <div key={idx} className="relative space-y-0.5">
                     <span className="absolute -left-[15px] top-1 w-2.5 h-2.5 rounded-full bg-cyan-400 border border-black shadow" />
@@ -241,14 +241,14 @@ export default function BookingManagementPage() {
 
             {/* Transfer Booking group section */}
             <div className="space-y-3 border-t border-gray-850 pt-4">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <ArrowRight size={13} className="text-cyan-400" /> Re-route / Transfer Destination
               </h4>
               <div className="flex gap-2">
                 <select
                   value={transferTargetPkgId}
                   onChange={(e) => setTransferTargetPkgId(e.target.value)}
-                  className="flex-1 bg-gray-950 border border-gray-850 rounded-xl p-2.5 text-xs text-gray-200 outline-none font-mono"
+                  className="flex-1 bg-gray-950 border border-gray-850 rounded-xl p-2.5 text-xs text-gray-200 outline-none font-medium"
                 >
                   <option value="">Select Target Package</option>
                   {packages.filter(p => p.id !== activeBooking.packageId).map(p => (
@@ -257,7 +257,7 @@ export default function BookingManagementPage() {
                 </select>
                 <button
                   onClick={handleTransfer}
-                  className="px-3.5 py-2.5 bg-gray-850 hover:bg-gray-800 border border-gray-800 text-gray-300 font-bold rounded-xl text-xs cursor-pointer font-mono"
+                  className="px-3.5 py-2.5 bg-gray-850 hover:bg-gray-800 border border-gray-800 text-gray-300 font-bold rounded-xl text-xs cursor-pointer font-medium"
                 >
                   Transfer
                 </button>
@@ -266,7 +266,7 @@ export default function BookingManagementPage() {
 
             {/* Refund process */}
             <div className="space-y-3 border-t border-gray-850 pt-4">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <AlertTriangle size={13} className="text-yellow-400" /> Initiate Dispute Refund
               </h4>
               <div className="flex gap-2">
@@ -275,11 +275,11 @@ export default function BookingManagementPage() {
                   placeholder="Refund amount (INR)"
                   value={customRefundAmount}
                   onChange={(e) => setCustomRefundAmount(e.target.value)}
-                  className="flex-1 bg-gray-950 border border-gray-850 rounded-xl p-2 text-xs outline-none text-gray-200 font-mono"
+                  className="flex-1 bg-gray-950 border border-gray-850 rounded-xl p-2 text-xs outline-none text-gray-200 font-medium"
                 />
                 <button
                   onClick={handleRefund}
-                  className="px-3 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-xl text-xs cursor-pointer font-mono"
+                  className="px-3 py-2 bg-yellow-500 hover:bg-yellow-400 text-black font-bold rounded-xl text-xs cursor-pointer font-medium"
                 >
                   Refund
                 </button>
@@ -287,7 +287,7 @@ export default function BookingManagementPage() {
             </div>
 
             {/* Action buttons */}
-            <div className="border-t border-gray-850 pt-4 grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="border-t border-gray-850 pt-4 grid grid-cols-2 gap-2 text-xs font-medium">
               <button
                 onClick={handleCancelBooking}
                 className="py-2.5 rounded-xl bg-red-950/20 text-red-500 border border-red-900/30 font-bold cursor-pointer text-center flex items-center justify-center gap-1.5 hover:bg-red-950/40"
@@ -312,7 +312,7 @@ export default function BookingManagementPage() {
 
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-medium text-xs">
             Select a booking from the active index directory.
           </div>
         )}

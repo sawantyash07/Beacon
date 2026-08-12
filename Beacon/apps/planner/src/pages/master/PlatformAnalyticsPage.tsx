@@ -51,7 +51,7 @@ export default function PlatformAnalyticsPage() {
           </p>
         </div>
 
-        <div className="flex bg-gray-955/65 p-1 rounded-xl text-[10px] font-mono border border-gray-855">
+        <div className="flex bg-gray-955/65 p-1 rounded-xl text-[10px] font-medium border border-gray-855">
           {['3m', '6m', '12m'].map((range) => (
             <button
               key={range}
@@ -67,7 +67,7 @@ export default function PlatformAnalyticsPage() {
       </div>
 
       {/* Stats cards overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-mono">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-medium">
         {[
           { label: 'Avg Booking Value (ABV)', value: '₹24,850', sub: '+4.2% vs last month', color: 'text-cyan-300' },
           { label: 'Retention Cohort Rate', value: '64.2%', sub: 'Customer repeat bookings MoM', color: 'text-purple-400' },
@@ -90,7 +90,7 @@ export default function PlatformAnalyticsPage() {
         {/* Revenue Area Chart */}
         <div className="lg:col-span-8 border border-gray-855 bg-gray-900/40 rounded-3xl p-6 shadow-xl space-y-4">
           <div className="flex justify-between border-b border-gray-850 pb-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1.5">
               <DollarSign size={14} className="text-cyan-400" /> Monthly Revenue Trend
             </h4>
           </div>
@@ -116,7 +116,7 @@ export default function PlatformAnalyticsPage() {
         {/* Destination Pie Chart */}
         <div className="lg:col-span-4 border border-gray-855 bg-gray-900/40 rounded-3xl p-6 shadow-xl space-y-4">
           <div className="flex justify-between border-b border-gray-850 pb-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1.5">
               <Compass size={14} className="text-cyan-400" /> Destination Share
             </h4>
           </div>
@@ -143,7 +143,7 @@ export default function PlatformAnalyticsPage() {
             </div>
             
             {/* Custom legends */}
-            <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-gray-400">
+            <div className="grid grid-cols-2 gap-2 text-[10px] font-medium text-gray-400">
               {destinationData.map((d, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: d.color }} />
@@ -163,10 +163,10 @@ export default function PlatformAnalyticsPage() {
         
         {/* Top Planners leaderboard */}
         <div className="lg:col-span-7 border border-gray-855 bg-gray-900/40 rounded-3xl p-6 shadow-xl space-y-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1.5 border-b border-gray-850 pb-3">
+          <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1.5 border-b border-gray-850 pb-3">
             <Star size={14} className="text-yellow-500" /> Operational Leaderboard (Top Agencies)
           </h4>
-          <div className="overflow-x-auto text-[11px] font-mono">
+          <div className="overflow-x-auto text-[11px] font-medium">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-gray-855 text-gray-500 pb-2">
@@ -195,13 +195,13 @@ export default function PlatformAnalyticsPage() {
         {/* Projection forecasting calculator */}
         <div className="lg:col-span-5 border border-gray-855 bg-gray-900/40 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
           <div className="space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1.5 border-b border-gray-850 pb-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1.5 border-b border-gray-850 pb-3">
               <TrendingUp size={14} className="text-cyan-400 animate-pulse" /> Revenue Projections Forecast
             </h4>
 
             <div className="space-y-4">
               <div className="space-y-1">
-                <div className="flex justify-between text-xs font-mono text-gray-400">
+                <div className="flex justify-between text-xs font-medium text-gray-400">
                   <span>Projected Growth MoM</span>
                   <span className="text-cyan-400 font-bold">{growthMultiplier}% Growth</span>
                 </div>
@@ -216,7 +216,7 @@ export default function PlatformAnalyticsPage() {
               </div>
 
               {/* Projections calculations */}
-              <div className="bg-gray-955/40 border border-gray-855 p-4 rounded-2xl space-y-3 text-xs font-mono text-gray-400">
+              <div className="bg-gray-955/40 border border-gray-855 p-4 rounded-2xl space-y-3 text-xs font-medium text-gray-400">
                 <div className="flex justify-between">
                   <span>Current Annualized Base:</span>
                   <span className="text-gray-200">₹{(currentTotalRevenue / 10000000).toFixed(2)} Cr</span>
@@ -233,7 +233,7 @@ export default function PlatformAnalyticsPage() {
             </div>
           </div>
 
-          <div className="text-[9px] text-gray-500 font-mono mt-3 leading-relaxed">
+          <div className="text-[9px] text-gray-500 font-medium mt-3 leading-relaxed">
             * Forecaster computations are mock-simulated algorithms based on linear platform projections.
           </div>
         </div>

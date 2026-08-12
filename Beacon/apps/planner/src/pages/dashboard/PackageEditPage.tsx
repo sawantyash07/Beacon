@@ -268,7 +268,7 @@ export default function PackageEditPage() {
                       addImage()
                     }
                   }}
-                  className="flex-1 px-4 py-2 rounded-[12px] border border-border bg-surface text-xs font-mono focus:outline-none focus:ring-2 focus:ring-teal/30"
+                  className="flex-1 px-4 py-2 rounded-[12px] border border-border bg-surface text-xs font-medium focus:outline-none focus:ring-2 focus:ring-teal/30"
                 />
                 <Button type="button" size="sm" variant="outline" onClick={addImage} className="gap-1">
                   <Plus className="w-4 h-4" /> Add Image
@@ -329,7 +329,7 @@ export default function PackageEditPage() {
             />
             <div>
               <label className="block text-sm font-medium text-navy mb-1.5">Final Selling Price</label>
-              <div className="px-4 py-2.5 rounded-[12px] bg-page border border-border text-teal font-mono font-bold text-lg">
+              <div className="px-4 py-2.5 rounded-[12px] bg-page border border-border text-teal font-medium font-bold text-lg">
                 {formatCurrency(finalPrice)}
               </div>
             </div>

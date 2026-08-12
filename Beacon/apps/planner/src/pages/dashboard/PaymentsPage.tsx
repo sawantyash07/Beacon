@@ -122,9 +122,9 @@ export default function PaymentsPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <strong className="text-sm text-navy">{txn.traveler}</strong>
-                    <span className="text-[10px] text-muted font-mono font-bold bg-navy/5 px-2 py-0.5 rounded-full">{txn.id}</span>
+                    <span className="text-[10px] text-muted font-medium font-bold bg-navy/5 px-2 py-0.5 rounded-full">{txn.id}</span>
                   </div>
-                  <p className="text-xs text-muted mt-0.5">{txn.packageName} · UTR: <span className="font-mono font-bold text-navy">{txn.utr}</span></p>
+                  <p className="text-xs text-muted mt-0.5">{txn.packageName} · UTR: <span className="font-medium font-bold text-navy">{txn.utr}</span></p>
                 </div>
               </div>
               
@@ -216,7 +216,7 @@ export default function PaymentsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-navy">{txn.description}</p>
-                  <p className="text-xs text-muted font-mono">{txn.id} · {formatDate(txn.date)}</p>
+                  <p className="text-xs text-muted font-medium">{txn.id} · {formatDate(txn.date)}</p>
                 </div>
               </div>
               <span className="font-extrabold text-sm text-emerald-600">
@@ -293,7 +293,7 @@ export default function PaymentsPage() {
                 <div className="flex items-center justify-between pb-1">
                   <span className="text-muted font-normal">UTR Number:</span>
                   <div className="flex items-center gap-2.5">
-                    <span className="font-mono font-bold text-teal">{verifyingTxn.utr}</span>
+                    <span className="font-medium font-bold text-teal">{verifyingTxn.utr}</span>
                     <label className="flex items-center gap-1.5 cursor-pointer text-[10px] bg-surface border border-border px-2 py-0.5 rounded-md text-navy select-none">
                       <input
                         type="checkbox"

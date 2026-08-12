@@ -173,7 +173,7 @@ export function CommandPaletteModal({
           className="relative w-full max-w-xl bg-white border border-border rounded-[20px] shadow-2xl overflow-hidden flex flex-col max-h-[70vh]"
         >
           {/* Search Input Bar */}
-          <div className="p-4 border-b border-border flex items-center gap-3 bg-[#F9FBFC]">
+          <div className="p-4 border-b border-border flex items-center gap-3 bg-[var(--color-bg-surface)]">
             <Search className="w-5 h-5 text-teal shrink-0" />
             <input
               type="text"
@@ -183,7 +183,7 @@ export function CommandPaletteModal({
               className="flex-1 bg-transparent border-0 text-sm text-navy placeholder:text-muted focus:outline-none"
               autoFocus
             />
-            <kbd className="px-2 py-0.5 bg-white border border-border rounded text-[10px] font-mono text-muted">
+            <kbd className="px-2 py-0.5 bg-white border border-border rounded text-[10px] font-medium text-muted">
               ESC
             </kbd>
           </div>
@@ -226,7 +226,7 @@ export function CommandPaletteModal({
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0 ml-2">
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-page text-muted border border-border/80">
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-page text-muted border border-border/80">
                         {item.category}
                       </span>
                       <ChevronRight className={cn('w-4 h-4', isSelected ? 'text-cyan' : 'text-muted/40')} />
@@ -240,10 +240,10 @@ export function CommandPaletteModal({
           {/* Footer Shortcuts hint */}
           <div className="p-3 bg-page border-t border-border flex items-center justify-between text-[11px] text-muted">
             <div className="flex items-center gap-3">
-              <span><kbd className="px-1 py-0.5 bg-white border rounded font-mono text-[10px]">↑↓</kbd> Navigate</span>
-              <span><kbd className="px-1 py-0.5 bg-white border rounded font-mono text-[10px]">↵</kbd> Select</span>
+              <span><kbd className="px-1 py-0.5 bg-white border rounded font-medium text-[10px]">↑↓</kbd> Navigate</span>
+              <span><kbd className="px-1 py-0.5 bg-white border rounded font-medium text-[10px]">↵</kbd> Select</span>
             </div>
-            <span>Press <kbd className="px-1 py-0.5 bg-white border rounded font-mono text-[10px]">Ctrl+J</kbd> for AI Copilot</span>
+            <span>Press <kbd className="px-1 py-0.5 bg-white border rounded font-medium text-[10px]">Ctrl+J</kbd> for AI Copilot</span>
           </div>
         </motion.div>
       </div>

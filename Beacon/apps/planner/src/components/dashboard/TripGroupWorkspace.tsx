@@ -560,7 +560,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
           <span>Back to All Trip Groups</span>
         </Button>
 
-        <span className="text-xs font-mono text-muted bg-page px-3 py-1 rounded-full border border-border">
+        <span className="text-xs font-medium text-muted bg-page px-3 py-1 rounded-full border border-border">
           Workspace ID: {group.id}
         </span>
       </div>
@@ -575,7 +575,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
               className="w-20 h-20 rounded-[16px] object-cover border-2 border-white/20 shadow-md shrink-0"
             />
             <div>
-              <span className="bg-cyan/20 border border-cyan/40 text-cyan text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full uppercase">
+              <span className="bg-cyan/20 border border-cyan/40 text-cyan text-[11px] font-medium font-bold px-2.5 py-0.5 rounded-full uppercase">
                 {group.packageName || 'Group Workspace'}
               </span>
               <h2 className="text-2xl font-extrabold text-white mt-1">{group.name}</h2>
@@ -599,7 +599,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
       </Card>
 
       {/* GPS Location Confirmation Tracker Panel */}
-      <Card className="p-4 border border-border bg-[#F5FBFC] rounded-[18px]">
+      <Card className="p-4 border border-border bg-[var(--color-bg-surface-raised)] rounded-[18px]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
@@ -1017,7 +1017,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLightboxIndex(null)} className="absolute inset-0 bg-navy/90 backdrop-blur-md" />
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-4xl bg-surface border border-border rounded-[24px] shadow-2xl overflow-hidden z-10 flex flex-col max-h-[90vh]">
                   <div className="p-4 bg-page border-b border-border flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-teal bg-teal/10 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-medium font-bold text-teal bg-teal/10 px-2.5 py-1 rounded-full">
                       Photo {lightboxIndex + 1} of {filteredPhotos.length}
                     </span>
                     <button type="button" onClick={() => setLightboxIndex(null)} className="p-2 rounded-full hover:bg-page text-muted hover:text-navy">
@@ -1208,7 +1208,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                                     />
                                     <div className="flex justify-between items-center relative z-10">
                                       <span className="truncate">{opt.text}</span>
-                                      <span className="font-mono text-[11px] shrink-0 font-bold ml-2">
+                                      <span className="font-medium text-[11px] shrink-0 font-bold ml-2">
                                         {percentage}% ({opt.votes} votes)
                                       </span>
                                     </div>
@@ -1345,7 +1345,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                                 <Folder className="w-12 h-12 text-teal group-hover:scale-105 transition-transform" />
                                 <div>
                                   <span className="text-xs font-bold text-navy block leading-tight">{f}</span>
-                                  <span className="text-[10px] text-muted block mt-1 font-mono">{count} documents</span>
+                                  <span className="text-[10px] text-muted block mt-1 font-medium">{count} documents</span>
                                 </div>
                               </button>
                             )
@@ -1376,7 +1376,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                                         <span className="text-xs font-bold text-navy block leading-tight truncate max-w-[200px]" title={d.name}>
                                           {d.name}
                                         </span>
-                                        <span className="text-[9px] text-muted block font-mono mt-0.5">{d.size} · Uploaded: {d.date}</span>
+                                        <span className="text-[9px] text-muted block font-medium mt-0.5">{d.size} · Uploaded: {d.date}</span>
                                       </div>
                                     </div>
                                     <button
@@ -1460,7 +1460,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                           <h3 className="font-bold text-navy text-lg">Daily Traveller Attendance</h3>
                           <p className="text-xs text-muted">Confirm traveler presence on trip checklist at least once during operations</p>
                         </div>
-                        <span className="text-xs font-mono font-bold text-teal bg-teal/10 px-3 py-1 rounded-full border border-teal/20">
+                        <span className="text-xs font-medium font-bold text-teal bg-teal/10 px-3 py-1 rounded-full border border-teal/20">
                           Present: {attendanceList.filter(a => a.present).length} / {attendanceList.length} Pax
                         </span>
                       </div>
@@ -1496,14 +1496,14 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                           {attendanceList.map((a) => (
                             <div key={a.id} className="p-3 bg-page border border-border rounded-[14px] flex items-center justify-between text-xs font-medium">
                               <div className="flex items-center gap-3">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold font-mono text-xs ${
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold font-medium text-xs ${
                                   a.present ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'
                                 }`}>
                                   {a.traveler.slice(0, 1)}
                                 </div>
                                 <div>
                                   <strong className="text-navy block text-xs">{a.traveler}</strong>
-                                  <span className="text-[10px] text-muted font-mono">{a.id}</span>
+                                  <span className="text-[10px] text-muted font-medium">{a.id}</span>
                                 </div>
                               </div>
 
@@ -1525,7 +1525,7 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                         </div>
 
                         <div className="flex justify-between items-center border-t border-border/40 pt-4">
-                          <span className="text-xs text-muted leading-tight font-mono">
+                          <span className="text-xs text-muted leading-tight font-medium">
                             {isAttendanceConfirmed 
                               ? `🟢 "${attendanceSessionName}" session signed and logged.`
                               : `⚠️ Attendance sheet has not been logged for "${attendanceSessionName}" yet.`
@@ -1552,9 +1552,9 @@ export function TripGroupWorkspace({ group, onBack }: TripGroupWorkspaceProps) {
                               <div key={idx} className="p-3 bg-page border border-border rounded-[12px] flex items-center justify-between text-xs font-semibold">
                                 <div>
                                   <span className="text-navy block text-xs">{h.name}</span>
-                                  <span className="text-[10px] text-muted font-mono font-normal">{h.date}</span>
+                                  <span className="text-[10px] text-muted font-medium font-normal">{h.date}</span>
                                 </div>
-                                <span className="text-xs font-mono font-bold text-teal bg-teal/10 px-2.5 py-0.5 rounded-full border border-teal/20">
+                                <span className="text-xs font-medium font-bold text-teal bg-teal/10 px-2.5 py-0.5 rounded-full border border-teal/20">
                                   {h.presentCount} / {h.totalCount} Present
                                 </span>
                               </div>

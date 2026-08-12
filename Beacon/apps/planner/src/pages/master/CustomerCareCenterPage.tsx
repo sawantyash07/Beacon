@@ -115,11 +115,11 @@ export default function CustomerCareCenterPage() {
           { label: 'SLA Compliance Rate', value: '97.4%', sub: 'Target target parameter: 95%', color: 'text-blue-400' }
         ].map((stat, idx) => (
           <div key={idx} className="border border-gray-855 bg-gray-900/40 p-4 rounded-2xl shadow-lg">
-            <span className="text-[10px] text-gray-500 font-mono font-bold uppercase tracking-wider block mb-1">
+            <span className="text-[10px] text-gray-500 font-medium font-bold uppercase tracking-wider block mb-1">
               {stat.label}
             </span>
-            <span className={`text-xl font-bold font-mono ${stat.color}`}>{stat.value}</span>
-            <span className="text-[9px] text-gray-600 block mt-0.5 font-mono">{stat.sub}</span>
+            <span className={`text-xl font-bold font-medium ${stat.color}`}>{stat.value}</span>
+            <span className="text-[9px] text-gray-600 block mt-0.5 font-medium">{stat.sub}</span>
           </div>
         ))}
       </div>
@@ -130,7 +130,7 @@ export default function CustomerCareCenterPage() {
         {/* Left Column: Tickets Queue */}
         <div className="xl:col-span-4 space-y-4">
           
-          <div className="flex bg-gray-950/60 p-1 rounded-xl text-[10px] font-mono border border-gray-855 select-none">
+          <div className="flex bg-gray-950/60 p-1 rounded-xl text-[10px] font-medium border border-gray-855 select-none">
             {['OPEN', 'IN_PROGRESS', 'ESCALATED', 'RESOLVED', 'ALL'].map((f) => (
               <button
                 key={f}
@@ -155,7 +155,7 @@ export default function CustomerCareCenterPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search Subject or Ticket ID..."
-              className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+              className="w-full bg-gray-900 border border-gray-850 pl-9 pr-4 py-2 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
             />
           </div>
 
@@ -177,8 +177,8 @@ export default function CustomerCareCenterPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-mono font-bold text-gray-450">{t.id}</span>
-                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold font-mono ${
+                    <span className="font-medium font-bold text-gray-450">{t.id}</span>
+                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold font-medium ${
                       t.priority === 'CRITICAL' 
                         ? 'bg-red-950 text-red-500 animate-pulse'
                         : t.priority === 'HIGH'
@@ -190,7 +190,7 @@ export default function CustomerCareCenterPage() {
                   </div>
                   <h4 className="text-gray-250 truncate pr-6 font-semibold mb-2">{t.subject}</h4>
                   
-                  <div className="flex justify-between items-center text-[10px] font-mono text-gray-500 border-t border-gray-850/40 pt-2">
+                  <div className="flex justify-between items-center text-[10px] font-medium text-gray-500 border-t border-gray-850/40 pt-2">
                     <span>By: {t.customerName || t.plannerName}</span>
                     <span className={isExpired ? 'text-red-400 font-bold' : 'text-gray-400'}>
                       SLA: {formatSla(slaLeft)}
@@ -201,7 +201,7 @@ export default function CustomerCareCenterPage() {
             })}
 
             {filteredTickets.length === 0 && (
-              <div className="text-center py-16 text-gray-600 font-mono text-xs border border-dashed border-gray-855 rounded-3xl">
+              <div className="text-center py-16 text-gray-600 font-medium text-xs border border-dashed border-gray-855 rounded-3xl">
                 No active tickets under this index.
               </div>
             )}
@@ -217,7 +217,7 @@ export default function CustomerCareCenterPage() {
               <div className="lg:col-span-8 border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4 shadow-xl">
                 <div className="flex items-center justify-between border-b border-gray-850 pb-3">
                   <h3 className="text-sm font-bold truncate max-w-[280px]">{activeTicket.subject}</h3>
-                  <span className="text-xs text-cyan-400 font-mono">{activeTicket.status}</span>
+                  <span className="text-xs text-cyan-400 font-medium">{activeTicket.status}</span>
                 </div>
 
                 {/* Dialog thread */}
@@ -233,11 +233,11 @@ export default function CustomerCareCenterPage() {
                           isSelf ? 'ml-auto items-end' : 'mr-auto items-start'
                         }`}
                       >
-                        <span className="text-[9px] font-mono text-gray-550 mb-0.5">
+                        <span className="text-[9px] font-medium text-gray-550 mb-0.5">
                           {msg.senderName} ({new Date(msg.timestamp).toLocaleTimeString()})
                         </span>
                         <div
-                          className={`p-3 rounded-2xl text-xs font-mono leading-relaxed ${
+                          className={`p-3 rounded-2xl text-xs font-medium leading-relaxed ${
                             isSelf
                               ? 'bg-cyan-500 text-black font-bold rounded-tr-none'
                               : isPlanner
@@ -259,7 +259,7 @@ export default function CustomerCareCenterPage() {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Type official support response to dispatch..."
-                    className="flex-1 bg-gray-950 border border-gray-850 rounded-xl px-4 py-2.5 text-xs outline-none text-gray-200 font-mono"
+                    className="flex-1 bg-gray-950 border border-gray-850 rounded-xl px-4 py-2.5 text-xs outline-none text-gray-200 font-medium"
                   />
                   <button
                     type="submit"
@@ -275,10 +275,10 @@ export default function CustomerCareCenterPage() {
                 
                 {/* Details list */}
                 <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-3">
-                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                     Audit dossier links
                   </h4>
-                  <div className="space-y-2 text-xs font-mono text-gray-400">
+                  <div className="space-y-2 text-xs font-medium text-gray-400">
                     <div className="flex justify-between">
                       <span>Traveler:</span>
                       <span className="text-gray-200 font-bold">{activeTicket.customerName || 'N/A'}</span>
@@ -296,10 +296,10 @@ export default function CustomerCareCenterPage() {
 
                 {/* Escalate block */}
                 <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-3">
-                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                     <AlertTriangle size={13} className="text-red-400" /> Escalate Ticket Level
                   </h4>
-                  <div className="grid grid-cols-2 gap-1.5 text-xs font-mono">
+                  <div className="grid grid-cols-2 gap-1.5 text-xs font-medium">
                     <button
                       onClick={() => handleEscalate('CRITICAL')}
                       className="py-2 bg-red-950/20 text-red-500 border border-red-900/30 hover:bg-red-950/40 font-bold rounded-xl cursor-pointer"
@@ -323,14 +323,14 @@ export default function CustomerCareCenterPage() {
 
                 {/* Transfer Agent */}
                 <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-3">
-                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                     <CornerUpRight size={13} className="text-cyan-400" /> Transfer Executive Ownership
                   </h4>
                   <div className="flex gap-2">
                     <select
                       value={assignedAgent}
                       onChange={(e) => setAssignedAgent(e.target.value)}
-                      className="flex-1 bg-gray-950 border border-gray-850 rounded-xl px-2 py-1.5 text-xs text-gray-200 outline-none font-mono"
+                      className="flex-1 bg-gray-950 border border-gray-850 rounded-xl px-2 py-1.5 text-xs text-gray-200 outline-none font-medium"
                     >
                       <option value="">Select Agent</option>
                       <option value="Neha Mehta">Neha Mehta</option>
@@ -339,7 +339,7 @@ export default function CustomerCareCenterPage() {
                     </select>
                     <button
                       onClick={handleAssignAgent}
-                      className="px-3 py-1.5 bg-gray-850 hover:bg-gray-800 border border-gray-800 text-gray-300 font-bold rounded-xl text-xs cursor-pointer font-mono"
+                      className="px-3 py-1.5 bg-gray-850 hover:bg-gray-800 border border-gray-800 text-gray-300 font-bold rounded-xl text-xs cursor-pointer font-medium"
                     >
                       Assign
                     </button>
@@ -350,7 +350,7 @@ export default function CustomerCareCenterPage() {
                 {activeTicket.plannerId && (
                   <button
                     onClick={handleFreezePlanner}
-                    className="w-full py-3 rounded-2xl bg-red-950/20 text-red-500 border border-red-900/30 font-bold text-xs font-mono flex items-center justify-center gap-1.5 cursor-pointer hover:bg-red-950/40"
+                    className="w-full py-3 rounded-2xl bg-red-950/20 text-red-500 border border-red-900/30 font-bold text-xs font-medium flex items-center justify-center gap-1.5 cursor-pointer hover:bg-red-950/40"
                   >
                     <Lock size={14} />
                     Freeze Associated Planner
@@ -361,7 +361,7 @@ export default function CustomerCareCenterPage() {
 
             </div>
           ) : (
-            <div className="border border-dashed border-gray-855 rounded-3xl p-24 text-center text-gray-500 font-mono text-xs">
+            <div className="border border-dashed border-gray-855 rounded-3xl p-24 text-center text-gray-500 font-medium text-xs">
               Select a ticket from the queue on the left.
             </div>
           )}

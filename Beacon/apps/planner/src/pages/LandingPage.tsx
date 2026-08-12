@@ -139,7 +139,7 @@ export default function LandingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white font-[family-name:var(--font-body)] antialiased select-none overflow-x-hidden">
+    <div className="min-h-screen bg-[var(--color-bg-canvas)] text-white font-[family-name:var(--font-body)] antialiased select-none overflow-x-hidden">
       
       {/* BACKGROUND DECORATIVE GLOWS */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-cyan/5 rounded-full blur-[140px] pointer-events-none z-0" />
@@ -151,7 +151,7 @@ export default function LandingPage() {
           ==================================================== */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-[#020617]/85 backdrop-blur-md border-b border-white/5 py-4 shadow-lg' 
+          ? 'bg-[var(--color-bg-canvas)] backdrop-blur-md border-b border-white/5 py-4 shadow-lg' 
           : 'bg-transparent py-6'
       }`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between">
@@ -203,7 +203,7 @@ export default function LandingPage() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-[#020617] border-b border-white/5 overflow-hidden"
+              className="lg:hidden bg-[var(--color-bg-canvas)] border-b border-white/5 overflow-hidden"
             >
               <div className="px-6 py-6 space-y-4 flex flex-col">
                 <button onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setMobileMenuOpen(false); }} className="text-left text-base font-medium text-white/70 py-1 hover:text-cyan">Overview</button>
@@ -485,7 +485,7 @@ export default function LandingPage() {
                             <p className="font-bold text-white/40 uppercase tracking-wider">Upcoming Trips</p>
                             <div className="flex justify-between text-white/70">
                               <span className="truncate">Kedarkantha Trek</span>
-                              <span className="text-white/40 font-mono">12 Dec</span>
+                              <span className="text-white/40 font-medium">12 Dec</span>
                             </div>
                           </div>
                           <div className="bg-white/[0.02] border border-white/5 rounded p-1 space-y-0.5">
@@ -807,7 +807,7 @@ export default function LandingPage() {
                     <div key={idx} className="space-y-1">
                       <div className="flex justify-between text-[10px]">
                         <span className="text-white/60">{pkg.name}</span>
-                        <span className="text-white font-mono">{pkg.share}%</span>
+                        <span className="text-white font-medium">{pkg.share}%</span>
                       </div>
                       <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
                         <div className={`h-full ${pkg.color}`} style={{ width: `${pkg.share}%` }} />

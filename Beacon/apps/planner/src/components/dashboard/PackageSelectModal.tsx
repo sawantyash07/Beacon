@@ -149,7 +149,7 @@ export function PackageSelectModal({
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono font-bold text-teal bg-teal/10 px-2 py-0.5 rounded-md">
+                        <span className="text-[10px] font-medium font-bold text-teal bg-teal/10 px-2 py-0.5 rounded-md">
                           {pkg.id}
                         </span>
                         <h4 className="font-semibold text-sm text-navy truncate">{pkg.title}</h4>

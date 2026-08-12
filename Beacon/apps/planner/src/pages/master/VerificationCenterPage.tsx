@@ -123,12 +123,12 @@ export default function VerificationCenterPage() {
           ========================================== */}
       <div className="xl:col-span-3 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wider font-mono text-gray-400">
+          <h2 className="text-sm font-bold uppercase tracking-wider font-medium text-gray-400">
             {showVerifiedPlanners ? 'Moderated Agencies' : 'Verification Queue'}
           </h2>
           <button
             onClick={() => setShowVerifiedPlanners(!showVerifiedPlanners)}
-            className="text-[10px] text-cyan-400 font-mono underline hover:text-white cursor-pointer"
+            className="text-[10px] text-cyan-400 font-medium underline hover:text-white cursor-pointer"
           >
             {showVerifiedPlanners ? 'Show Pending Queue' : 'Show Moderated'}
           </button>
@@ -149,7 +149,7 @@ export default function VerificationCenterPage() {
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="truncate max-w-[140px] block">{p.agencyName}</span>
-                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase ${
+                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-medium font-bold uppercase ${
                     p.status === 'VERIFIED'
                       ? 'bg-green-950 text-green-400'
                       : p.status === 'SUSPENDED'
@@ -159,7 +159,7 @@ export default function VerificationCenterPage() {
                     {p.status}
                   </span>
                 </div>
-                <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+                <div className="flex justify-between text-[10px] text-gray-500 font-medium">
                   <span>Owner: {p.ownerName}</span>
                   <span>Score: {p.riskScore}%</span>
                 </div>
@@ -168,7 +168,7 @@ export default function VerificationCenterPage() {
           })}
 
           {visiblePlanners.length === 0 && (
-            <div className="text-center py-12 text-gray-600 font-mono text-xs border border-dashed border-gray-850 rounded-2xl">
+            <div className="text-center py-12 text-gray-600 font-medium text-xs border border-dashed border-gray-850 rounded-2xl">
               Queue is currently empty.
             </div>
           )}
@@ -189,15 +189,15 @@ export default function VerificationCenterPage() {
               <div className="flex justify-between items-start border-b border-gray-850 pb-3">
                 <div className="space-y-1">
                   <h3 className="text-lg font-black text-white">{activePlanner.agencyName}</h3>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 font-mono">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 font-medium">
                     <span className="flex items-center gap-1"><User size={13} /> {activePlanner.ownerName}</span>
                     <span className="flex items-center gap-1"><Mail size={13} /> {activePlanner.email}</span>
                     <span className="flex items-center gap-1"><Phone size={13} /> {activePlanner.phone}</span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] text-gray-500 uppercase font-mono block">Tier level</span>
-                  <span className="font-mono text-xs font-bold text-yellow-500">★ {activePlanner.tier}</span>
+                  <span className="text-[10px] text-gray-500 uppercase font-medium block">Tier level</span>
+                  <span className="font-medium text-xs font-bold text-yellow-500">★ {activePlanner.tier}</span>
                 </div>
               </div>
 
@@ -216,10 +216,10 @@ export default function VerificationCenterPage() {
             {/* Document Viewer Frame */}
             <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4">
               <div className="flex items-center justify-between border-b border-gray-850 pb-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400">
+                <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400">
                   Uploaded Dossier Documents
                 </h4>
-                <span className="text-xs text-cyan-400 font-mono">
+                <span className="text-xs text-cyan-400 font-medium">
                   {activePlanner.documents.length} Files Uploaded
                 </span>
               </div>
@@ -230,7 +230,7 @@ export default function VerificationCenterPage() {
                   <button
                     key={doc.name}
                     onClick={() => setActiveDocIndex(idx)}
-                    className={`px-3 py-2 rounded-xl text-xs font-mono transition-all flex items-center gap-1.5 border cursor-pointer ${
+                    className={`px-3 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 border cursor-pointer ${
                       activeDocIndex === idx
                         ? 'bg-cyan-950/40 text-cyan-400 border-cyan-500/30'
                         : 'bg-gray-950/40 text-gray-500 border-transparent hover:text-gray-300'
@@ -254,14 +254,14 @@ export default function VerificationCenterPage() {
                       alt={activePlanner.documents[activeDocIndex].name}
                       className="max-h-full object-contain w-full hover:scale-110 transition-transform duration-300 cursor-zoom-in"
                     />
-                    <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-[10px] font-mono text-gray-400 flex items-center gap-1 border border-gray-800">
+                    <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur px-3 py-1.5 rounded-lg text-[10px] font-medium text-gray-400 flex items-center gap-1 border border-gray-800">
                       <Eye size={12} className="text-cyan-400" /> Interactive Inspector Mode
                     </div>
                   </div>
 
                   {/* Document validation controls */}
                   <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-gray-950/30 p-4 border border-gray-855 rounded-2xl">
-                    <div className="text-xs font-mono">
+                    <div className="text-xs font-medium">
                       <span className="text-gray-500 block">FILE: {activePlanner.documents[activeDocIndex].name}</span>
                       <span className="text-gray-300">STATUS: {activePlanner.documents[activeDocIndex].status}</span>
                       {activePlanner.documents[activeDocIndex].rejectionReason && (
@@ -294,10 +294,10 @@ export default function VerificationCenterPage() {
             
             {/* Bank details preview */}
             <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400 flex items-center gap-1">
+              <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400 flex items-center gap-1">
                 <Landmark size={14} className="text-cyan-400" /> Bank Settlement Account
               </h4>
-              <div className="space-y-2 text-xs font-mono text-gray-400 pt-1.5">
+              <div className="space-y-2 text-xs font-medium text-gray-400 pt-1.5">
                 <div className="flex justify-between">
                   <span>HOLDER:</span>
                   <span className="text-gray-200">{activePlanner.bankAccount.holder}</span>
@@ -319,7 +319,7 @@ export default function VerificationCenterPage() {
 
             {/* Checklist */}
             <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400">
+              <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400">
                 Verification Checklist
               </h4>
 
@@ -341,7 +341,7 @@ export default function VerificationCenterPage() {
                       onChange={(e) => setChecklist(prev => ({ ...prev, [item.key]: e.target.checked }))}
                       className="w-4 h-4 accent-cyan-500 cursor-pointer rounded bg-gray-900 border-gray-800 focus:ring-0"
                     />
-                    <span className="text-gray-300 font-mono">{item.label}</span>
+                    <span className="text-gray-300 font-medium">{item.label}</span>
                   </label>
                 ))}
               </div>
@@ -349,7 +349,7 @@ export default function VerificationCenterPage() {
 
             {/* Rejection input and Actions */}
             <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider font-mono text-gray-400">
+              <h4 className="text-xs font-bold uppercase tracking-wider font-medium text-gray-400">
                 Final Assessment Verdict
               </h4>
 
@@ -359,7 +359,7 @@ export default function VerificationCenterPage() {
                   value={rejectionNotes}
                   onChange={(e) => setRejectionNotes(e.target.value)}
                   rows={3}
-                  className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-mono"
+                  className="w-full bg-gray-950 border border-gray-850 rounded-2xl p-3 text-xs outline-none text-gray-200 resize-none font-medium"
                 />
 
                 <div className="space-y-2">
@@ -394,7 +394,7 @@ export default function VerificationCenterPage() {
 
         </div>
       ) : (
-        <div className="xl:col-span-9 border border-dashed border-gray-850 rounded-3xl p-24 text-center text-gray-500 text-xs font-mono flex flex-col items-center justify-center">
+        <div className="xl:col-span-9 border border-dashed border-gray-850 rounded-3xl p-24 text-center text-gray-500 text-xs font-medium flex flex-col items-center justify-center">
           Select a planner from the validation queue on the left.
         </div>
       )}

@@ -55,7 +55,7 @@ export default function ReviewModerationPage() {
       <div className="xl:col-span-8 space-y-4">
         
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex flex-wrap bg-gray-950/60 p-1 rounded-xl text-[10px] font-mono border border-gray-855">
+          <div className="flex flex-wrap bg-gray-950/60 p-1 rounded-xl text-[10px] font-medium border border-gray-855">
             {['FLAGGED', 'APPROVED', 'FAKE', 'HIDDEN', 'ALL'].map((f) => (
               <button
                 key={f}
@@ -80,7 +80,7 @@ export default function ReviewModerationPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by Traveler or Package..."
-              className="bg-gray-900 border border-gray-850 pl-9 pr-4 py-1.5 rounded-xl text-xs outline-none text-gray-200 font-mono focus:border-cyan-500/30"
+              className="bg-gray-900 border border-gray-850 pl-9 pr-4 py-1.5 rounded-xl text-xs outline-none text-gray-200 font-medium focus:border-cyan-500/30"
             />
           </div>
         </div>
@@ -111,12 +111,12 @@ export default function ReviewModerationPage() {
                   </div>
                 </div>
 
-                <p className="text-gray-300 font-mono text-[11px] mb-2 leading-relaxed italic">
+                <p className="text-gray-300 font-medium text-[11px] mb-2 leading-relaxed italic">
                   "{rev.text}"
                 </p>
 
                 {rev.flagReason && (
-                  <div className="text-[10px] text-red-400 font-mono flex items-center gap-1">
+                  <div className="text-[10px] text-red-400 font-medium flex items-center gap-1">
                     <AlertCircle size={12} /> Auto Flagged: {rev.flagReason}
                   </div>
                 )}
@@ -125,7 +125,7 @@ export default function ReviewModerationPage() {
           })}
 
           {filteredReviews.length === 0 && (
-            <div className="text-center py-20 text-gray-600 font-mono text-xs border border-dashed border-gray-855 rounded-3xl">
+            <div className="text-center py-20 text-gray-600 font-medium text-xs border border-dashed border-gray-855 rounded-3xl">
               No feedback reviews listed under this catalog.
             </div>
           )}
@@ -141,18 +141,18 @@ export default function ReviewModerationPage() {
           <div className="border border-gray-855 bg-gray-900/40 rounded-3xl p-5 space-y-6">
             
             <div className="border-b border-gray-850 pb-4 space-y-1">
-              <span className="text-[10px] text-cyan-400 font-mono font-bold">FEEDBACK AUDITING CARD</span>
+              <span className="text-[10px] text-cyan-400 font-medium font-bold">FEEDBACK AUDITING CARD</span>
               <h3 className="text-md font-black text-white">Guest: {activeReview.customerName}</h3>
-              <p className="text-xs text-gray-500 font-mono">Date: {new Date(activeReview.timestamp).toLocaleDateString()}</p>
+              <p className="text-xs text-gray-500 font-medium">Date: {new Date(activeReview.timestamp).toLocaleDateString()}</p>
             </div>
 
             {/* Review content box */}
-            <div className="p-4 rounded-2xl bg-gray-955/40 border border-gray-850 text-xs font-mono text-gray-300 leading-normal italic">
+            <div className="p-4 rounded-2xl bg-gray-955/40 border border-gray-850 text-xs font-medium text-gray-300 leading-normal italic">
               "{activeReview.text}"
             </div>
 
             {/* Diagnostic stats */}
-            <div className="border border-gray-855 bg-gray-955/20 p-4 rounded-2xl space-y-2 text-xs font-mono text-gray-400">
+            <div className="border border-gray-855 bg-gray-955/20 p-4 rounded-2xl space-y-2 text-xs font-medium text-gray-400">
               <div className="flex justify-between">
                 <span>Associated Package:</span>
                 <span className="text-gray-200 truncate max-w-[150px]">{activeReview.packageTitle}</span>
@@ -169,10 +169,10 @@ export default function ReviewModerationPage() {
 
             {/* Action buttons */}
             <div className="space-y-4 pt-2">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono flex items-center gap-1">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium flex items-center gap-1">
                 <AlertOctagon size={13} className="text-cyan-400" /> Moderation overrides
               </h4>
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div className="grid grid-cols-2 gap-2 text-xs font-medium">
                 <button
                   onClick={() => handleModerateAction('APPROVED')}
                   className="py-2 rounded-xl bg-green-500 hover:bg-green-400 text-black font-bold cursor-pointer flex items-center justify-center gap-1"
@@ -202,19 +202,19 @@ export default function ReviewModerationPage() {
 
             {/* Warn / Suspend Reviewer panel */}
             <div className="space-y-3 pt-2 border-t border-gray-850">
-              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">
+              <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-medium">
                 Operator Policy Actions
               </h4>
               <div className="space-y-2">
                 <button
                   onClick={handleIssueWarning}
-                  className="w-full py-2.5 rounded-xl bg-gray-950 hover:bg-gray-850 text-gray-300 border border-gray-800 text-xs font-mono font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2.5 rounded-xl bg-gray-950 hover:bg-gray-850 text-gray-300 border border-gray-800 text-xs font-medium font-bold flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <AlertCircle size={14} /> Dispatch Policy Warning
                 </button>
                 <button
                   onClick={handleSuspendReviewer}
-                  className="w-full py-2.5 rounded-xl bg-red-950/20 text-red-550 border border-red-900/30 text-xs font-mono font-bold flex items-center justify-center gap-1.5 cursor-pointer hover:bg-red-950/40"
+                  className="w-full py-2.5 rounded-xl bg-red-950/20 text-red-550 border border-red-900/30 text-xs font-medium font-bold flex items-center justify-center gap-1.5 cursor-pointer hover:bg-red-950/40"
                 >
                   <UserCheck size={14} /> Suspend Reviewer Profile
                 </button>
@@ -223,7 +223,7 @@ export default function ReviewModerationPage() {
 
           </div>
         ) : (
-          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-mono text-xs">
+          <div className="border border-dashed border-gray-855 rounded-3xl p-12 text-center text-gray-500 font-medium text-xs">
             Select a feedback review card from the directory index.
           </div>
         )}

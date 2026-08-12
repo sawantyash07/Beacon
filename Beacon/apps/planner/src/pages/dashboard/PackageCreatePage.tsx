@@ -668,7 +668,7 @@ export default function PackageCreatePage() {
                   <RefreshCw className="w-3 h-3 animate-spin" /> Autosaving...
                 </span>
               ) : draftSavedAt ? (
-                <span className="text-[10px] text-muted font-mono">
+                <span className="text-[10px] text-muted font-medium">
                   Saved at {draftSavedAt}
                 </span>
               ) : null}
@@ -808,7 +808,7 @@ export default function PackageCreatePage() {
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-muted">Starting From</p>
-                      <p className="text-3xl font-extrabold text-teal font-mono">{formatCurrency(formData.basePrice * (1 - formData.discount / 100))}</p>
+                      <p className="text-3xl font-extrabold text-teal font-medium">{formatCurrency(formData.basePrice * (1 - formData.discount / 100))}</p>
                     </div>
                   </div>
 
@@ -1207,7 +1207,7 @@ export default function PackageCreatePage() {
                     <div className="p-4 bg-teal-gradient rounded-[18px] text-white flex items-center justify-between">
                       <div>
                         <p className="text-xs opacity-80">Calculated Final Price per traveler</p>
-                        <p className="text-3xl font-extrabold font-mono mt-0.5">
+                        <p className="text-3xl font-extrabold font-medium mt-0.5">
                           {formatCurrency(formData.basePrice * (1 - formData.discount / 100))}
                         </p>
                       </div>

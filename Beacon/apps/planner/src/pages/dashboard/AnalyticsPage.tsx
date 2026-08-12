@@ -36,7 +36,7 @@ export default function AnalyticsPage() {
           >
             <Card hover>
               <p className="text-sm text-muted mb-1">{metric.label}</p>
-              <p className="text-2xl font-bold text-navy font-mono">
+              <p className="text-2xl font-bold text-navy font-medium">
                 <AnimatedCounter
                   value={metric.value}
                   prefix={metric.prefix}

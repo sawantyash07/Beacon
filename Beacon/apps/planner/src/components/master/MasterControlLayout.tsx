@@ -169,7 +169,7 @@ export default function MasterControlLayout() {
               BEACON CENTRAL
             </span>
           </Link>
-          <div className="px-2 py-0.5 rounded text-[10px] font-mono border border-cyan-500/20 bg-cyan-950/20 text-cyan-400">
+          <div className="px-2 py-0.5 rounded text-[10px] font-medium border border-cyan-500/20 bg-cyan-950/20 text-cyan-400">
             ROOT
           </div>
         </div>
@@ -222,7 +222,7 @@ export default function MasterControlLayout() {
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-xs font-bold truncate">{currentRole}</span>
-              <span className="text-[10px] text-green-400 font-mono flex items-center gap-1">
+              <span className="text-[10px] text-green-400 font-medium flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" /> Active
               </span>
             </div>
@@ -305,7 +305,7 @@ export default function MasterControlLayout() {
                 </div>
                 <div className="flex flex-col min-w-0">
                   <span className="text-xs font-bold truncate leading-tight">{currentRole}</span>
-                  <span className="text-[9px] text-green-400 font-mono">NODE ACTIVE</span>
+                  <span className="text-[9px] text-green-400 font-medium">NODE ACTIVE</span>
                 </div>
               </div>
               <button 
@@ -341,7 +341,7 @@ export default function MasterControlLayout() {
             {/* Ctrl+K search launch input */}
             <div 
               onClick={() => setSearchOpen(true)}
-              className="hidden sm:flex items-center justify-between w-full max-w-sm pl-4 pr-2.5 py-1.5 rounded-xl border border-gray-800 bg-gray-950/50 hover:bg-gray-950/80 hover:border-gray-700 text-gray-500 text-xs font-mono cursor-pointer transition-all duration-150"
+              className="hidden sm:flex items-center justify-between w-full max-w-sm pl-4 pr-2.5 py-1.5 rounded-xl border border-gray-800 bg-gray-950/50 hover:bg-gray-950/80 hover:border-gray-700 text-gray-500 text-xs font-medium cursor-pointer transition-all duration-150"
             >
               <span className="flex items-center gap-2">
                 <Search size={14} className="text-gray-500" />
@@ -357,7 +357,7 @@ export default function MasterControlLayout() {
           <div className="flex items-center gap-3 lg:gap-5">
             
             {/* Clock Diagnostics */}
-            <div className="hidden xl:flex flex-col text-right font-mono text-[10px] text-gray-400">
+            <div className="hidden xl:flex flex-col text-right font-medium text-[10px] text-gray-400">
               <span className="flex items-center gap-1.5 justify-end">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                 {formatIST(time)}
@@ -367,7 +367,7 @@ export default function MasterControlLayout() {
 
             {/* Platform Status Badge */}
             <div className="flex items-center gap-2">
-              <div className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider flex items-center gap-1.5 border shadow-sm ${
+              <div className={`px-2.5 py-1 rounded-full text-[10px] font-medium font-bold tracking-wider flex items-center gap-1.5 border shadow-sm ${
                 systemMode === 'LIVE' 
                   ? 'bg-green-950/30 border-green-500/20 text-green-400 glow-cyan-sm'
                   : systemMode === 'MAINTENANCE'
@@ -389,7 +389,7 @@ export default function MasterControlLayout() {
             <div className="relative">
               <button 
                 onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                className="px-3 py-1.5 rounded-xl border border-gray-800 bg-gray-950/50 hover:bg-gray-950 text-xs font-mono font-semibold flex items-center gap-2 text-cyan-400 hover:border-cyan-500/30 transition-all cursor-pointer"
+                className="px-3 py-1.5 rounded-xl border border-gray-800 bg-gray-950/50 hover:bg-gray-950 text-xs font-medium font-semibold flex items-center gap-2 text-cyan-400 hover:border-cyan-500/30 transition-all cursor-pointer"
               >
                 <span>{currentRole}</span>
                 <ChevronDown size={14} className={`text-gray-400 transition-transform ${roleDropdownOpen ? 'rotate-180' : ''}`} />
@@ -399,7 +399,7 @@ export default function MasterControlLayout() {
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setRoleDropdownOpen(false)} />
                   <div className="absolute right-0 mt-2 w-56 bg-gray-900 border border-gray-805 rounded-xl shadow-2xl z-50 p-1.5 text-xs">
-                    <div className="px-2.5 py-1.5 text-[9px] font-mono text-gray-500 uppercase border-b border-gray-850 tracking-wider">
+                    <div className="px-2.5 py-1.5 text-[9px] font-medium text-gray-500 uppercase border-b border-gray-850 tracking-wider">
                       Switch Agent Scope
                     </div>
                     <div className="max-h-60 overflow-y-auto pt-1">
@@ -420,7 +420,7 @@ export default function MasterControlLayout() {
                             setRoleDropdownOpen(false);
                             toast.success(`Role Switched to ${role}`);
                           }}
-                          className={`w-full text-left px-2.5 py-1.5 rounded-lg font-mono transition-colors text-[11px] mb-0.5 cursor-pointer ${
+                          className={`w-full text-left px-2.5 py-1.5 rounded-lg font-medium transition-colors text-[11px] mb-0.5 cursor-pointer ${
                             currentRole === role
                               ? 'bg-cyan-950/50 text-cyan-400 border border-cyan-500/20 font-bold'
                               : 'text-gray-400 hover:text-gray-100 hover:bg-gray-850 border border-transparent'
@@ -439,13 +439,13 @@ export default function MasterControlLayout() {
             {systemMode !== 'EMERGENCY_LOCKDOWN' ? (
               <button 
                 onClick={handleSystemLockdown}
-                className="px-3.5 py-1.5 rounded-xl bg-red-650 hover:bg-red-550 active:scale-95 text-gray-950 font-bold text-xs font-mono shadow-md shadow-red-950/20 flex items-center gap-1 cursor-pointer transition-all uppercase"
+                className="px-3.5 py-1.5 rounded-xl bg-red-650 hover:bg-red-550 active:scale-95 text-gray-950 font-bold text-xs font-medium shadow-md shadow-red-950/20 flex items-center gap-1 cursor-pointer transition-all uppercase"
                 title="Initiate emergency security lockdown"
               >
                 <ShieldAlert size={14} /> Lockdown
               </button>
             ) : (
-              <span className="px-3 py-1.5 rounded-xl bg-red-950/40 border border-red-500 text-red-500 font-bold text-xs font-mono flex items-center gap-1.5">
+              <span className="px-3 py-1.5 rounded-xl bg-red-950/40 border border-red-500 text-red-500 font-bold text-xs font-medium flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping" /> LOCKDOWN ACTIVE
               </span>
             )}
@@ -465,7 +465,7 @@ export default function MasterControlLayout() {
                 <h4 className="font-extrabold text-sm uppercase tracking-wider font-heading">
                   EMERGENCY SHIELD ACTIVE
                 </h4>
-                <p className="text-xs text-red-400/80 leading-relaxed font-mono">
+                <p className="text-xs text-red-400/80 leading-relaxed font-medium">
                   Super Admin initiated a platforms-wide operational freeze. Database writes are throttled, payouts are halted, and packages are protected from public visibility. Monitor active security cases on the <Link to="/master-control/fraud-audit" className="underline text-red-300 font-bold hover:text-white">Fraud Ledger</Link>.
                 </p>
               </div>
@@ -492,11 +492,11 @@ export default function MasterControlLayout() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Type to find Planners, Bookings, Tickets, Actions..."
-                className="w-full bg-transparent border-none text-gray-200 outline-none placeholder-gray-500 text-sm font-mono"
+                className="w-full bg-transparent border-none text-gray-200 outline-none placeholder-gray-500 text-sm font-medium"
               />
               <button 
                 onClick={() => setSearchOpen(false)}
-                className="p-1 rounded bg-gray-800 text-gray-500 hover:text-gray-200 text-xs font-mono"
+                className="p-1 rounded bg-gray-800 text-gray-500 hover:text-gray-200 text-xs font-medium"
               >
                 ESC
               </button>
@@ -506,37 +506,37 @@ export default function MasterControlLayout() {
             {searchQuery.trim().length === 0 ? (
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 font-mono">
+                  <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 font-medium">
                     System Quick Actions
                   </h4>
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <button 
                       onClick={() => { navigate('/master-control/overview'); setSearchOpen(false); }}
-                      className="flex items-center gap-2 p-2 rounded-xl bg-gray-950/50 hover:bg-cyan-950/20 hover:text-cyan-400 border border-gray-850 text-left transition-colors font-mono"
+                      className="flex items-center gap-2 p-2 rounded-xl bg-gray-950/50 hover:bg-cyan-950/20 hover:text-cyan-400 border border-gray-850 text-left transition-colors font-medium"
                     >
                       <ChevronRight size={12} /> Go to Mission Control
                     </button>
                     <button 
                       onClick={() => { navigate('/master-control/settings'); setSearchOpen(false); }}
-                      className="flex items-center gap-2 p-2 rounded-xl bg-gray-950/50 hover:bg-cyan-950/20 hover:text-cyan-400 border border-gray-850 text-left transition-colors font-mono"
+                      className="flex items-center gap-2 p-2 rounded-xl bg-gray-950/50 hover:bg-cyan-950/20 hover:text-cyan-400 border border-gray-850 text-left transition-colors font-medium"
                     >
                       <ChevronRight size={12} /> Configure System Flags
                     </button>
                     <button 
                       onClick={() => { navigate('/master-control/fraud-audit'); setSearchOpen(false); }}
-                      className="flex items-center gap-2 p-2 rounded-xl bg-gray-950/50 hover:bg-cyan-950/20 hover:text-cyan-400 border border-gray-850 text-left transition-colors font-mono"
+                      className="flex items-center gap-2 p-2 rounded-xl bg-gray-950/50 hover:bg-cyan-950/20 hover:text-cyan-400 border border-gray-850 text-left transition-colors font-medium"
                     >
                       <ChevronRight size={12} /> Read Audit logs
                     </button>
                     <button 
                       onClick={() => { handleSystemLockdown(); setSearchOpen(false); }}
-                      className="flex items-center gap-2 p-2 rounded-xl bg-red-950/20 hover:bg-red-950/40 text-red-400 border border-red-900/30 text-left transition-colors font-mono font-bold"
+                      className="flex items-center gap-2 p-2 rounded-xl bg-red-950/20 hover:bg-red-950/40 text-red-400 border border-red-900/30 text-left transition-colors font-medium font-bold"
                     >
                       <ChevronRight size={12} /> Trigger System Lockdown
                     </button>
                   </div>
                 </div>
-                <div className="text-center py-6 text-gray-600 text-xs font-mono border border-dashed border-gray-850 rounded-2xl">
+                <div className="text-center py-6 text-gray-600 text-xs font-medium border border-dashed border-gray-850 rounded-2xl">
                   Press Ctrl+K at any time to open this command portal
                 </div>
               </div>
@@ -545,7 +545,7 @@ export default function MasterControlLayout() {
                 {/* Planners results */}
                 {searchResults.planners.length > 0 && (
                   <div>
-                    <h5 className="text-[9px] font-bold font-mono text-cyan-400 uppercase tracking-wider mb-1.5">
+                    <h5 className="text-[9px] font-bold font-medium text-cyan-400 uppercase tracking-wider mb-1.5">
                       Planners ({searchResults.planners.length})
                     </h5>
                     <div className="space-y-1">
@@ -557,7 +557,7 @@ export default function MasterControlLayout() {
                         >
                           <div>
                             <p className="font-bold">{p.agencyName}</p>
-                            <p className="text-[10px] text-gray-500 font-mono">Owner: {p.ownerName} | ID: {p.id}</p>
+                            <p className="text-[10px] text-gray-500 font-medium">Owner: {p.ownerName} | ID: {p.id}</p>
                           </div>
                           <ChevronRight size={14} className="text-gray-600" />
                         </div>
@@ -569,7 +569,7 @@ export default function MasterControlLayout() {
                 {/* Customers results */}
                 {searchResults.customers.length > 0 && (
                   <div>
-                    <h5 className="text-[9px] font-bold font-mono text-cyan-400 uppercase tracking-wider mb-1.5">
+                    <h5 className="text-[9px] font-bold font-medium text-cyan-400 uppercase tracking-wider mb-1.5">
                       Travelers ({searchResults.customers.length})
                     </h5>
                     <div className="space-y-1">
@@ -581,7 +581,7 @@ export default function MasterControlLayout() {
                         >
                           <div>
                             <p className="font-bold">{c.name}</p>
-                            <p className="text-[10px] text-gray-500 font-mono">Email: {c.email} | ID: {c.id}</p>
+                            <p className="text-[10px] text-gray-500 font-medium">Email: {c.email} | ID: {c.id}</p>
                           </div>
                           <ChevronRight size={14} className="text-gray-600" />
                         </div>
@@ -593,7 +593,7 @@ export default function MasterControlLayout() {
                 {/* Bookings results */}
                 {searchResults.bookings.length > 0 && (
                   <div>
-                    <h5 className="text-[9px] font-bold font-mono text-cyan-400 uppercase tracking-wider mb-1.5">
+                    <h5 className="text-[9px] font-bold font-medium text-cyan-400 uppercase tracking-wider mb-1.5">
                       Bookings ({searchResults.bookings.length})
                     </h5>
                     <div className="space-y-1">
@@ -604,7 +604,7 @@ export default function MasterControlLayout() {
                           className="p-2 rounded-xl hover:bg-gray-950/60 flex items-center justify-between text-xs cursor-pointer border border-transparent hover:border-gray-800"
                         >
                           <div>
-                            <p className="font-bold font-mono text-cyan-300">{b.id}</p>
+                            <p className="font-bold font-medium text-cyan-300">{b.id}</p>
                             <p className="text-[10px] text-gray-500 leading-tight">Pkg: {b.packageTitle} | Guest: {b.customerName}</p>
                           </div>
                           <ChevronRight size={14} className="text-gray-600" />
@@ -617,7 +617,7 @@ export default function MasterControlLayout() {
                 {/* Tickets results */}
                 {searchResults.tickets.length > 0 && (
                   <div>
-                    <h5 className="text-[9px] font-bold font-mono text-cyan-400 uppercase tracking-wider mb-1.5">
+                    <h5 className="text-[9px] font-bold font-medium text-cyan-400 uppercase tracking-wider mb-1.5">
                       Support Tickets ({searchResults.tickets.length})
                     </h5>
                     <div className="space-y-1">
@@ -628,7 +628,7 @@ export default function MasterControlLayout() {
                           className="p-2 rounded-xl hover:bg-gray-950/60 flex items-center justify-between text-xs cursor-pointer border border-transparent hover:border-gray-800"
                         >
                           <div>
-                            <p className="font-bold flex items-center gap-1.5 font-mono text-yellow-500">
+                            <p className="font-bold flex items-center gap-1.5 font-medium text-yellow-500">
                               {t.id} <span className={`text-[9px] px-1 rounded uppercase font-bold text-black ${t.priority === 'CRITICAL' ? 'bg-red-500' : 'bg-amber-400'}`}>{t.priority}</span>
                             </p>
                             <p className="text-[10px] text-gray-500 leading-tight truncate max-w-[420px]">{t.subject}</p>
@@ -642,7 +642,7 @@ export default function MasterControlLayout() {
 
                 {/* No results indicator */}
                 {searchResults.planners.length === 0 && searchResults.customers.length === 0 && searchResults.bookings.length === 0 && searchResults.tickets.length === 0 && (
-                  <div className="text-center py-8 text-gray-600 text-xs font-mono">
+                  <div className="text-center py-8 text-gray-600 text-xs font-medium">
                     No matching records found. Refine your query parameters.
                   </div>
                 )}
