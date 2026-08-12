@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return stored as any
     }
     // Only default legacy demo concierge to VERIFIED, new users default to PENDING
-    if (email.toLowerCase() === 'concierge@beaconplanner.com') {
+    if (email.toLowerCase() === 'concierge@beaconplanner.com' || email.toLowerCase() === 'demo@beaconplanner.com' || email.toLowerCase() === 'adityakasod2005@gmail.com') {
       return 'VERIFIED'
     }
     return 'PENDING'
