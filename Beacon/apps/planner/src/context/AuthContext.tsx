@@ -32,14 +32,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Helper to determine initial KYC status based on email
   const getInitialKycStatus = (email?: string): 'PENDING' | 'UNDER_REVIEW' | 'VERIFIED' | 'REJECTED' => {
     if (!email) return 'PENDING'
+    
+    // Always whitelist demo/admin accounts regardless of what is in localStorage
+    if (email.toLowerCase() === 'concierge@beaconplanner.com' || email.toLowerCase() === 'demo@beaconplanner.com' || email.toLowerCase() === 'adityakasod2005@gmail.com') {
+      return 'VERIFIED'
+    }
+
     const stored = localStorage.getItem(`beacon_kyc_status_${email.toLowerCase()}`)
     if (stored && ['PENDING', 'UNDER_REVIEW', 'VERIFIED', 'REJECTED'].includes(stored)) {
       return stored as any
     }
-    // Only default legacy demo concierge to VERIFIED, new users default to PENDING
-    if (email.toLowerCase() === 'concierge@beaconplanner.com' || email.toLowerCase() === 'demo@beaconplanner.com' || email.toLowerCase() === 'adityakasod2005@gmail.com') {
-      return 'VERIFIED'
-    }
+    
     return 'PENDING'
   }
 
@@ -198,6 +201,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isKycVerified,
         highlightBusinessProfile,
         login,
+        loginWithGoogle,
         register,
         logout,
         updateKycStatus,
