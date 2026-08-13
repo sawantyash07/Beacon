@@ -28,33 +28,18 @@ export default function LoginPage() {
   const { login, loginWithGoogle, user, isKycVerified } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  
   // Auto-login bypass for demo purposes
   useEffect(() => {
     if (!user) {
       const bypass = async () => {
         try {
           await login({ identifier: 'demo@beaconplanner.com', password: 'password' })
-          navigate('/dashboard', { replace: true })
+          // After login, the other useEffect will handle the navigation
         } catch (e) {}
       }
       bypass()
     }
-  }, [login, navigate, user])
-
-  const defaultTarget = isKycVerified ? '/dashboard' : '/onboarding'
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || defaultTarget
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (user) {
-      // Re-evaluate target dynamically using getPlannerTarget to ensure whitelisted users
-      // are routed to /dashboard instead of being caught by the initial state of defaultTarget.
-      const dynamicDefault = getPlannerTarget(user.email, user.kycStatus)
-      const target = (location.state as { from?: { pathname: string } })?.from?.pathname || dynamicDefault
-      navigate(target, { replace: true })
-    }
-  }, [user, navigate, location])
+  }, [login, user])
 
   const getPlannerTarget = (email: string, kyc?: string) => {
     const isWhitelisted = email.toLowerCase() === 'concierge@beaconplanner.com' || email.toLowerCase() === 'demo@beaconplanner.com' || email.toLowerCase() === 'adityakasod2005@gmail.com'
@@ -67,6 +52,26 @@ export default function LoginPage() {
     }
     return '/onboarding'
   }
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      const dynamicDefault = getPlannerTarget(user.email, user.kycStatus)
+      const target = (location.state as { from?: { pathname: string } })?.from?.pathname || dynamicDefault
+      navigate(target, { replace: true })
+    }
+  }, [user, navigate, location])
+
+  // FORCE DEMO BYPASS: Do not render the form.
+  return (
+    <div className="min-h-screen bg-[var(--color-bg-canvas)] flex items-center justify-center p-4 relative overflow-hidden">
+      <div className="flex flex-col items-center gap-4 z-10">
+        <Loader2 className="w-12 h-12 text-cyan animate-spin" />
+        <p className="text-white/70 font-medium">Authenticating Demo Session...</p>
+      </div>
+    </div>
+  )
+}
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
