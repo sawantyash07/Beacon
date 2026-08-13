@@ -176,14 +176,9 @@ export default function LandingPage() {
           </div>
 
           <div className="hidden lg:flex items-center gap-4">
-            <Link to="/login">
-              <Button variant="ghost" className="text-sm text-white/80 hover:text-white hover:bg-white/5 font-semibold py-2.5">
-                Login
-              </Button>
-            </Link>
-            <Link to="/signup">
+            <Link to="/dashboard">
               <Button glow className="text-sm font-bold bg-cyan text-navy px-5 py-2.5 rounded-[12px]">
-                Sign Up
+                Start Planning
               </Button>
             </Link>
           </div>
@@ -212,14 +207,9 @@ export default function LandingPage() {
                 <button onClick={() => scrollToSection(pricingRef)} className="text-left text-base font-medium text-white/70 py-1 hover:text-cyan">Pricing</button>
                 <button onClick={() => scrollToSection(faqRef)} className="text-left text-base font-medium text-white/70 py-1 hover:text-cyan">FAQs</button>
                 <hr className="border-white/5 my-2" />
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full justify-center py-3 border-white/10 text-white hover:bg-white/5">
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/signup" onClick={() => setMobileMenuOpen(false)}>
+                <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                   <Button glow className="w-full justify-center py-3 bg-cyan text-navy font-bold rounded-[12px]">
-                    Sign Up
+                    Start Planning
                   </Button>
                 </Link>
               </div>

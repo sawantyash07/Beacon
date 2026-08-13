@@ -177,11 +177,6 @@ export function Navbar() {
             </div>
           ) : (
             <>
-              <Link to="/login">
-                <Button variant="ghost" className={scrolled ? '' : 'text-white hover:bg-white/10'}>
-                  Log In
-                </Button>
-              </Link>
               <Button glow onClick={handleStartPlanning}>Start Planning</Button>
             </>
           )}
@@ -227,7 +222,6 @@ export function Navbar() {
                   </>
                 ) : (
                   <>
-                    <Link to="/login" onClick={() => setMobileOpen(false)}><Button variant="outline" className="w-full">Log In</Button></Link>
                     <Button className="w-full" glow onClick={() => { handleStartPlanning(); setMobileOpen(false); }}>Start Planning</Button>
                   </>
                 )}
