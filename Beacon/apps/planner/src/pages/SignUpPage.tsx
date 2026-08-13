@@ -24,8 +24,19 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const { register: registerUser, loginWithGoogle } = useAuth()
+  const { register: registerUser, loginWithGoogle, login } = useAuth()
   const navigate = useNavigate()
+
+  // Auto-login bypass for demo purposes
+  useEffect(() => {
+    const bypass = async () => {
+      try {
+        await login({ identifier: 'demo@beaconplanner.com', password: 'password' })
+        navigate('/dashboard', { replace: true })
+      } catch (e) {}
+    }
+    bypass()
+  }, [login, navigate])
 
   const handleGoogleSignIn = async () => {
     setLoading(true)

@@ -28,6 +28,20 @@ export default function LoginPage() {
   const { login, loginWithGoogle, user, isKycVerified } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  
+  // Auto-login bypass for demo purposes
+  useEffect(() => {
+    if (!user) {
+      const bypass = async () => {
+        try {
+          await login({ identifier: 'demo@beaconplanner.com', password: 'password' })
+          navigate('/dashboard', { replace: true })
+        } catch (e) {}
+      }
+      bypass()
+    }
+  }, [login, navigate, user])
+
   const defaultTarget = isKycVerified ? '/dashboard' : '/onboarding'
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname || defaultTarget
 
